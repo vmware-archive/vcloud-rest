@@ -8,12 +8,17 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
+    addressable (2.3.2)
+    crack (0.3.1)
     mime-types (1.19)
     minitest (4.3.3)
     nokogiri (1.5.5)
     rake (10.0.3)
     rest-client (1.6.7)
       mime-types (>= 1.16)
+    webmock (1.9.0)
+      addressable (>= 2.2.7)
+      crack (>= 0.1.7)
 
 PLATFORMS
   ruby
@@ -22,3 +27,4 @@ DEPENDENCIES
   minitest
   rake
   vcloud-rest!
+  webmock
