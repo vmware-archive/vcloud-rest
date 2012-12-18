@@ -9,6 +9,7 @@ GEM
   remote: http://rubygems.org/
   specs:
     mime-types (1.19)
+    minitest (4.3.3)
     nokogiri (1.5.5)
     rake (10.0.3)
     rest-client (1.6.7)
@@ -18,5 +19,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  minitest
   rake
   vcloud-rest!
