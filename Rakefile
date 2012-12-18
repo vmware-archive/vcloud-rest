@@ -1,3 +1,8 @@
-require "mg"
+require 'rake/testtask'
+Rake::TestTask.new(:minitest) do |test|
+  test.test_files = FileList["spec/**/*.rb"]
+  test.verbose = false
+  test.warning = false
+end
 
-MG.new("knife-vcloud.gemspec")
+task :default => [:minitest]
