@@ -1,4 +1,4 @@
-vcloud-rest [![Build Status](https://secure.travis-ci.org/astratto/vcloud-rest.png?branch=master)](http://travis-ci.org/astratto/vcloud-rest)
+vcloud-rest [![Build Status](https://secure.travis-ci.org/astratto/vcloud-rest.png?branch=master)](http://travis-ci.org/astratto/vcloud-rest) [![Dependency Status](https://gemnasium.com/astratto/vcloud-rest.png)](https://gemnasium.com/astratto/vcloud-rest)
 ===========
 
 DESCRIPTION
@@ -43,6 +43,7 @@ For testing purpose:
 
 USAGE
 --
+
     require 'vcloud-rest/connection'
     conn = VCloudClient::Connection.new(HOST, USER, PASSWORD, ORG_NAME)
     conn.login
