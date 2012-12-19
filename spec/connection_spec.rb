@@ -282,10 +282,10 @@ describe VCloudClient::Connection do
     it "should send the correct request" do
       stub_request(:delete, @url).
         to_return(:status => 200,
-         :body => "",
-         :headers => {})
+            :headers => {:location => "#{@connection.api_url}/task/test-deletion_task"})
 
-      @connection.delete_vapp("test-vapp")
+      task_id = @connection.delete_vapp("test-vapp")
+      task_id.must_equal "test-deletion_task"
     end
   end
 

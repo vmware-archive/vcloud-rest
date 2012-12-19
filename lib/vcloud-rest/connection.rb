@@ -239,6 +239,8 @@ module VCloudClient
       }
 
       response, headers = send_request(params)
+      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id
     end
 
     ##
