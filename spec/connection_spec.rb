@@ -321,9 +321,11 @@ describe VCloudClient::Connection do
       # TODO: this test seems to fail under 1.8.7
       stub_request(:post, @url).
         with(:body => "<?xml version=\"1.0\"?>\n<InstantiateVAppTemplateParams xmlns=\"http://www.vmware.com/vcloud/v1.5\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\" name=\"vapp_name\" deploy=\"true\" powerOn=\"true\">\n  <Description>vapp_desc</Description>\n  <Source href=\"https://testhost.local/api/vAppTemplate/templ_id\"/>\n</InstantiateVAppTemplateParams>\n",
-             :headers => {'Content-Type'=>'application/vnd.vmware.vcloud.instantiateVAppTemplateParams+xml'})
+             :headers => {'Content-Type'=>'application/vnd.vmware.vcloud.instantiateVAppTemplateParams+xml'}).
+        to_return(:status => 200, :headers => {:location => "#{@connection.api_url}/vApp/vapp-vapp_created"})
 
-      @connection.create_vapp_from_template("vdc_id", "vapp_name", "vapp_desc", "templ_id")
+      vapp_id = @connection.create_vapp_from_template("vdc_id", "vapp_name", "vapp_desc", "templ_id")
+      vapp_id.must_equal "vapp_created"
     end
   end
 end

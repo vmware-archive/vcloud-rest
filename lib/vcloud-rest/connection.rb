@@ -302,7 +302,10 @@ module VCloudClient
       }
 
       response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.instantiateVAppTemplateParams+xml")
-      [response, headers]
+
+      vapp_id = headers[:location].gsub("#{@api_url}/vApp/vapp-", "")
+
+      vapp_id
     end
 
     private
