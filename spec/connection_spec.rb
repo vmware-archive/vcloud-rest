@@ -322,10 +322,12 @@ describe VCloudClient::Connection do
       stub_request(:post, @url).
         with(:body => "<?xml version=\"1.0\"?>\n<InstantiateVAppTemplateParams xmlns=\"http://www.vmware.com/vcloud/v1.5\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\" name=\"vapp_name\" deploy=\"true\" powerOn=\"true\">\n  <Description>vapp_desc</Description>\n  <Source href=\"https://testhost.local/api/vAppTemplate/templ_id\"/>\n</InstantiateVAppTemplateParams>\n",
              :headers => {'Content-Type'=>'application/vnd.vmware.vcloud.instantiateVAppTemplateParams+xml'}).
-        to_return(:status => 200, :headers => {:location => "#{@connection.api_url}/vApp/vapp-vapp_created"})
+        to_return(:status => 200, :headers => {:location => "#{@connection.api_url}/vApp/vapp-vapp_created"},
+          :body => "<VApp><Task operationName=\"vdcInstantiateVapp\" href=\"#{@connection.api_url}/task/test-task_id\"></VApp>")
 
-      vapp_id = @connection.create_vapp_from_template("vdc_id", "vapp_name", "vapp_desc", "templ_id")
+      vapp_id, task_id = @connection.create_vapp_from_template("vdc_id", "vapp_name", "vapp_desc", "templ_id")
       vapp_id.must_equal "vapp_created"
+      task_id.must_equal "test-task_id"
     end
   end
 end

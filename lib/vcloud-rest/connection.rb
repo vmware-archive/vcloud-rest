@@ -308,7 +308,10 @@ module VCloudClient
 
       vapp_id = headers[:location].gsub("#{@api_url}/vApp/vapp-", "")
 
-      vapp_id
+      task = response.css("VApp Task[operationName='vdcInstantiateVapp']").first
+      task_id = task["href"].gsub("#{@api_url}/task/", "")
+
+      [vapp_id, task_id]
     end
 
     private
