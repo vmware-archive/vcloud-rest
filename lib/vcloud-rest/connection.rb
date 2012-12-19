@@ -394,7 +394,9 @@ module VCloudClient
           when /validation error on field 'id': String value has invalid format or length/
             raise WrongItemIDError, "Invalid ID specified. Please verify that the item exists and correctly typed."
           when /The requested operation could not be executed on vApp "(.*)". Stop the vApp and try again/
-            raise InvalidStateError, "Invalid request. Stop vApp '#{$1}' and try again."
+            raise InvalidStateError, "Invalid request because vApp is running. Stop vApp '#{$1}' and try again."
+          when /The requested operation could not be executed since vApp "(.*)" is not running/
+            raise InvalidStateError, "Invalid request because vApp is stopped. Start vApp '#{$1}' and try again."
           else
             raise UnhandledError, "BadRequest - unhandled error: #{message}.\nPlease report this issue."
           end
