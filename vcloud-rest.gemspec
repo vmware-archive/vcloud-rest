@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.authors = ["Stefano Tortarolo"]
   s.email = ['stefano.tortarolo@gmail.com']
   s.summary = %q{Unofficial ruby bindings for VMWare vCloud's API}
-  s.homepage = %q{http://www.vmware.com}
+  s.homepage = %q{https://github.com/astratto/vcloud-rest}
   s.description = %q{Ruby bindings to create, list and manage vCloud servers}
 
   s.add_dependency "nokogiri", "~> 1.5.5"
