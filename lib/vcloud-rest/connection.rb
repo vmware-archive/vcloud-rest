@@ -112,7 +112,12 @@ module VCloudClient
         networks[item['name']] = item['href'].gsub("#{@api_url}/network/", "")
       end
 
-      [catalogs, vdcs, networks]
+      tasklists = {}
+      response.css("Link[type='application/vnd.vmware.vcloud.tasksList+xml']").each do |item|
+        tasklists[item['name']] = item['href'].gsub("#{@api_url}/tasksList/", "")
+      end
+
+      [catalogs, vdcs, networks, tasklists]
     end
 
     ##
