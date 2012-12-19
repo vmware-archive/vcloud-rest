@@ -299,7 +299,7 @@ describe VCloudClient::Connection do
         to_return(:status => 200,
              :headers => {:location => "#{@connection.api_url}/task/test-poweroff_task"})
 
-      task_id = @connection.poweron_vapp("test-vapp")
+      task_id = @connection.poweroff_vapp("test-vapp")
       task_id.must_equal "test-poweroff_task"
     end
   end
