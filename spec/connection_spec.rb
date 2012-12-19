@@ -18,10 +18,11 @@ describe VCloudClient::Connection do
     @args = {:host => 'https://testhost.local',
             :username => 'testuser',
             :password => 'testpass',
-            :org => 'testorg'}
+            :org => 'testorg',
+            :api_version => "5.1"}
 
     @connection = VCloudClient::Connection.new(@args[:host], @args[:username],
-                                          @args[:password], @args[:org])
+                                          @args[:password], @args[:org], @args[:api_version])
   end
 
   describe "correct initialization" do
@@ -33,7 +34,7 @@ describe VCloudClient::Connection do
 
     it "must be created with at least 4 arguments" do
       VCloudClient::Connection.new(@args[:host], @args[:username], @args[:password],
-                                  @args[:org]).must_be_instance_of VCloudClient::Connection
+                                  @args[:org], @args[:api_version]).must_be_instance_of VCloudClient::Connection
     end
 
     it "must construct the correct api url" do
@@ -70,6 +71,24 @@ describe VCloudClient::Connection do
 
   describe "login" do
     before { @url = "https://testuser%40testorg:testpass@testhost.local/api/sessions" }
+
+    it "should send the correct Accept header for API version 5.1 (default)" do
+      stub_request(:post, @url).
+        with(:headers => {'Accept'=>'application/*+xml;version=5.1'}).
+        to_return(:status => 200, :body => "", :headers => {:x_vcloud_authorization => "test_auth_code"})
+
+      @connection.login
+    end
+
+    it "should send the correct Accept header for API version 1.5" do
+      stub_request(:post, @url).
+        with(:headers => {'Accept'=>'application/*+xml;version=1.5'}).
+        to_return(:status => 200, :body => "", :headers => {:x_vcloud_authorization => "test_auth_code"})
+
+      connection = VCloudClient::Connection.new(@args[:host], @args[:username], @args[:password],
+                                    @args[:org], "1.5")
+      connection.login
+    end
 
     it "should handle correctly a success response" do
       stub_request(:post, @url).

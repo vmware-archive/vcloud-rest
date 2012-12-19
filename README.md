@@ -4,6 +4,7 @@ vcloud-rest [![Build Status](https://secure.travis-ci.org/astratto/vcloud-rest.p
 DESCRIPTION
 --
 Unofficial ruby bindings for VMWare® vCloud Director's rest APIs v. 5.1.
+Note: v.1.5 is also supported at this stage, just use _api\_version="1.5"_.
 
 See [vCloud API](http://pubs.vmware.com/vcd-51/topic/com.vmware.vcloud.api.doc_51/GUID-86CA32C2-3753-49B2-A471-1CE460109ADB.html) for details.
 

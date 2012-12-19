@@ -24,12 +24,13 @@ module VCloudClient
   class Connection
     attr_reader :api_url, :auth_key
 
-    def initialize(host, username, password, org_name)
+    def initialize(host, username, password, org_name, api_version)
       @host = host
       @api_url = "#{host}/api"
       @username = username
       @password = password
       @org_name = org_name
+      @api_version = (api_version || "5.1")
     end
 
     ##
@@ -303,7 +304,7 @@ module VCloudClient
       ##
       # Sends a synchronous request to the vCloud API and returns the response as parsed XML + headers.
       def send_request(params, payload=nil, content_type=nil)
-        headers = {}
+        headers = {:accept => "application/*+xml;version=#{@api_version}"}
         if @auth_key
           headers.merge!({:x_vcloud_authorization => @auth_key})
         end
