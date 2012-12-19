@@ -22,6 +22,7 @@ require 'nokogiri'
 module VCloudClient
   class UnauthorizedAccess < StandardError; end
   class WrongAPIVersion < StandardError; end
+  class WrongItemIDError < StandardError; end
   class UnhandledError < StandardError; end
 
   # Main class to access vCloud rest APIs
@@ -340,6 +341,8 @@ module VCloudClient
           case message
           when /The request has invalid accept header/
             raise WrongAPIVersion, "Invalid accept header. Please verify that the server supports v.#{@api_version} or specify a different API Version."
+          when /validation error on field 'id': String value has invalid format or length/
+            raise WrongItemIDError, "Invalid ID specified. Please verify that the item exists and correctly typed."
           else
             raise UnhandledError, "BadRequest - unhandled error: #{message}.\nPlease report this issue."
           end
