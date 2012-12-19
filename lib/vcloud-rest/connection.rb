@@ -319,6 +319,42 @@ module VCloudClient
       [vapp_id, task_id]
     end
 
+    ##
+    # Show a given task
+    def show_task(taskid)
+      params = {
+        'method' => :get,
+        'command' => "/task/#{taskid}"
+      }
+
+      response, headers = send_request(params)
+
+      task = response.css('Task').first
+      status = task['status']
+      start_time = task['startTime']
+      end_time = task['endTime']
+
+      [status, start_time, end_time, response]
+    end
+
+    ##
+    # Poll a given task until completion
+    def wait_task_completion(taskid)
+      status, errormsg, start_time, end_time, response = nil
+      loop do
+        status, start_time, end_time, response = show_task(taskid)
+        break if status != 'running'
+        sleep 1
+      end
+
+      if status == 'error'
+        errormsg = response.css("Error").first
+        errormsg = "Error code #{errormsg['majorErrorCode']} - #{errormsg['message']}"
+      end
+
+      [status, errormsg, start_time, end_time]
+    end
+
     private
       ##
       # Sends a synchronous request to the vCloud API and returns the response as parsed XML + headers.
