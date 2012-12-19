@@ -295,9 +295,12 @@ describe VCloudClient::Connection do
     it "should send the correct content-type and payload" do
       stub_request(:post, @url).
         with(:body => "<?xml version=\"1.0\"?>\n<UndeployVAppParams xmlns=\"http://www.vmware.com/vcloud/v1.5\">\n  <UndeployPowerAction>powerOff</UndeployPowerAction>\n</UndeployVAppParams>\n",
-             :headers => {'Content-Type'=>'application/vnd.vmware.vcloud.undeployVAppParams+xml'})
+             :headers => {'Content-Type'=>'application/vnd.vmware.vcloud.undeployVAppParams+xml'}).
+        to_return(:status => 200,
+             :headers => {:location => "#{@connection.api_url}/task/test-poweroff_task"})
 
-      @connection.poweroff_vapp("test-vapp")
+      task_id = @connection.poweron_vapp("test-vapp")
+      task_id.must_equal "test-poweroff_task"
     end
   end
 

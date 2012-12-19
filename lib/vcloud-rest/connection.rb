@@ -265,8 +265,8 @@ module VCloudClient
 
       response, headers = send_request(params, builder.to_xml,
                       "application/vnd.vmware.vcloud.undeployVAppParams+xml")
-
-      response
+      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id
     end
 
     ##
