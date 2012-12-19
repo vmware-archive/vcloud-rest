@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = %q{vcloud-rest}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
   s.date = %q{2012-12-19}
   s.authors = ["Stefano Tortarolo"]
   s.email = ['stefano.tortarolo@gmail.com']
