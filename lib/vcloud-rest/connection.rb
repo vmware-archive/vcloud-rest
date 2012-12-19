@@ -20,6 +20,10 @@ require 'rest-client'
 require 'nokogiri'
 
 module VCloudClient
+  class UnauthorizedAccess < StandardError; end
+  class WrongAPIVersion < StandardError; end
+  class UnhandledError < StandardError; end
+
   # Main class to access vCloud rest APIs
   class Connection
     attr_reader :api_url, :auth_key
@@ -319,12 +323,26 @@ module VCloudClient
                                          :headers => headers,
                                          :url => "#{@api_url}#{params['command']}",
                                          :payload => payload)
-        response = request.execute
-        if ![200, 201, 202, 204].include?(response.code)
+        begin
+          response = request.execute
+          if ![200, 201, 202, 204].include?(response.code)
+            puts "Warning: unattended code #{response.code}"
+          end
+
           # TODO: handle asynch properly, see TasksList
-          raise "Invalid response: #{response.code}"
-        else
           [Nokogiri.parse(response), response.headers]
+        rescue RestClient::Unauthorized => e
+          raise UnauthorizedAccess, "Client not authorized. Please check your credentials."
+        rescue RestClient::BadRequest => e
+          body = Nokogiri.parse(e.http_body)
+          message = body.css("Error").first["message"]
+
+          case message
+          when /The request has invalid accept header/
+            raise WrongAPIVersion, "Invalid accept header. Please verify that the server supports v.#{@api_version} or specify a different API Version."
+          else
+            raise UnhandledError, "BadRequest - unhandled error: #{message}.\nPlease report this issue."
+          end
         end
       end
 

@@ -113,7 +113,7 @@ describe VCloudClient::Connection do
 
       lambda {
         @connection.login
-      }.must_raise RestClient::Unauthorized
+      }.must_raise VCloudClient::UnauthorizedAccess
     end
   end
 
