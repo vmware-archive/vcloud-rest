@@ -184,7 +184,7 @@ module VCloudClient
 
       items = {}
       response.css("Entity[type='application/vnd.vmware.vcloud.vAppTemplate+xml']").each do |item|
-        items[item['name']] = item['href'].gsub("#{@api_url}/vAppTemplate/", "")
+        items[item['name']] = item['href'].gsub("#{@api_url}/vAppTemplate/vappTemplate-", "")
       end
 
       [description, items]

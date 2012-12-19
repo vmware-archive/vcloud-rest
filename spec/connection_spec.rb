@@ -223,7 +223,7 @@ describe VCloudClient::Connection do
     it "should return the correct no. of vapp templates - 1" do
       stub_request(:get, @url).
         to_return(:status => 200,
-         :body => "<Entity type='application/vnd.vmware.vcloud.vAppTemplate+xml' name='vapp_templ_1' href='#{@connection.api_url}/vAppTemplate/vapp_templ_1-url'></CatalogItem>",
+         :body => "<Entity type='application/vnd.vmware.vcloud.vAppTemplate+xml' name='vapp_templ_1' href='#{@connection.api_url}/vAppTemplate/vappTemplate-vapp_templ_1-url'></CatalogItem>",
          :headers => {})
 
       description, vapp_templates = @connection.show_catalog_item("test-cat-item")
