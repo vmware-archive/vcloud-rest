@@ -278,8 +278,8 @@ module VCloudClient
       }
 
       response, headers = send_request(params)
-      # TODO: track Task using headers[:location]
-      [response, headers]
+      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id
     end
 
     ##

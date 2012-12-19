@@ -307,10 +307,10 @@ describe VCloudClient::Connection do
     it "should send the correct request" do
       stub_request(:post, @url).
         to_return(:status => 200,
-         :body => "",
-         :headers => {})
+            :headers => {:location => "#{@connection.api_url}/task/test-startup_task"})
 
-      @connection.poweron_vapp("test-vapp")
+      task_id = @connection.poweron_vapp("test-vapp")
+      task_id.must_equal "test-startup_task"
     end
   end
 
