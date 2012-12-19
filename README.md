@@ -3,12 +3,13 @@ vcloud-rest [![Build Status](https://secure.travis-ci.org/astratto/vcloud-rest.p
 
 DESCRIPTION
 --
-Unofficial ruby bindings for VMWare® vCloud Director's rest APIs v. 5.1.
-Note: v.1.5 is also supported at this stage, just use _api\_version="1.5"_.
+Unofficial ruby bindings for VMWare® vCloud Director's rest APIs.
+
+Note: at this stage both _v.1.5_ and _v.5.1_ are supported. It defaults to _v.5.1_ but it's possible to specify _api\_version="1.5"_.
 
 See [vCloud API](http://pubs.vmware.com/vcd-51/topic/com.vmware.vcloud.api.doc_51/GUID-86CA32C2-3753-49B2-A471-1CE460109ADB.html) for details.
 
-This code is ALPHA QUALITY.
+This code is BETA QUALITY.
 
 INSTALLATION
 --
@@ -23,10 +24,11 @@ vcloud-rest is tested against ruby 1.9.x and 1.8.7+.
 FEATURES
 --
 - login/logout
-- list/show organizations
+- list/show Organizations
 - show VDCs
-- list/show vApps
-- create/start/stop/destroy vApps
+- show Catalogs
+- show Catalog Items
+- create/start/stop/delete vApps
 
 TODO
 --
@@ -40,7 +42,7 @@ PREREQUISITES
 
 For testing purpose:
 - minitest (included in ruby 1.9)
-- minitest-spec (included in ruby 1.9)
+- webmock
 
 USAGE
 --
@@ -53,6 +55,10 @@ USAGE
 TESTING
 --
 Simply run:
+
+    rake
+Or:
+
     ruby spec/connection_spec.rb
 
 Note: in order to run tests with ruby 1.8.7+ you need to export RUBYOPT="rubygems"

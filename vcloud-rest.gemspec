@@ -1,10 +1,10 @@
 Gem::Specification.new do |s|
   s.name = %q{vcloud-rest}
-  s.version = "0.0.1"
-  s.date = %q{2012-12-14}
+  s.version = "0.1.0"
+  s.date = %q{2012-12-19}
   s.authors = ["Stefano Tortarolo"]
   s.email = ['stefano.tortarolo@gmail.com']
-  s.summary = %q{Unofficial ruby bindings for VMWare vCloud's API v.5.1}
+  s.summary = %q{Unofficial ruby bindings for VMWare vCloud's API}
   s.homepage = %q{http://www.vmware.com}
   s.description = %q{Ruby bindings to create, list and manage vCloud servers}
 
