@@ -378,4 +378,18 @@ describe VCloudClient::Connection do
       task_id.must_equal "test-vm_guest_task"
     end
   end
+
+  describe "show vm details" do
+    before { @url = "https://testuser%40testorg:testpass@testhost.local/api/vApp/vm-test-vm" }
+
+    it "should send the correct content-type and payload" do
+      stub_request(:get, @url).
+        to_return(:status => 200,
+          :body => "<?xml version=\"1.0\"?>\n<VM xmlns=\"http://www.vmware.com/vcloud/v1.5\" xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\">\n<ovf:OperatingSystemSection><ovf:Description>Test OS</ovf:Description></ovf:OperatingSystemSection>\n<GuestCustomizationSection><Enabled>true</Enabled><AdminPasswordEnabled>false</AdminPasswordEnabled><AdminPasswordAuto>false</AdminPasswordAuto><AdminPassword>testpass</AdminPasswordEnabled><ResetPasswordRequired>false</ResetPasswordRequired><ComputerName>testcomputer</ComputerName></GuestCustomizationSection></VM>\n")
+
+      os_desc, networks, guest_customizations = @connection.show_vm("test-vm")
+      os_desc.must_equal "Test OS"
+      guest_customizations.wont_be_nil
+    end
+  end
 end

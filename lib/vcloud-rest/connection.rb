@@ -439,6 +439,44 @@ module VCloudClient
       task_id
     end
 
+    ##
+    # Show details about a given VM
+    def show_vm(vmId)
+      params = {
+        'method' => :get,
+        'command' => "/vApp/vm-#{vmId}"
+      }
+
+      response, headers = send_request(params)
+
+      os_desc = response.css('ovf|OperatingSystemSection ovf|Description').first.text
+
+      networks = {}
+      response.css('NetworkConnection').each do |network|
+        ip = network.css('IpAddress').first
+        ip = ip.text if ip
+
+        networks[network['network']] = {
+          :index => network.css('NetworkConnectionIndex').first.text,
+          :ip => ip,
+          :is_connected => network.css('IsConnected').first.text,
+          :mac_address => network.css('MACAddress').first.text,
+          :ip_allocation_mode => network.css('IpAddressAllocationMode').first.text
+        }
+      end
+
+      guest_customizations = {
+        :enabled => response.css('GuestCustomizationSection Enabled').first.text,
+        :admin_passwd_enabled => response.css('GuestCustomizationSection AdminPasswordEnabled').first.text,
+        :admin_passwd_auto => response.css('GuestCustomizationSection AdminPasswordAuto').first.text,
+        :admin_passwd => response.css('GuestCustomizationSection AdminPassword').first.text,
+        :reset_passwd_required => response.css('GuestCustomizationSection ResetPasswordRequired').first.text,
+        :computer_name => response.css('GuestCustomizationSection ComputerName').first.text
+      }
+
+      [os_desc, networks, guest_customizations]
+    end
+
     private
       ##
       # Sends a synchronous request to the vCloud API and returns the response as parsed XML + headers.
