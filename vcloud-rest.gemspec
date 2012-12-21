@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name = %q{vcloud-rest}
-  s.version = "0.1.1"
-  s.date = %q{2012-12-19}
+  s.version = "0.2.0"
+  s.date = %q{2012-12-21}
   s.authors = ["Stefano Tortarolo"]
   s.email = ['stefano.tortarolo@gmail.com']
   s.summary = %q{Unofficial ruby bindings for VMWare vCloud's API}
