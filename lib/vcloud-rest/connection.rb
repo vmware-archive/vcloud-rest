@@ -355,6 +355,34 @@ module VCloudClient
       [status, errormsg, start_time, end_time]
     end
 
+    ##
+    # Set vApp Network Config
+    def set_vapp_network_config(vappid, network_name, config={})
+      builder = Nokogiri::XML::Builder.new do |xml|
+      xml.NetworkConfigSection(
+        "xmlns" => "http://www.vmware.com/vcloud/v1.5",
+        "xmlns:ovf" => "http://schemas.dmtf.org/ovf/envelope/1") {
+        xml['ovf'].Info "Network configuration"
+        xml.NetworkConfig("networkName" => network_name) {
+          xml.Configuration {
+            xml.FenceMode (config[:fence_mode] || 'isolated')
+            xml.RetainNetInfoAcrossDeployments (config[:retain_net] || true)
+          }
+        }
+      }
+      end
+
+      params = {
+        'method' => :put,
+        'command' => "/vApp/vapp-#{vappid}/networkConfigSection"
+      }
+
+      response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.networkConfigSection+xml")
+
+      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id
+    end
+
     private
       ##
       # Sends a synchronous request to the vCloud API and returns the response as parsed XML + headers.

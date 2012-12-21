@@ -333,4 +333,19 @@ describe VCloudClient::Connection do
       task_id.must_equal "test-task_id"
     end
   end
+
+  describe "vapp network config" do
+    before { @url = "https://testuser%40testorg:testpass@testhost.local/api/vApp/vapp-test-vapp/networkConfigSection" }
+
+    it "should send the correct content-type and payload" do
+      stub_request(:put, @url).
+        with(:body => "<?xml version=\"1.0\"?>\n<NetworkConfigSection xmlns=\"http://www.vmware.com/vcloud/v1.5\" xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\">\n  <ovf:Info>Network configuration</ovf:Info>\n  <NetworkConfig networkName=\"test-network\">\n    <Configuration>\n      <FenceMode>isolated</FenceMode>\n      <RetainNetInfoAcrossDeployments>true</RetainNetInfoAcrossDeployments>\n    </Configuration>\n  </NetworkConfig>\n</NetworkConfigSection>\n",
+             :headers => {'Content-Type'=>'application/vnd.vmware.vcloud.networkConfigSection+xml'}).
+        to_return(:status => 200,
+             :headers => {:location => "#{@connection.api_url}/task/test-vapp_network_task"})
+
+      task_id = @connection.set_vapp_network_config("test-vapp", "test-network")
+      task_id.must_equal "test-vapp_network_task"
+    end
+  end
 end
