@@ -290,7 +290,7 @@ module VCloudClient
     # - vapp_name: name of the target vapp
     # - vapp_description: description of the target vapp
     # - vapp_templateid: ID of the vapp template
-    def create_vapp_from_template(vdc, vapp_name, vapp_description, vapp_templateid)
+    def create_vapp_from_template(vdc, vapp_name, vapp_description, vapp_templateid, poweron=false)
       builder = Nokogiri::XML::Builder.new do |xml|
       xml.InstantiateVAppTemplateParams(
         "xmlns" => "http://www.vmware.com/vcloud/v1.5",
@@ -298,7 +298,7 @@ module VCloudClient
         "xmlns:ovf" => "http://schemas.dmtf.org/ovf/envelope/1",
         "name" => vapp_name,
         "deploy" => "true",
-        "powerOn" => "true") {
+        "powerOn" => poweron) {
         xml.Description vapp_description
         xml.Source("href" => "#{@api_url}/vAppTemplate/#{vapp_templateid}")
       }
