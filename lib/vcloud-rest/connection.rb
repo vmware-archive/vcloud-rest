@@ -400,6 +400,10 @@ module VCloudClient
           else
             raise UnhandledError, "BadRequest - unhandled error: #{message}.\nPlease report this issue."
           end
+        rescue RestClient::Forbidden => e
+          body = Nokogiri.parse(e.http_body)
+          message = body.css("Error").first["message"]
+          raise UnauthorizedAccess, "Operation not permitted: #{message}."
         end
       end
 
