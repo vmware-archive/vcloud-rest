@@ -383,6 +383,35 @@ module VCloudClient
       task_id
     end
 
+    ##
+    # Set VM Network Config
+    def set_vm_network_config(vmid, network_name, config={})
+      builder = Nokogiri::XML::Builder.new do |xml|
+      xml.NetworkConnectionSection(
+        "xmlns" => "http://www.vmware.com/vcloud/v1.5",
+        "xmlns:ovf" => "http://schemas.dmtf.org/ovf/envelope/1") {
+        xml['ovf'].Info "VM Network configuration"
+        xml.PrimaryNetworkConnectionIndex (config[:primary_index] || 0)
+        xml.NetworkConnection("network" => network_name, "needsCustomization" => true) {
+          xml.NetworkConnectionIndex (config[:network_index] || 0)
+          xml.IpAddress config[:ip] if config[:ip]
+          xml.IsConnected (config[:is_connected] || true)
+          xml.IpAddressAllocationMode config[:ip_allocation_mode] if config[:ip_allocation_mode]
+        }
+      }
+      end
+
+      params = {
+        'method' => :put,
+        'command' => "/vApp/vm-#{vmid}/networkConnectionSection"
+      }
+
+      response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.networkConnectionSection+xml")
+
+      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id
+    end
+
     private
       ##
       # Sends a synchronous request to the vCloud API and returns the response as parsed XML + headers.
