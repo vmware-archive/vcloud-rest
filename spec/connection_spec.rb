@@ -363,4 +363,19 @@ describe VCloudClient::Connection do
       task_id.must_equal "test-vm_network_task"
     end
   end
+
+  describe "vm guest customization" do
+    before { @url = "https://testuser%40testorg:testpass@testhost.local/api/vApp/vm-test-vm/guestCustomizationSection" }
+
+    it "should send the correct content-type and payload" do
+      stub_request(:put, @url).
+      with(:body => "<?xml version=\"1.0\"?>\n<GuestCustomizationSection xmlns=\"http://www.vmware.com/vcloud/v1.5\" xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\">\n  <ovf:Info>VM Guest Customization configuration</ovf:Info>\n  <ComputerName>test-name</ComputerName>\n</GuestCustomizationSection>\n",
+             :headers => {'Content-Type'=>'application/vnd.vmware.vcloud.guestCustomizationSection+xml'}).
+        to_return(:status => 200,
+             :headers => {:location => "#{@connection.api_url}/task/test-vm_guest_task"})
+
+      task_id = @connection.set_vm_guest_customization("test-vm", "test-name")
+      task_id.must_equal "test-vm_guest_task"
+    end
+  end
 end

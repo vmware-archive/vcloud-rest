@@ -412,6 +412,33 @@ module VCloudClient
       task_id
     end
 
+
+    ##
+    # Set VM Guest Customization Config
+    def set_vm_guest_customization(vmid, computer_name, config={})
+      builder = Nokogiri::XML::Builder.new do |xml|
+      xml.GuestCustomizationSection(
+        "xmlns" => "http://www.vmware.com/vcloud/v1.5",
+        "xmlns:ovf" => "http://schemas.dmtf.org/ovf/envelope/1") {
+          xml['ovf'].Info "VM Guest Customization configuration"
+          xml.Enabled config[:enabled] if config[:enabled]
+          xml.AdminPasswordEnabled config[:admin_passwd_enabled] if config[:admin_passwd_enabled]
+          xml.AdminPassword config[:admin_passwd] if config[:admin_passwd]
+          xml.ComputerName computer_name
+      }
+      end
+
+      params = {
+        'method' => :put,
+        'command' => "/vApp/vm-#{vmid}/guestCustomizationSection"
+      }
+
+      response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.guestCustomizationSection+xml")
+
+      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id
+    end
+
     private
       ##
       # Sends a synchronous request to the vCloud API and returns the response as parsed XML + headers.
