@@ -52,7 +52,7 @@ describe VCloudClient::Connection do
       end
     end
 
-    [:send_request, :convert_status].each do |method|
+    [:send_request, :convert_vapp_status].each do |method|
       it "must not respond to #{method}" do
         @connection.wont_respond_to method
       end
@@ -61,11 +61,11 @@ describe VCloudClient::Connection do
 
   describe "check status" do
     it "should return correct status for existing codes" do
-      @connection.send(:convert_status, 8).must_equal "stopped"
+      @connection.send(:convert_vapp_status, 8).must_equal "stopped"
     end
 
     it "should return a default for unexisting codes" do
-      @connection.send(:convert_status, 999).must_equal "Unknown 999"
+      @connection.send(:convert_vapp_status, 999).must_equal "Unknown 999"
     end
   end
 

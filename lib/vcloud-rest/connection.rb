@@ -211,7 +211,7 @@ module VCloudClient
       vapp_node = response.css('VApp').first
       if vapp_node
         name = vapp_node['name']
-        status = convert_status(vapp_node['status'])
+        status = convert_vapp_status(vapp_node['status'])
       end
 
       description = response.css("Description").first
@@ -225,7 +225,7 @@ module VCloudClient
       vms.each do |vm|
         addresses = vm.css('rasd|Connection').collect{|n| n['ipAddress']}
         vms_hash[vm['name']] = {:addresses => addresses,
-          :status => convert_status(vm['status']),
+          :status => convert_vapp_status(vm['status']),
           :id => vm['href'].gsub("#{@api_url}/vApp/vm-", '')
         }
       end
@@ -408,15 +408,19 @@ module VCloudClient
       end
 
       ##
-      # Convert status codes into human readable description
-      def convert_status(status_code)
+      # Convert vApp status codes into human readable description
+      def convert_vapp_status(status_code)
         case status_code.to_i
-          when 3
+          when 0
             'suspended'
+          when 3
+            'paused'
           when 4
             'running'
           when 8
             'stopped'
+          when 10
+            'mixed'
           else
             "Unknown #{status_code}"
         end
