@@ -465,11 +465,14 @@ module VCloudClient
         }
       end
 
+      admin_password = response.css('GuestCustomizationSection AdminPassword').first
+      admin_password = admin_password.text if admin_password
+
       guest_customizations = {
         :enabled => response.css('GuestCustomizationSection Enabled').first.text,
         :admin_passwd_enabled => response.css('GuestCustomizationSection AdminPasswordEnabled').first.text,
         :admin_passwd_auto => response.css('GuestCustomizationSection AdminPasswordAuto').first.text,
-        :admin_passwd => response.css('GuestCustomizationSection AdminPassword').first.text,
+        :admin_passwd => admin_password,
         :reset_passwd_required => response.css('GuestCustomizationSection ResetPasswordRequired').first.text,
         :computer_name => response.css('GuestCustomizationSection ComputerName').first.text
       }
