@@ -1,5 +1,12 @@
 Changes
 ==
+2012-12-27 (0.2.1)
+--
+
+FIXES:
+
+* Fix VM's admin password retrieval
+
 2012-12-21 (0.2.0)
 --
 
