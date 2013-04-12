@@ -223,7 +223,7 @@ module VCloudClient
       vms = response.css('Children Vm')
       vms_hash = {}
       vms.each do |vm|
-        addresses = vm.css('rasd|Connection').collect{|n| n['ipAddress']}
+        addresses = vm.css('rasd|Connection').collect{|n| n['vcloud:ipAddress']}
         vms_hash[vm['name']] = {:addresses => addresses,
           :status => convert_vapp_status(vm['status']),
           :id => vm['href'].gsub("#{@api_url}/vApp/vm-", '')
