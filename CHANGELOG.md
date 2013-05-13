@@ -1,5 +1,16 @@
 Changes
 ==
+2013-05-13 (0.2.2)
+--
+
+FIXES:
+
+* Fix retrieving of 'ipAddress' attribute of VMs inside VAPP
+
+VARIOUS:
+
+* Bump nokogiri dependency to 1.5.9
+
 2012-12-27 (0.2.1)
 --
 
