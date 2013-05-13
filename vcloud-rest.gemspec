@@ -7,6 +7,7 @@ Gem::Specification.new do |s|
   s.summary = %q{Unofficial ruby bindings for VMWare vCloud's API}
   s.homepage = %q{https://github.com/astratto/vcloud-rest}
   s.description = %q{Ruby bindings to create, list and manage vCloud servers}
+  s.license     = 'Apache 2.0'
 
   s.add_dependency "nokogiri", "~> 1.5.9"
   s.add_dependency "rest-client", "~> 1.6.7"
