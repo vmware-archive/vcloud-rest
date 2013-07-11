@@ -367,8 +367,8 @@ module VCloudClient
         xml['ovf'].Info "Network configuration"
         xml.NetworkConfig("networkName" => network_name) {
           xml.Configuration {
-            xml.FenceMode (config[:fence_mode] || 'isolated')
-            xml.RetainNetInfoAcrossDeployments (config[:retain_net] || true)
+            xml.FenceMode(config[:fence_mode] || 'isolated')
+            xml.RetainNetInfoAcrossDeployments(config[:retain_net] || true)
           }
         }
       }
@@ -393,11 +393,11 @@ module VCloudClient
         "xmlns" => "http://www.vmware.com/vcloud/v1.5",
         "xmlns:ovf" => "http://schemas.dmtf.org/ovf/envelope/1") {
         xml['ovf'].Info "VM Network configuration"
-        xml.PrimaryNetworkConnectionIndex (config[:primary_index] || 0)
+        xml.PrimaryNetworkConnectionIndex(config[:primary_index] || 0)
         xml.NetworkConnection("network" => network_name, "needsCustomization" => true) {
-          xml.NetworkConnectionIndex (config[:network_index] || 0)
+          xml.NetworkConnectionIndex(config[:network_index] || 0)
           xml.IpAddress config[:ip] if config[:ip]
-          xml.IsConnected (config[:is_connected] || true)
+          xml.IsConnected(config[:is_connected] || true)
           xml.IpAddressAllocationMode config[:ip_allocation_mode] if config[:ip_allocation_mode]
         }
       }
