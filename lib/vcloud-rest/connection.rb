@@ -68,8 +68,8 @@ module VCloudClient
     end
 
     ##
-    # List existing organizations and their IDs
-    def list_organizations
+    # Fetch existing organizations and their IDs
+    def get_organizations
       params = {
         'method' => :get,
         'command' => '/org'
@@ -86,11 +86,11 @@ module VCloudClient
     end
 
     ##
-    # Show details about an organization:
+    # Fetch details about an organization:
     # - catalogs
     # - vdcs
     # - networks
-    def show_organization(orgId)
+    def get_organization(orgId)
       params = {
         'method' => :get,
         'command' => "/org/#{orgId}"
@@ -117,12 +117,12 @@ module VCloudClient
         tasklists[item['name']] = item['href'].gsub("#{@api_url}/tasksList/", "")
       end
 
-      [catalogs, vdcs, networks, tasklists]
+      { 'catalogs' => catalogs, 'vdcs' => vdcs, 'networks' => networks, 'tasklists' => tasklists }
     end
 
     ##
-    # Show details about a given catalog
-    def show_catalog(catalogId)
+    # Fetch details about a given catalog
+    def get_catalog(catalogId)
       params = {
         'method' => :get,
         'command' => "/catalog/#{catalogId}"
@@ -136,16 +136,15 @@ module VCloudClient
       response.css("CatalogItem[type='application/vnd.vmware.vcloud.catalogItem+xml']").each do |item|
         items[item['name']] = item['href'].gsub("#{@api_url}/catalogItem/", "")
       end
-
-      [description, items]
+      { 'description' => description, 'items' => items }
     end
 
     ##
-    # Show details about a given vdc:
+    # Fetch details about a given vdc:
     # - description
     # - vapps
     # - networks
-    def show_vdc(vdcId)
+    def get_vdc(vdcId)
       params = {
         'method' => :get,
         'command' => "/vdc/#{vdcId}"
@@ -164,15 +163,14 @@ module VCloudClient
       response.css("Network[type='application/vnd.vmware.vcloud.network+xml']").each do |item|
         networks[item['name']] = item['href'].gsub("#{@api_url}/network/", "")
       end
-
-      [description, vapps, networks]
+      { 'description' => description, 'vapps' => vapps, 'networks' => networks }
     end
 
     ##
-    # Show details about a given catalog item:
+    # Fetch details about a given catalog item:
     # - description
     # - vApp templates
-    def show_catalog_item(catalogItemId)
+    def get_catalog_item(catalogItemId)
       params = {
         'method' => :get,
         'command' => "/catalogItem/#{catalogItemId}"
@@ -186,12 +184,11 @@ module VCloudClient
       response.css("Entity[type='application/vnd.vmware.vcloud.vAppTemplate+xml']").each do |item|
         items[item['name']] = item['href'].gsub("#{@api_url}/vAppTemplate/vappTemplate-", "")
       end
-
-      [description, items]
+      { 'description' => description, 'items' => items }
     end
 
     ##
-    # Show details about a given vapp:
+    # Fetch details about a given vapp:
     # - name
     # - description
     # - status
@@ -200,7 +197,7 @@ module VCloudClient
     #   -- IP addresses
     #   -- status
     #   -- ID
-    def show_vapp(vAppId)
+    def get_vapp(vAppId)
       params = {
         'method' => :get,
         'command' => "/vApp/vapp-#{vAppId}"
@@ -231,7 +228,7 @@ module VCloudClient
       end
 
       # TODO: EXPAND INFO FROM RESPONSE
-      [name, description, status, ip, vms_hash]
+      { 'name' => name, 'description' => description, 'status' => status, 'ip' => ip, 'vms_hash' => vms_hash }
     end
 
     ##
@@ -316,12 +313,12 @@ module VCloudClient
       task = response.css("VApp Task[operationName='vdcInstantiateVapp']").first
       task_id = task["href"].gsub("#{@api_url}/task/", "")
 
-      [vapp_id, task_id]
+      { 'vapp_id' => vapp_id, 'task_id' => task_id }
     end
 
     ##
-    # Show a given task
-    def show_task(taskid)
+    # Fetch information for a given task
+    def get_task(taskid)
       params = {
         'method' => :get,
         'command' => "/task/#{taskid}"
@@ -334,7 +331,7 @@ module VCloudClient
       start_time = task['startTime']
       end_time = task['endTime']
 
-      [status, start_time, end_time, response]
+      { 'status' => status, 'start_time' => start_time, 'end_time' => end_time, 'response' => response }
     end
 
     ##
@@ -342,7 +339,7 @@ module VCloudClient
     def wait_task_completion(taskid)
       status, errormsg, start_time, end_time, response = nil
       loop do
-        status, start_time, end_time, response = show_task(taskid)
+        status, start_time, end_time, response = get_task(taskid)
         break if status != 'running'
         sleep 1
       end
@@ -352,7 +349,7 @@ module VCloudClient
         errormsg = "Error code #{errormsg['majorErrorCode']} - #{errormsg['message']}"
       end
 
-      [status, errormsg, start_time, end_time]
+      { 'status' => status, 'errormsg' => errormsg, 'start_time' => start_time, 'end_time' => end_time }
     end
 
     ##
@@ -440,8 +437,8 @@ module VCloudClient
     end
 
     ##
-    # Show details about a given VM
-    def show_vm(vmId)
+    # Fetch details about a given VM
+    def get_vm(vmId)
       params = {
         'method' => :get,
         'command' => "/vApp/vm-#{vmId}"
@@ -477,7 +474,7 @@ module VCloudClient
         :computer_name => response.css('GuestCustomizationSection ComputerName').first.text
       }
 
-      [os_desc, networks, guest_customizations]
+      { 'os_desc' => os_desc, 'networks' => networks, 'guest_customizations' => guest_customizations }
     end
 
     private
