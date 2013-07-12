@@ -117,7 +117,7 @@ module VCloudClient
         tasklists[item['name']] = item['href'].gsub("#{@api_url}/tasksList/", "")
       end
 
-      { 'catalogs' => catalogs, 'vdcs' => vdcs, 'networks' => networks, 'tasklists' => tasklists }
+      { :catalogs => catalogs, :vdcs => vdcs, :networks => networks, :tasklists => tasklists }
     end
 
     ##
@@ -136,7 +136,7 @@ module VCloudClient
       response.css("CatalogItem[type='application/vnd.vmware.vcloud.catalogItem+xml']").each do |item|
         items[item['name']] = item['href'].gsub("#{@api_url}/catalogItem/", "")
       end
-      { 'description' => description, 'items' => items }
+      { :description => description, :items => items }
     end
 
     ##
@@ -163,7 +163,7 @@ module VCloudClient
       response.css("Network[type='application/vnd.vmware.vcloud.network+xml']").each do |item|
         networks[item['name']] = item['href'].gsub("#{@api_url}/network/", "")
       end
-      { 'description' => description, 'vapps' => vapps, 'networks' => networks }
+      { :description => description, :vapps => vapps, :networks => networks }
     end
 
     ##
@@ -184,7 +184,7 @@ module VCloudClient
       response.css("Entity[type='application/vnd.vmware.vcloud.vAppTemplate+xml']").each do |item|
         items[item['name']] = item['href'].gsub("#{@api_url}/vAppTemplate/vappTemplate-", "")
       end
-      { 'description' => description, 'items' => items }
+      { :description => description, :items => items }
     end
 
     ##
@@ -230,7 +230,7 @@ module VCloudClient
       end
 
       # TODO: EXPAND INFO FROM RESPONSE
-      { 'name' => name, 'description' => description, 'status' => status, 'ip' => ip, 'vms_hash' => vms_hash }
+      { :name => name, :description => description, :status => status, :ip => ip, :vms_hash => vms_hash }
     end
 
     ##
@@ -315,7 +315,7 @@ module VCloudClient
       task = response.css("VApp Task[operationName='vdcInstantiateVapp']").first
       task_id = task["href"].gsub("#{@api_url}/task/", "")
 
-      { 'vapp_id' => vapp_id, 'task_id' => task_id }
+      { :vapp_id => vapp_id, :task_id => task_id }
     end
 
     ##
@@ -333,7 +333,7 @@ module VCloudClient
       start_time = task['startTime']
       end_time = task['endTime']
 
-      { 'status' => status, 'start_time' => start_time, 'end_time' => end_time, 'response' => response }
+      { :status => status, :start_time => start_time, :end_time => end_time, :response => response }
     end
 
     ##
@@ -351,7 +351,7 @@ module VCloudClient
         errormsg = "Error code #{errormsg['majorErrorCode']} - #{errormsg['message']}"
       end
 
-      { 'status' => status, 'errormsg' => errormsg, 'start_time' => start_time, 'end_time' => end_time }
+      { :status => status, :errormsg => errormsg, :start_time => start_time, :end_time => end_time }
     end
 
     ##
@@ -476,7 +476,7 @@ module VCloudClient
         :computer_name => response.css('GuestCustomizationSection ComputerName').first.text
       }
 
-      { 'os_desc' => os_desc, 'networks' => networks, 'guest_customizations' => guest_customizations }
+      { :os_desc => os_desc, :networks => networks, :guest_customizations => guest_customizations }
     end
 
     private

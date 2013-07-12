@@ -43,8 +43,8 @@ describe VCloudClient::Connection do
   end
 
   describe "supported APIs" do
-    [:login, :logout, :list_organizations, :show_organization,
-     :show_vdc, :show_catalog, :show_catalog_item, :show_vapp,
+    [:login, :logout, :get_organizations, :get_organization,
+     :get_vdc, :get_catalog, :get_catalog_item, :get_vapp,
      :delete_vapp, :poweroff_vapp, :poweron_vapp,
      :create_vapp_from_template].each do |method|
       it "must respond to #{method}" do
@@ -126,7 +126,7 @@ describe VCloudClient::Connection do
          :body => "",
          :headers => {})
 
-      @connection.list_organizations.count.must_equal 0
+      @connection.get_organizations.count.must_equal 0
     end
 
     it "should return the correct no. of organizations - 1" do
@@ -135,14 +135,14 @@ describe VCloudClient::Connection do
          :body => "<OrgList><Org href='https://testhost.local/api/org/test-org-url' name='test-org'></Org></OrgList>",
          :headers => {})
 
-      orgs = @connection.list_organizations
+      orgs = @connection.get_organizations
       orgs.count.must_equal 1
       orgs.must_be_kind_of Hash
       orgs.first.must_equal ['test-org', 'test-org-url']
     end
   end
 
-  describe "show organization" do
+  describe "get organization" do
     before { @url = "https://testuser%40testorg:testpass@testhost.local/api/org/test-org" }
 
     it "should return the correct no. of organizations - 1" do
@@ -151,9 +151,9 @@ describe VCloudClient::Connection do
          :body => "<Link type='application/vnd.vmware.vcloud.catalog+xml' name='catalog_1' href='#{@connection.api_url}/catalog/catalog_1-url'></Link>",
          :headers => {})
 
-      catalogs, vdcs, networks = @connection.show_organization("test-org")
-      catalogs.count.must_equal 1
-      catalogs.first.must_equal ["catalog_1", "catalog_1-url"]
+      catalog_get = @connection.get_organization("test-org")
+      catalog_get[:catalogs].count.must_equal 1
+      catalog_get[:catalogs].first.must_equal ["catalog_1", "catalog_1-url"]
     end
 
     it "should return the correct no. of vdcs - 1" do
@@ -162,9 +162,9 @@ describe VCloudClient::Connection do
          :body => "<Link type='application/vnd.vmware.vcloud.vdc+xml' name='vdc_1' href='#{@connection.api_url}/vdc/vdc_1-url'></Link>",
          :headers => {})
 
-      catalogs, vdcs, networks = @connection.show_organization("test-org")
-      vdcs.count.must_equal 1
-      vdcs.first.must_equal ["vdc_1", "vdc_1-url"]
+      vdcs_get = @connection.get_organization("test-org")
+      vdcs_get[:vdcs].count.must_equal 1
+      vdcs_get[:vdcs].first.must_equal ["vdc_1", "vdc_1-url"]
     end
 
     it "should return the correct no. of networks - 1" do
@@ -173,9 +173,9 @@ describe VCloudClient::Connection do
          :body => "<Link type='application/vnd.vmware.vcloud.orgNetwork+xml' name='network_1' href='#{@connection.api_url}/network/network_1-url'></Link>",
          :headers => {})
 
-      catalogs, vdcs, networks = @connection.show_organization("test-org")
-      networks.count.must_equal 1
-      networks.first.must_equal ["network_1", "network_1-url"]
+      networks_get = @connection.get_organization("test-org")
+      networks_get[:networks].count.must_equal 1
+      networks_get[:networks].first.must_equal ["network_1", "network_1-url"]
     end
   end
 
@@ -188,8 +188,8 @@ describe VCloudClient::Connection do
          :body => "",
          :headers => {})
 
-      description, items = @connection.show_catalog("test-catalog")
-      items.count.must_equal 0
+      catalog_get = @connection.get_catalog("test-catalog")
+      catalog_get[:items].count.must_equal 0
     end
 
     it "should return the correct no. of catalog items - 1" do
@@ -198,8 +198,8 @@ describe VCloudClient::Connection do
          :body => "<CatalogItem type='application/vnd.vmware.vcloud.catalogItem+xml' name='catalog_item_1' href='#{@connection.api_url}/catalogItem/catalog_item_1-url'></CatalogItem>",
          :headers => {})
 
-      description, items = @connection.show_catalog("test-catalog")
-      items.first.must_equal ["catalog_item_1", "catalog_item_1-url"]
+      catalog_get = @connection.get_catalog("test-catalog")
+      catalog_get[:items].first.must_equal ["catalog_item_1", "catalog_item_1-url"]
     end
   end
 
@@ -212,8 +212,8 @@ describe VCloudClient::Connection do
          :body => "<ResourceEntity type='application/vnd.vmware.vcloud.vApp+xml' name='vapp_1' href='#{@connection.api_url}/vApp/vapp-vapp_1-url'></CatalogItem>",
          :headers => {})
 
-      description, items = @connection.show_vdc("test-vdc")
-      items.first.must_equal ["vapp_1", "vapp_1-url"]
+      vdc_get = @connection.get_vdc("test-vdc")
+      vdc_get[:vapps].first.must_equal ["vapp_1", "vapp_1-url"]
     end
   end
 
@@ -226,8 +226,8 @@ describe VCloudClient::Connection do
          :body => "<Entity type='application/vnd.vmware.vcloud.vAppTemplate+xml' name='vapp_templ_1' href='#{@connection.api_url}/vAppTemplate/vappTemplate-vapp_templ_1-url'></CatalogItem>",
          :headers => {})
 
-      description, vapp_templates = @connection.show_catalog_item("test-cat-item")
-      vapp_templates.first.must_equal ["vapp_templ_1", "vapp_templ_1-url"]
+      catalog_item_get = @connection.get_catalog_item("test-cat-item")
+      catalog_item_get[:items].first.must_equal ["vapp_templ_1", "vapp_templ_1-url"]
     end
   end
 
@@ -240,8 +240,8 @@ describe VCloudClient::Connection do
          :body => "<VApp name='test-vapp' status='4'></VApp>",
          :headers => {})
 
-      name, description, status, ip, vms_hash = @connection.show_vapp("test-vapp")
-      name.must_equal "test-vapp"
+      vapp_get = @connection.get_vapp("test-vapp")
+      vapp_get[:name].must_equal "test-vapp"
     end
 
     it "should return the correct status" do
@@ -250,8 +250,8 @@ describe VCloudClient::Connection do
          :body => "<VApp name='test-vapp' status='4'></VApp>",
          :headers => {})
 
-      name, description, status, ip, vms_hash = @connection.show_vapp("test-vapp")
-      status.must_equal "running"
+      vapp_get = @connection.get_vapp("test-vapp")
+      vapp_get[:status].must_equal "running"
     end
 
     it "should return the correct IP" do
@@ -260,8 +260,8 @@ describe VCloudClient::Connection do
          :body => "<VApp name='test-vapp'><IpAddress>127.0.0.1</IpAddress></VApp>",
          :headers => {})
 
-      name, description, status, ip, vms_hash = @connection.show_vapp("test-vapp")
-      ip.must_equal "127.0.0.1"
+      vapp_get = @connection.get_vapp("test-vapp")
+      vapp_get[:ip].must_equal "127.0.0.1"
     end
 
     it "should return the correct no. of VMs - 1" do
@@ -270,9 +270,9 @@ describe VCloudClient::Connection do
          :body => "<?xml version=\"1.0\" ?><VApp xmlns=\"http://www.vmware.com/vcloud/v1.5\" xmlns:rasd=\"http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData\"><Children><Vm name='vm_1' status='4' href='#{@connection.api_url}/vApp/vm-vm_1'><rasd:Connection vcloud:ipAddress='127.0.0.1'></rasd:Connection></Vm></Children></VApp>",
          :headers => {})
 
-      name, description, status, ip, vms_hash = @connection.show_vapp("test-vapp")
-      vms_hash.count.must_equal 1
-      vms_hash.first.must_equal ["vm_1", {:addresses=>["127.0.0.1"], :status=>"running", :id=>"vm_1"}]
+      vapp_get = @connection.get_vapp("test-vapp")
+      vapp_get[:vms_hash].count.must_equal 1
+      vapp_get[:vms_hash].first.must_equal ["vm_1", {:addresses=>["127.0.0.1"], :status=>"running", :id=>"vm_1"}]
     end
   end
 
@@ -328,9 +328,9 @@ describe VCloudClient::Connection do
         to_return(:status => 200, :headers => {:location => "#{@connection.api_url}/vApp/vapp-vapp_created"},
           :body => "<VApp><Task operationName=\"vdcInstantiateVapp\" href=\"#{@connection.api_url}/task/test-task_id\"></VApp>")
 
-      vapp_id, task_id = @connection.create_vapp_from_template("vdc_id", "vapp_name", "vapp_desc", "templ_id")
-      vapp_id.must_equal "vapp_created"
-      task_id.must_equal "test-task_id"
+      vapp_created = @connection.create_vapp_from_template("vdc_id", "vapp_name", "vapp_desc", "templ_id")
+      vapp_created[:vapp_id].must_equal "vapp_created"
+      vapp_created[:task_id].must_equal "test-task_id"
     end
   end
 
@@ -387,9 +387,9 @@ describe VCloudClient::Connection do
         to_return(:status => 200,
           :body => "<?xml version=\"1.0\"?>\n<VM xmlns=\"http://www.vmware.com/vcloud/v1.5\" xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\">\n<ovf:OperatingSystemSection><ovf:Description>Test OS</ovf:Description></ovf:OperatingSystemSection>\n<GuestCustomizationSection><Enabled>true</Enabled><AdminPasswordEnabled>false</AdminPasswordEnabled><AdminPasswordAuto>false</AdminPasswordAuto><AdminPassword>testpass</AdminPasswordEnabled><ResetPasswordRequired>false</ResetPasswordRequired><ComputerName>testcomputer</ComputerName></GuestCustomizationSection></VM>\n")
 
-      os_desc, networks, guest_customizations = @connection.show_vm("test-vm")
-      os_desc.must_equal "Test OS"
-      guest_customizations.wont_be_nil
+      vm_get = @connection.get_vm("test-vm")
+      vm_get[:os_desc].must_equal "Test OS"
+      vm_get[:guest_customizations].wont_be_nil
     end
   end
 end
