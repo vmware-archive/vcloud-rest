@@ -341,8 +341,8 @@ module VCloudClient
     def wait_task_completion(taskid)
       status, errormsg, start_time, end_time, response = nil
       loop do
-        status, start_time, end_time, response = get_task(taskid)
-        break if status != 'running'
+        task = get_task(taskid)
+        break if task[:status] != 'running'
         sleep 1
       end
 
