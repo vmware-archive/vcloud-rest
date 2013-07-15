@@ -528,6 +528,10 @@ module VCloudClient
           body = Nokogiri.parse(e.http_body)
           message = body.css("Error").first["message"]
           raise UnauthorizedAccess, "Operation not permitted: #{message}."
+        rescue RestClient::InternalServerError => e
+          body = Nokogiri.parse(e.http_body)
+          message = body.css("Error").first["message"]
+          raise UnhandledError, "Internal Server Error: #{message}."
         end
       end
 
