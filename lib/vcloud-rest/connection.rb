@@ -24,6 +24,7 @@ module VCloudClient
   class WrongAPIVersion < StandardError; end
   class WrongItemIDError < StandardError; end
   class InvalidStateError < StandardError; end
+  class InternalServerError < StandardError; end
   class UnhandledError < StandardError; end
 
   # Main class to access vCloud rest APIs
@@ -117,7 +118,7 @@ module VCloudClient
         tasklists[item['name']] = item['href'].gsub("#{@api_url}/tasksList/", "")
       end
 
-      { 'catalogs' => catalogs, 'vdcs' => vdcs, 'networks' => networks, 'tasklists' => tasklists }
+      { :catalogs => catalogs, :vdcs => vdcs, :networks => networks, :tasklists => tasklists }
     end
 
     ##
@@ -136,7 +137,7 @@ module VCloudClient
       response.css("CatalogItem[type='application/vnd.vmware.vcloud.catalogItem+xml']").each do |item|
         items[item['name']] = item['href'].gsub("#{@api_url}/catalogItem/", "")
       end
-      { 'description' => description, 'items' => items }
+      { :description => description, :items => items }
     end
 
     ##
@@ -163,7 +164,7 @@ module VCloudClient
       response.css("Network[type='application/vnd.vmware.vcloud.network+xml']").each do |item|
         networks[item['name']] = item['href'].gsub("#{@api_url}/network/", "")
       end
-      { 'description' => description, 'vapps' => vapps, 'networks' => networks }
+      { :description => description, :vapps => vapps, :networks => networks }
     end
 
     ##
@@ -184,7 +185,7 @@ module VCloudClient
       response.css("Entity[type='application/vnd.vmware.vcloud.vAppTemplate+xml']").each do |item|
         items[item['name']] = item['href'].gsub("#{@api_url}/vAppTemplate/vappTemplate-", "")
       end
-      { 'description' => description, 'items' => items }
+      { :description => description, :items => items }
     end
 
     ##
@@ -219,8 +220,10 @@ module VCloudClient
 
       vms = response.css('Children Vm')
       vms_hash = {}
+
+      # ipAddress could be namespaced or not: see https://github.com/astratto/vcloud-rest/issues/3
       vms.each do |vm|
-        addresses = vm.css('rasd|Connection').collect{|n| n['ipAddress']}
+        addresses = vm.css('rasd|Connection').collect{|n| n['vcloud:ipAddress'] || n['ipAddress'] }
         vms_hash[vm['name']] = {:addresses => addresses,
           :status => convert_vapp_status(vm['status']),
           :id => vm['href'].gsub("#{@api_url}/vApp/vm-", '')
@@ -228,7 +231,7 @@ module VCloudClient
       end
 
       # TODO: EXPAND INFO FROM RESPONSE
-      { 'name' => name, 'description' => description, 'status' => status, 'ip' => ip, 'vms_hash' => vms_hash }
+      { :name => name, :description => description, :status => status, :ip => ip, :vms_hash => vms_hash }
     end
 
     ##
@@ -313,7 +316,7 @@ module VCloudClient
       task = response.css("VApp Task[operationName='vdcInstantiateVapp']").first
       task_id = task["href"].gsub("#{@api_url}/task/", "")
 
-      { 'vapp_id' => vapp_id, 'task_id' => task_id }
+      { :vapp_id => vapp_id, :task_id => task_id }
     end
 
     ##
@@ -331,7 +334,7 @@ module VCloudClient
       start_time = task['startTime']
       end_time = task['endTime']
 
-      { 'status' => status, 'start_time' => start_time, 'end_time' => end_time, 'response' => response }
+      { :status => status, :start_time => start_time, :end_time => end_time, :response => response }
     end
 
     ##
@@ -339,8 +342,8 @@ module VCloudClient
     def wait_task_completion(taskid)
       status, errormsg, start_time, end_time, response = nil
       loop do
-        status, start_time, end_time, response = get_task(taskid)
-        break if status != 'running'
+        task = get_task(taskid)
+        break if task[:status] != 'running'
         sleep 1
       end
 
@@ -349,7 +352,7 @@ module VCloudClient
         errormsg = "Error code #{errormsg['majorErrorCode']} - #{errormsg['message']}"
       end
 
-      { 'status' => status, 'errormsg' => errormsg, 'start_time' => start_time, 'end_time' => end_time }
+      { :status => status, :errormsg => errormsg, :start_time => start_time, :end_time => end_time }
     end
 
     ##
@@ -362,8 +365,8 @@ module VCloudClient
         xml['ovf'].Info "Network configuration"
         xml.NetworkConfig("networkName" => network_name) {
           xml.Configuration {
-            xml.FenceMode (config[:fence_mode] || 'isolated')
-            xml.RetainNetInfoAcrossDeployments (config[:retain_net] || true)
+            xml.FenceMode(config[:fence_mode] || 'isolated')
+            xml.RetainNetInfoAcrossDeployments(config[:retain_net] || true)
           }
         }
       }
@@ -388,11 +391,11 @@ module VCloudClient
         "xmlns" => "http://www.vmware.com/vcloud/v1.5",
         "xmlns:ovf" => "http://schemas.dmtf.org/ovf/envelope/1") {
         xml['ovf'].Info "VM Network configuration"
-        xml.PrimaryNetworkConnectionIndex (config[:primary_index] || 0)
+        xml.PrimaryNetworkConnectionIndex(config[:primary_index] || 0)
         xml.NetworkConnection("network" => network_name, "needsCustomization" => true) {
-          xml.NetworkConnectionIndex (config[:network_index] || 0)
+          xml.NetworkConnectionIndex(config[:network_index] || 0)
           xml.IpAddress config[:ip] if config[:ip]
-          xml.IsConnected (config[:is_connected] || true)
+          xml.IsConnected(config[:is_connected] || true)
           xml.IpAddressAllocationMode config[:ip_allocation_mode] if config[:ip_allocation_mode]
         }
       }
@@ -474,7 +477,7 @@ module VCloudClient
         :computer_name => response.css('GuestCustomizationSection ComputerName').first.text
       }
 
-      { 'os_desc' => os_desc, 'networks' => networks, 'guest_customizations' => guest_customizations }
+      { :os_desc => os_desc, :networks => networks, :guest_customizations => guest_customizations }
     end
 
     private
@@ -526,6 +529,10 @@ module VCloudClient
           body = Nokogiri.parse(e.http_body)
           message = body.css("Error").first["message"]
           raise UnauthorizedAccess, "Operation not permitted: #{message}."
+        rescue RestClient::InternalServerError => e
+          body = Nokogiri.parse(e.http_body)
+          message = body.css("Error").first["message"]
+          raise InternalServerError, "Internal Server Error: #{message}."
         end
       end
 
