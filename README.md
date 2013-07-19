@@ -56,6 +56,12 @@ USAGE
     conn.login
     conn.list_organizations
 
+EXAMPLE
+--
+A (mostly complete) example can be found in
+
+	examples/example.rb
+
 TESTING
 --
 Simply run:

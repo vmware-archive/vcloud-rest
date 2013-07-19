@@ -272,7 +272,7 @@ describe VCloudClient::Connection do
 
       vapp_get = @connection.get_vapp("test-vapp")
       vapp_get[:vms_hash].count.must_equal 1
-      vapp_get[:vms_hash].first.must_equal ["vm_1", {:addresses=>["127.0.0.1"], :status=>"running", :id=>"vm_1"}]
+      vapp_get[:vms_hash].first.must_equal ["vm_1", {:addresses=>["127.0.0.1"], :status=>"running", :id=>"vm_1", :vapp_scoped_local_id => ""}]
     end
   end
 
@@ -334,17 +334,36 @@ describe VCloudClient::Connection do
     end
   end
 
+  describe "compose vapp from vm" do
+    before { @url = "https://testuser%40testorg:testpass@testhost.local/api/vdc/vdc_id/action/composeVApp" }
+
+    it "should send the correct content-type and payload" do
+      # TODO: this test seems to fail under 1.8.7
+      stub_request(:post, @url).
+        with(:body => "<?xml version=\"1.0\"?>\n<ComposeVAppParams xmlns=\"http://www.vmware.com/vcloud/v1.5\" xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\" name=\"vapp_name\">\n  <Description>vapp_desc</Description>\n  <InstantiationParams>\n    <NetworkConfigSection>\n      <ovf:Info>Configuration parameters for logical networks</ovf:Info>\n      <NetworkConfig networkName=\"vapp_net\">\n        <Configuration>\n          <IpScopes>\n            <IpScope>\n              <IsInherited>false</IsInherited>\n              <Gateway>10.250.254.253</Gateway>\n              <Netmask>255.255.255.0</Netmask>\n              <IpRanges>\n                <IpRange>\n                  <StartAddress>10.250.254.1</StartAddress>\n                  <EndAddress>10.250.254.100</EndAddress>\n                </IpRange>\n              </IpRanges>\n            </IpScope>\n          </IpScopes>\n          <ParentNetwork href=\"https://testhost.local/api/network/guid\"/>\n          <FenceMode>natRouted</FenceMode>\n          <Features>\n            <FirewallService>\n              <IsEnabled>false</IsEnabled>\n            </FirewallService>\n          </Features>\n        </Configuration>\n      </NetworkConfig>\n    </NetworkConfigSection>\n  </InstantiationParams>\n  <SourcedItem>\n    <Source href=\"https://testhost.local/api/vAppTemplate/vm-vm_id\" name=\"vm_name\"/>\n    <InstantiationParams>\n      <NetworkConnectionSection type=\"application/vnd.vmware.vcloud.networkConnectionSection+xml\" href=\"https://testhost.local/api/vAppTemplate/vm-vm_id/networkConnectionSection/\">\n        <ovf:Info>Network config for sourced item</ovf:Info>\n        <PrimaryNetworkConnectionIndex>0</PrimaryNetworkConnectionIndex>\n        <NetworkConnection network=\"vapp_net\">\n          <NetworkConnectionIndex>0</NetworkConnectionIndex>\n          <IsConnected>true</IsConnected>\n          <IpAddressAllocationMode>POOL</IpAddressAllocationMode>\n        </NetworkConnection>\n      </NetworkConnectionSection>\n    </InstantiationParams>\n    <NetworkAssignment containerNetwork=\"vapp_net\" innerNetwork=\"vapp_net\"/>\n  </SourcedItem>\n  <AllEULAsAccepted>true</AllEULAsAccepted>\n</ComposeVAppParams>\n",
+       :headers => {'Accept'=>'application/*+xml;version=5.1', 'Accept-Encoding'=>'gzip, deflate', 'Content-Type'=>'application/vnd.vmware.vcloud.composeVAppParams+xml'}).
+        to_return(:status => 200, :headers => {:location => "#{@connection.api_url}/vApp/vapp-vapp_created"},
+          :body => "<VApp><Task operationName=\"vdcComposeVapp\" href=\"#{@connection.api_url}/task/test-task_id\"></VApp>")
+
+
+      ## vapp_created = @connection.compose_vapp_from_vm("vdc_id",   "vapp_name", "vapp_desc", "templ_id")
+      vapp_created = @connection.compose_vapp_from_vm("vdc_id", "vapp_name", "vapp_desc", { "vm_name" => "vm_id" }, { :name => "vapp_net", :gateway => "10.250.254.253", :netmask => "255.255.255.0", :start_address => "10.250.254.1", :end_address => "10.250.254.100", :fence_mode => "natRouted", :ip_allocation_mode => "POOL", :parent_network =>  "guid", :enable_firewall => "false" })
+      vapp_created[:vapp_id].must_equal "vapp_created"
+      vapp_created[:task_id].must_equal "test-task_id"
+    end
+  end
+
   describe "vapp network config" do
     before { @url = "https://testuser%40testorg:testpass@testhost.local/api/vApp/vapp-test-vapp/networkConfigSection" }
 
     it "should send the correct content-type and payload" do
       stub_request(:put, @url).
-        with(:body => "<?xml version=\"1.0\"?>\n<NetworkConfigSection xmlns=\"http://www.vmware.com/vcloud/v1.5\" xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\">\n  <ovf:Info>Network configuration</ovf:Info>\n  <NetworkConfig networkName=\"test-network\">\n    <Configuration>\n      <FenceMode>isolated</FenceMode>\n      <RetainNetInfoAcrossDeployments>true</RetainNetInfoAcrossDeployments>\n    </Configuration>\n  </NetworkConfig>\n</NetworkConfigSection>\n",
+        with(:body => "<?xml version=\"1.0\"?>\n<NetworkConfigSection xmlns=\"http://www.vmware.com/vcloud/v1.5\" xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\">\n  <ovf:Info>Network configuration</ovf:Info>\n  <NetworkConfig networkName=\"test-network\">\n    <Configuration>\n      <FenceMode>isolated</FenceMode>\n      <RetainNetInfoAcrossDeployments>false</RetainNetInfoAcrossDeployments>\n      <ParentNetwork href=\"guid\"/>\n    </Configuration>\n  </NetworkConfig>\n</NetworkConfigSection>\n",
              :headers => {'Content-Type'=>'application/vnd.vmware.vcloud.networkConfigSection+xml'}).
         to_return(:status => 200,
              :headers => {:location => "#{@connection.api_url}/task/test-vapp_network_task"})
 
-      task_id = @connection.set_vapp_network_config("test-vapp", "test-network")
+      task_id = @connection.set_vapp_network_config("test-vapp", "test-network", { :parent_network => "guid" })
       task_id.must_equal "test-vapp_network_task"
     end
   end
