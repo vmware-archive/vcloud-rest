@@ -323,6 +323,182 @@ module VCloudClient
     end
 
     ##
+    # Compose a vapp using existing virtual machines
+    #
+    # Params:
+    # - vdc: the associated VDC
+    # - vapp_name: name of the target vapp
+    # - vapp_description: description of the target vapp
+    # - vm_list: hash with IDs of the VMs to be used in the composing process
+    # - network_config: hash of the network configuration for the vapp
+    def compose_vapp_from_vm(vdc, vapp_name, vapp_description, vm_list={}, network_config={})
+      builder = Nokogiri::XML::Builder.new do |xml|
+      xml.ComposeVAppParams(
+        "xmlns" => "http://www.vmware.com/vcloud/v1.5",
+        "xmlns:ovf" => "http://schemas.dmtf.org/ovf/envelope/1",
+        "name" => vapp_name) {
+        xml.Description vapp_description
+        xml.InstantiationParams {
+          xml.NetworkConfigSection {
+            xml['ovf'].Info "Configuration parameters for logical networks"
+            xml.NetworkConfig("networkName" => network_config[:name]) {
+              xml.Configuration {
+                xml.IpScopes {
+                  xml.IpScope {
+                    xml.IsInherited(network_config[:is_inherited] || "false")
+                    xml.Gateway network_config[:gateway]
+                    xml.Netmask network_config[:netmask]
+                    xml.Dns1 network_config[:dns1] if network_config[:dns1]
+                    xml.Dns2 network_config[:dns2] if network_config[:dns2]
+                    xml.DnsSuffix network_config[:dns_suffix] if network_config[:dns_suffix]
+                    xml.IpRanges {
+                      xml.IpRange {
+                        xml.StartAddress network_config[:start_address]
+                        xml.EndAddress network_config[:end_address]
+                      }
+                    }
+                  }
+                }
+                xml.ParentNetwork("href" => "#{@api_url}/network/#{network_config[:parent_network]}")
+                xml.FenceMode network_config[:fence_mode]
+
+                xml.Features {
+                  xml.FirewallService {
+                    xml.IsEnabled(network_config[:enable_firewall] || "false")
+                  }
+                }
+              }
+            }
+          }
+        }
+        vm_list.each do |vm_name, vm_id|
+          xml.SourcedItem {
+            xml.Source("href" => "#{@api_url}/vAppTemplate/vm-#{vm_id}", "name" => vm_name)
+            xml.InstantiationParams {
+              xml.NetworkConnectionSection(
+                "xmlns:ovf" => "http://schemas.dmtf.org/ovf/envelope/1",
+                "type" => "application/vnd.vmware.vcloud.networkConnectionSection+xml",
+                "href" => "#{@api_url}/vAppTemplate/vm-#{vm_id}/networkConnectionSection/") {     
+                  xml['ovf'].Info "Network config for sourced item"
+                  xml.PrimaryNetworkConnectionIndex "0"
+                  xml.NetworkConnection("network" => network_config[:name]) {
+                    xml.NetworkConnectionIndex "0"
+                    xml.IsConnected "true"
+                    xml.IpAddressAllocationMode(network_config[:ip_allocation_mode] || "POOL")
+                }
+              }
+            }
+            xml.NetworkAssignment("containerNetwork" => network_config[:name], "innerNetwork" => network_config[:name])
+          }
+        end
+        xml.AllEULAsAccepted "true"
+      }
+      end
+
+      params = {
+        "method" => :post,
+        "command" => "/vdc/#{vdc}/action/composeVApp"
+      }
+
+      response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.composeVAppParams+xml")
+
+      vapp_id = headers[:location].gsub("#{@api_url}/vApp/vapp-", "")
+
+      task = response.css("VApp Task[operationName='vdcComposeVapp']").first
+      task_id = task["href"].gsub("#{@api_url}/task/", "")
+
+      { :vapp_id => vapp_id, :task_id => task_id }
+    end
+
+    # Fetch details about a given vapp template:
+    # - name
+    # - description
+    # - Children VMs:
+    #   -- ID
+    def get_vapp_template(vAppId)
+      params = {
+        'method' => :get,
+        'command' => "/vAppTemplate/vappTemplate-#{vAppId}"
+      }
+
+      response, headers = send_request(params)
+
+      vapp_node = response.css('VAppTemplate').first
+      if vapp_node
+        name = vapp_node['name']
+        status = convert_vapp_status(vapp_node['status'])
+      end
+
+      description = response.css("Description").first
+      description = description.text unless description.nil?
+
+      ip = response.css('IpAddress').first
+      ip = ip.text unless ip.nil?
+
+      vms = response.css('Children Vm')
+      vms_hash = {}
+
+      vms.each do |vm|
+        vms_hash[vm['name']] = {
+          :id => vm['href'].gsub("#{@api_url}/vAppTemplate/vm-", '')
+        }
+      end
+
+      # TODO: EXPAND INFO FROM RESPONSE
+      { :name => name, :description => description, :vms_hash => vms_hash }
+    end
+
+    ##
+    # Set vApp port forwarding rules
+    # 
+    # - vappid: id of the vapp to be modified
+    # - network_name: name of the vapp network to be modified
+    # - config: hash with network configuration specifications, must contain an array inside :nat_rules with the nat rules to be applied.
+    def set_vapp_port_forwarding_rules(vappid, network_name, config={})
+      builder = Nokogiri::XML::Builder.new do |xml|
+      xml.NetworkConfigSection(
+        "xmlns" => "http://www.vmware.com/vcloud/v1.5",
+        "xmlns:ovf" => "http://schemas.dmtf.org/ovf/envelope/1") {
+        xml['ovf'].Info "Network configuration"
+        xml.NetworkConfig("networkName" => network_name) {
+          xml.Configuration {
+            xml.ParentNetwork("href" => "#{@api_url}/network/#{config[:parent_network]}")
+            xml.FenceMode(config[:fence_mode] || 'isolated')
+            xml.Features {
+              xml.NatService {
+                xml.IsEnabled "true"
+                xml.NatType "portForwarding"
+                xml.Policy(config[:nat_policy_type] || "allowTraffic")
+                config[:nat_rules].each do |nat_rule|
+                  xml.NatRule {
+                    xml.VmRule {
+                      xml.ExternalPort nat_rule[:nat_external_port]
+                      xml.VAppScopedVmId nat_rule[:vm_scoped_local_id]
+                      xml.VmNicId(nat_rule[:nat_vmnic_id] || "0")
+                      xml.InternalPort nat_rule[:nat_internal_port]
+                      xml.Protocol(nat_rule[:nat_protocol] || "TCP")
+                    }
+                  }
+                end
+              }
+            }
+          }
+        }
+      }
+      end
+
+      params = {
+        'method' => :put,
+        'command' => "/vApp/vapp-#{vappid}/networkConfigSection"
+      }
+
+      response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.networkConfigSection+xml")
+
+      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id
+    end
+
+    ##
     # Fetch information for a given task
     def get_task(taskid)
       params = {
@@ -370,7 +546,7 @@ module VCloudClient
           xml.Configuration {
             xml.FenceMode(config[:fence_mode] || 'isolated')
             xml.RetainNetInfoAcrossDeployments(config[:retain_net] || false)
-            xml.ParentNetwork("href" => config[:parent_net])
+            xml.ParentNetwork("href" => config[:parent_network])
           }
         }
       }
