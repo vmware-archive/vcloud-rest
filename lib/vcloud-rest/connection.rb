@@ -369,7 +369,8 @@ module VCloudClient
         xml.NetworkConfig("networkName" => network_name) {
           xml.Configuration {
             xml.FenceMode(config[:fence_mode] || 'isolated')
-            xml.RetainNetInfoAcrossDeployments(config[:retain_net] || true)
+            xml.RetainNetInfoAcrossDeployments(config[:retain_net] || false)
+            xml.ParentNetwork("href" => config[:parent_net])
           }
         }
       }
