@@ -498,6 +498,42 @@ module VCloudClient
       task_id
     end
 
+  
+    ##
+    # get vApp edge public IP from the vApp ID
+    # Only works when: 
+    # - vApp needs to be poweredOn
+    # - FenceMode is set to "natRouted"
+    # - NatType" is set to "portForwarding
+    # This will be required to know how to connect to VMs behind the Edge device.
+    def get_vapp_edge_public_ip(vAppId)
+
+      # first check that vApp is running (Edge is created on vApp Power On)
+      vApp = get_vapp(vAppId)
+    
+      if vApp[:status] == 'running'
+        # Check the network configuration section
+        params = {
+          'method' => :get,
+          'command' => "/vApp/vapp-#{vAppId}/networkConfigSection"
+        }
+
+        response, headers = send_request(params)
+
+        # FIXME: this will return nil if the vApp uses multiple vApp Networks
+        # with Edge devices in natRouted/portForwarding mode.
+
+        fenceMode = response.css('NetworkConfigSection/NetworkConfig/Configuration/FenceMode').text
+        natType = response.css('NetworkConfigSection/NetworkConfig/Configuration/Features/NatService/NatType').text
+
+        if fenceMode == "natRouted" && natType == "portForwarding"
+          # Check the routerInfo configuration where the global external IP is displayed
+          edgeIp = response.css('NetworkConfigSection/NetworkConfig/Configuration/RouterInfo/ExternalIp')
+          edgeIp = edgeIp.text unless edgeIp.nil?
+        end
+      end
+    end
+
     ##
     # Fetch information for a given task
     def get_task(taskid)
