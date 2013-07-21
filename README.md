@@ -19,7 +19,7 @@ This plugin is distributed as a Ruby Gem. To install it, run:
 
 Depending on your system's configuration, you may need to run this command with root privileges.
 
-vcloud-rest is tested against ruby 1.9.x and 1.8.7+.
+vcloud-rest is tested against ruby 2.0.0, 1.9.x and 1.8.7+.
 
 FEATURES
 --
@@ -41,7 +41,7 @@ TODO
 
 PREREQUISITES
 --
-- nokogiri ~> 1.5.5
+- nokogiri ~> 1.6.0
 - rest-client ~> 1.6.7
 
 For testing purpose:
