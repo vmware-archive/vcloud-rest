@@ -73,21 +73,21 @@ ap vapp
 
 puts "### Compose a vApp in 'OvDC-PAYG-Bronze-01' using VM coming from 'precise32'"
 compose = connection.compose_vapp_from_vm(
-	org[:vdcs]["OvDC-PAYG-Bronze-01"], 
-	"Composed vApp", 
-	"Composed vApp created with vcloud-rest Ruby Bindings", 
-	{ 
-		"VM1" => vapp[:vms_hash]["precise32"][:id], 
-		"VM2" => vapp[:vms_hash]["precise32"][:id], 
+	org[:vdcs]["OvDC-PAYG-Bronze-01"],
+	"Composed vApp",
+	"Composed vApp created with vcloud-rest Ruby Bindings",
+	{
+		"VM1" => vapp[:vms_hash]["precise32"][:id],
+		"VM2" => vapp[:vms_hash]["precise32"][:id],
 		"VM3" => vapp[:vms_hash]["precise32"][:id],
 		"VM4" => vapp[:vms_hash]["precise32"][:id]
-		}, 
-	{ 
-		:name => "test-network", 
-		:gateway => "192.168.0.253", 
-		:netmask => "255.255.255.0", 
-		:start_address => "192.168.0.1", 
-		:end_address => "192.168.0.100", 
+		},
+	{
+		:name => "test-network",
+		:gateway => "192.168.0.253",
+		:netmask => "255.255.255.0",
+		:start_address => "192.168.0.1",
+		:end_address => "192.168.0.100",
 		:fence_mode => "natRouted",
 		:ip_allocation_mode => "POOL",
 		:parent_network =>  vdc[:networks]["Internet-NAT"],
@@ -111,18 +111,18 @@ nat_rules = []
 newvapp[:vms_hash].each do |key, value|
 	nat_rules << { :nat_external_port => j.to_s, :nat_internal_port => "22", :nat_protocol => "TCP", :vm_scoped_local_id => value[:vapp_scoped_local_id]}
 	j += 1
-end			
+end
 newvapp[:vms_hash].each do |key, value|
 	nat_rules << { :nat_external_port => j.to_s, :nat_internal_port => "873", :nat_protocol => "UDP", :vm_scoped_local_id => value[:vapp_scoped_local_id]}
 	j += 1
-end			
+end
 ap nat_rules
 
 ### Here we apply the nat_rules to the vApp we just built
 
 puts "### Applying Port Forwarding NAT Rules"
 setrule = connection.set_vapp_port_forwarding_rules(
-	compose[:vapp_id], 
+	compose[:vapp_id],
 	"test-network",
 	{
 		:fence_mode => "natRouted",

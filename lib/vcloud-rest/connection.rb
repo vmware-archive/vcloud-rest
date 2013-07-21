@@ -378,7 +378,7 @@ module VCloudClient
               xml.NetworkConnectionSection(
                 "xmlns:ovf" => "http://schemas.dmtf.org/ovf/envelope/1",
                 "type" => "application/vnd.vmware.vcloud.networkConnectionSection+xml",
-                "href" => "#{@api_url}/vAppTemplate/vm-#{vm_id}/networkConnectionSection/") {     
+                "href" => "#{@api_url}/vAppTemplate/vm-#{vm_id}/networkConnectionSection/") {
                   xml['ovf'].Info "Network config for sourced item"
                   xml.PrimaryNetworkConnectionIndex "0"
                   xml.NetworkConnection("network" => network_config[:name]) {
@@ -450,7 +450,7 @@ module VCloudClient
 
     ##
     # Set vApp port forwarding rules
-    # 
+    #
     # - vappid: id of the vapp to be modified
     # - network_name: name of the vapp network to be modified
     # - config: hash with network configuration specifications, must contain an array inside :nat_rules with the nat rules to be applied.
