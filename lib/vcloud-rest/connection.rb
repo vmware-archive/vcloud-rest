@@ -284,7 +284,38 @@ module VCloudClient
       task_id = headers[:location].gsub("#{@api_url}/task/", "")
       task_id
     end
-     
+    
+    ##
+    # reboot a given vapp
+    # This will basically initial a guest OS reboot, and will only work if
+    # VMware-tools are installed on the underlying VMs.
+    # vShield Edge devices are not affected
+    def reboot_vapp(vAppId)
+      params = {
+        'method' => :post,
+        'command' => "/vApp/vapp-#{vAppId}/power/action/reboot"
+      }
+
+      response, headers = send_request(params)
+      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id
+    end 
+
+    ##
+    # reset a given vapp
+    # This will basically reset the VMs within the vApp 
+    # vShield Edge devices are not affected.
+    def reset_vapp(vAppId)
+      params = {
+        'method' => :post,
+        'command' => "/vApp/vapp-#{vAppId}/power/action/reset"
+      }
+
+      response, headers = send_request(params)
+      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id
+    end
+
     ##
     # Boot a given vapp
     def poweron_vapp(vAppId)
