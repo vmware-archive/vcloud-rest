@@ -18,7 +18,6 @@
 
 require 'rest-client'
 require 'nokogiri'
-require 'awesome_print'
 
 module VCloudClient
   class UnauthorizedAccess < StandardError; end
