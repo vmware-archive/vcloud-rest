@@ -18,6 +18,7 @@
 
 require 'rest-client'
 require 'nokogiri'
+require 'awesome_print'
 
 module VCloudClient
   class UnauthorizedAccess < StandardError; end
@@ -498,7 +499,49 @@ module VCloudClient
       task_id
     end
 
-  
+    ##
+    # Get vApp port forwarding rules
+    # 
+    # - vappid: id of the vApp 
+    def get_vapp_port_forwarding_rules(vAppId)
+      params = {
+        'method' => :get,
+        'command' => "/vApp/vapp-#{vAppId}/networkConfigSection"
+      }
+
+      response, headers = send_request(params)
+
+      # FIXME: this will return nil if the vApp uses multiple vApp Networks
+      # with Edge devices in natRouted/portForwarding mode.
+
+      config = response.css('NetworkConfigSection/NetworkConfig/Configuration')
+
+      fenceMode = config.css('/FenceMode').text
+      natType = config.css('/Features/NatService/NatType').text
+
+      nat_rules = {}
+
+      if fenceMode == "natRouted" && natType == "portForwarding"
+        config.css('/Features/NatService/NatRule').each do |rule|
+        
+        # portforwarding rules information
+        ruleId = rule.css('Id').text
+        vmRule = rule.css('VmRule')
+
+        nat_rules[rule.css('Id').text] = {
+          :ExternalIpAddress  => vmRule.css('ExternalIpAddress').text,
+          :ExternalPort       => vmRule.css('ExternalPort').text,
+          :VAppScopedVmId     => vmRule.css('VAppScopedVmId').text,
+          :VmNicId            => vmRule.css('VmNicId').text,
+          :InternalPort       => vmRule.css('InternalPort').text,
+          :Protocol           => vmRule.css('Protocol').text
+        }
+
+        end  
+        nat_rules
+     end   
+
+    end  
     ##
     # get vApp edge public IP from the vApp ID
     # Only works when: 
@@ -522,13 +565,14 @@ module VCloudClient
 
         # FIXME: this will return nil if the vApp uses multiple vApp Networks
         # with Edge devices in natRouted/portForwarding mode.
-
-        fenceMode = response.css('NetworkConfigSection/NetworkConfig/Configuration/FenceMode').text
-        natType = response.css('NetworkConfigSection/NetworkConfig/Configuration/Features/NatService/NatType').text
+        config = response.css('NetworkConfigSection/NetworkConfig/Configuration')
+        
+        fenceMode = config.css('/FenceMode').text
+        natType = config.css('/Features/NatService/NatType').text
 
         if fenceMode == "natRouted" && natType == "portForwarding"
-          # Check the routerInfo configuration where the global external IP is displayed
-          edgeIp = response.css('NetworkConfigSection/NetworkConfig/Configuration/RouterInfo/ExternalIp')
+          # Check the routerInfo configuration where the global external IP is defined
+          edgeIp = config.css('/RouterInfo/ExternalIp')
           edgeIp = edgeIp.text unless edgeIp.nil?
         end
       end
