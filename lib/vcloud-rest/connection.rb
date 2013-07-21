@@ -273,6 +273,19 @@ module VCloudClient
     end
 
     ##
+    # Suspend a given vapp
+    def suspend_vapp(vAppId)
+      params = {
+        'method' => :post,
+        'command' => "/vApp/vapp-#{vAppId}/power/action/suspend"
+      }
+
+      response, headers = send_request(params)
+      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id
+    end
+     
+    ##
     # Boot a given vapp
     def poweron_vapp(vAppId)
       params = {
