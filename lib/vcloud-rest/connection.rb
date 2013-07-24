@@ -18,6 +18,8 @@
 
 require 'rest-client'
 require 'nokogiri'
+require 'httpclient'
+require 'ruby-progressbar'
 
 module VCloudClient
   class UnauthorizedAccess < StandardError; end
@@ -27,6 +29,7 @@ module VCloudClient
   class InternalServerError < StandardError; end
   class UnhandledError < StandardError; end
 
+
   # Main class to access vCloud rest APIs
   class Connection
     attr_reader :api_url, :auth_key
@@ -34,6 +37,7 @@ module VCloudClient
     def initialize(host, username, password, org_name, api_version)
       @host = host
       @api_url = "#{host}/api"
+      @host_url = "#{host}"
       @username = username
       @password = password
       @org_name = org_name
@@ -499,6 +503,131 @@ module VCloudClient
     end
 
     ##
+    # Upload Ovf
+    # - vdcId
+    # - vappName
+    # - vappDescription
+    # - ovfFile
+    # - catalogId
+    # - uploadOptions {}
+    def upload_ovf(vdcId, vappName, vappDescription, ovfFile, catalogId, uploadOptions={})
+      
+      builder = Nokogiri::XML::Builder.new do |xml|
+        xml.UploadVAppTemplateParams(
+          "xmlns" => "http://www.vmware.com/vcloud/v1.5",
+          "xmlns:ovf" => "http://schemas.dmtf.org/ovf/envelope/1",
+          "manifestRequired" => "true",
+          "name" => vappName) {
+          xml.Description vappDescription
+        }
+      end
+
+      params = {
+        'method' => :post,
+        'command' => "/vdc/#{vdcId}/action/uploadVAppTemplate"
+      }
+
+      response, headers = send_request(params, builder.to_xml,
+                      "application/vnd.vmware.vcloud.uploadVAppTemplateParams+xml")
+
+      # Get vAppTemplate Link from location
+      vAppTemplate = headers[:location].gsub("#{@api_url}/vAppTemplate/vappTemplate-", "")
+      descriptorUpload = response.css("Files Link [rel='upload:default']").first[:href].gsub("#{@host_url}/transfer/", "")
+      transferGUID = descriptorUpload.gsub("/descriptor.ovf", "")
+
+      ovfFileBasename = File.basename(ovfFile, ".ovf")
+      ovfDir = File.dirname(ovfFile) 
+
+      # Send OVF Descriptor
+      uploadURL = "/transfer/#{descriptorUpload}"
+      uploadFile = "#{ovfDir}/#{ovfFileBasename}.ovf"
+
+      upload_file(uploadURL, uploadFile, vAppTemplate, uploadOptions)
+
+      # Begin the catch for upload interruption
+      begin
+     
+        params = {
+          'method' => :get,
+          'command' => "/vAppTemplate/vappTemplate-#{vAppTemplate}"
+        }
+
+        # Loop to wait for the upload links to show up in the vAppTemplate we just created
+        begin
+          response, headers = send_request(params)
+          if response.css("Files Link [rel='upload:default']").count == 1
+            sleep 1
+            raise "NotHere"
+          end
+        rescue
+          retry
+        end
+
+        # Send Manifest
+        uploadURL = "/transfer/#{transferGUID}/descriptor.mf"
+        uploadFile = "#{ovfDir}/#{ovfFileBasename}.mf"
+
+        upload_file(uploadURL, uploadFile, vAppTemplate, uploadOptions)
+
+        # Start uploading OVF VMDK files
+        params = {
+          'method' => :get,
+          'command' => "/vAppTemplate/vappTemplate-#{vAppTemplate}"
+        }
+        response, headers = send_request(params)
+        response.css("Files File [bytesTransferred='0'] Link [rel='upload:default']").each do |file|          
+          fileName = file[:href].gsub("#{@host_url}/transfer/#{transferGUID}/","")
+          uploadFile = "#{ovfDir}/#{fileName}"
+          uploadURL = "/transfer/#{transferGUID}/#{fileName}"
+
+          # Run the private method to upload large file by the chunk
+          upload_file(uploadURL, uploadFile, vAppTemplate, uploadOptions)
+        end
+
+        # Add item to the catalog catalogId
+
+        builder = Nokogiri::XML::Builder.new do |xml|
+          xml.CatalogItem(
+            "xmlns" => "http://www.vmware.com/vcloud/v1.5",
+            "type" => "application/vnd.vmware.vcloud.catalogItem+xml",
+            "name" => vappName) {
+            xml.Description vappDescription
+            xml.Entity(
+              "href" => "#{@api_url}/vAppTemplate/vappTemplate-#{vAppTemplate}"
+              )
+          }
+        end
+
+        params = {
+          'method' => :post,
+          'command' => "/catalog/#{catalogId}/catalogItems"
+        }
+
+        response, headers = send_request(params, builder.to_xml,
+                        "application/vnd.vmware.vcloud.catalogItem+xml")
+    
+      rescue Exception => e
+        puts "Exception detected, canceling task..."
+
+        # Get vAppTemplate Task
+        params = {
+          'method' => :get,
+          'command' => "/vAppTemplate/vappTemplate-#{vAppTemplate}"
+        }
+        response, headers = send_request(params)
+
+        # Cancel Task
+        cancelHook = response.css("Tasks Task Link [rel='task:cancel']").first[:href].gsub("#{@api_url}","")
+        params = {
+          'method' => :post,
+          'command' => cancelHook
+        }
+        response, headers = send_request(params)
+        raise
+      end
+    end
+
+    ##
     # Fetch information for a given task
     def get_task(taskid)
       params = {
@@ -679,6 +808,8 @@ module VCloudClient
                                          :headers => headers,
                                          :url => "#{@api_url}#{params['command']}",
                                          :payload => payload)
+
+
         begin
           response = request.execute
           if ![200, 201, 202, 204].include?(response.code)
@@ -715,6 +846,91 @@ module VCloudClient
           raise InternalServerError, "Internal Server Error: #{message}."
         end
       end
+
+      ##
+      # Upload a large file in configurable chunks, output an optional progressbar
+      def upload_file(uploadURL, uploadFile, vAppTemplate, config={})
+
+        # Set chunksize to 10M if not specified otherwise
+        chunkSize = (config[:chunksize] || 10485760)
+
+        # Set progress bar to default format if not specified otherwise
+        progressBarFormat = (config[:progressbar_format] || "%e <%B> %p%% %t")
+
+        # Set progress bar length to 120 if not specified otherwise
+        progressBarLength = (config[:progressbar_length] || 120)
+
+        # Open our file for upload
+        uploadFileHandle = File.new(uploadFile, "rb" )
+        fileName = File.basename(uploadFileHandle)
+
+        progressBarTitle = "Uploading: " + uploadFile.to_s
+
+        # Create a progressbar object if progress bar is enabled
+        if config[:progressbar_enable] == true && uploadFileHandle.size.to_i > chunkSize
+          progressbar = ProgressBar.create(:title => progressBarTitle, :starting_at => 0, :total => uploadFileHandle.size.to_i, :length => progressBarLength, :format => progressBarFormat) 
+        else
+          puts progressBarTitle 
+        end
+        # Create a new HTTP client
+        clnt = HTTPClient.new
+
+        # Disable SSL cert verification
+        clnt.ssl_config.verify_mode=(OpenSSL::SSL::VERIFY_NONE)
+
+        # Suppress SSL depth message
+        clnt.ssl_config.verify_callback=proc{ |ok, ctx|; true };
+        
+        # Perform ranged upload until the file reaches its end
+        until uploadFileHandle.eof?
+
+          # Create ranges for this chunk upload
+          rangeStart = uploadFileHandle.pos
+          rangeStop = uploadFileHandle.pos.to_i + chunkSize
+          
+          # Read current chunk
+          fileContent = uploadFileHandle.read(chunkSize)
+
+          # If statement to handle last chunk transfer if is > than filesize
+          if rangeStop.to_i > uploadFileHandle.size.to_i
+            contentRange = "bytes " + rangeStart.to_s + "-" + uploadFileHandle.size.to_s + "/" + uploadFileHandle.size.to_s
+            rangeLen = uploadFileHandle.size.to_i - rangeStart.to_i
+          else
+            contentRange = "bytes " + rangeStart.to_s + "-" + rangeStop.to_s + "/" + uploadFileHandle.size.to_s
+            rangeLen = rangeStop.to_i - rangeStart.to_i 
+          end
+
+          # Build headers
+          extheader = { 
+            'x-vcloud-authorization' => @auth_key,
+            'Content-Range' => contentRange,
+            'Content-Length' => rangeLen.to_s
+          }
+
+          begin
+            uploadRequest = "#{@host_url}#{uploadURL}"
+            connection = clnt.request('PUT', uploadRequest, nil, fileContent, extheader)
+            if config[:progressbar_enable] == true && uploadFileHandle.size.to_i > chunkSize
+              params = {
+                'method' => :get,
+                'command' => "/vAppTemplate/vappTemplate-#{vAppTemplate}"
+              }
+              response, headers = send_request(params)
+
+              response.css("Files File [name='#{fileName}']").each do |file|
+                progressbar.progress=file[:bytesTransferred].to_i
+              end
+            end
+          rescue
+            retryTime = (config[:retry_time] || 5)
+            puts "Range #{contentRange} failed to upload, retrying the chunk in #{retryTime.to_s} seconds, to stop the action press CTRL+C."
+            sleep retryTime.to_i
+            retry
+          end
+        end
+        uploadFileHandle.close
+      end
+
 
       ##
       # Convert vApp status codes into human readable description
