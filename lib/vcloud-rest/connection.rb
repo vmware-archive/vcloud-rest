@@ -284,7 +284,7 @@ module VCloudClient
       task_id = headers[:location].gsub("#{@api_url}/task/", "")
       task_id
     end
-    
+
     ##
     # reboot a given vapp
     # This will basically initial a guest OS reboot, and will only work if
@@ -299,11 +299,11 @@ module VCloudClient
       response, headers = send_request(params)
       task_id = headers[:location].gsub("#{@api_url}/task/", "")
       task_id
-    end 
+    end
 
     ##
     # reset a given vapp
-    # This will basically reset the VMs within the vApp 
+    # This will basically reset the VMs within the vApp
     # vShield Edge devices are not affected.
     def reset_vapp(vAppId)
       params = {
@@ -544,8 +544,8 @@ module VCloudClient
 
     ##
     # Get vApp port forwarding rules
-    # 
-    # - vappid: id of the vApp 
+    #
+    # - vappid: id of the vApp
     def get_vapp_port_forwarding_rules(vAppId)
       params = {
         'method' => :get,
@@ -566,7 +566,7 @@ module VCloudClient
 
       if fenceMode == "natRouted" && natType == "portForwarding"
         config.css('/Features/NatService/NatRule').each do |rule|
-        
+
         # portforwarding rules information
         ruleId = rule.css('Id').text
         vmRule = rule.css('VmRule')
@@ -580,14 +580,14 @@ module VCloudClient
           :Protocol           => vmRule.css('Protocol').text
         }
 
-        end  
+        end
         nat_rules
-     end   
+     end
 
-    end  
+    end
     ##
     # get vApp edge public IP from the vApp ID
-    # Only works when: 
+    # Only works when:
     # - vApp needs to be poweredOn
     # - FenceMode is set to "natRouted"
     # - NatType" is set to "portForwarding
@@ -596,7 +596,7 @@ module VCloudClient
 
       # first check that vApp is running (Edge is created on vApp Power On)
       vApp = get_vapp(vAppId)
-    
+
       if vApp[:status] == 'running'
         # Check the network configuration section
         params = {
@@ -609,7 +609,7 @@ module VCloudClient
         # FIXME: this will return nil if the vApp uses multiple vApp Networks
         # with Edge devices in natRouted/portForwarding mode.
         config = response.css('NetworkConfigSection/NetworkConfig/Configuration')
-        
+
         fenceMode = config.css('/FenceMode').text
         natType = config.css('/Features/NatService/NatType').text
 
