@@ -19,7 +19,7 @@ This plugin is distributed as a Ruby Gem. To install it, run:
 
 Depending on your system's configuration, you may need to run this command with root privileges.
 
-vcloud-rest is tested against ruby 1.9.x and 1.8.7+.
+vcloud-rest is tested against ruby 2.0.0, 1.9.x and 1.8.7+.
 
 FEATURES
 --
@@ -33,6 +33,9 @@ FEATURES
 - basic vApp network configuration
 - basic VM network configuration
 - basic VM Guest Customization configuration
+- basic vApp compose capabilities
+- basic vApp NAT port forwarding creation
+- Catalog item upload with byterange upload and retry capabilities
 
 TODO
 --
@@ -43,6 +46,8 @@ PREREQUISITES
 --
 - nokogiri ~> 1.5.5
 - rest-client ~> 1.6.7
+- httpclient ~> 2.3.3
+- ruby-progressbar ~> 1.1.1
 
 For testing purpose:
 - minitest (included in ruby 1.9)
