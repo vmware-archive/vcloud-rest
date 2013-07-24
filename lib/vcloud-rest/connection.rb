@@ -624,7 +624,6 @@ module VCloudClient
     # - catalogId
     # - uploadOptions {}
     def upload_ovf(vdcId, vappName, vappDescription, ovfFile, catalogId, uploadOptions={})
-      
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.UploadVAppTemplateParams(
           "xmlns" => "http://www.vmware.com/vcloud/v1.5",
@@ -649,17 +648,15 @@ module VCloudClient
       transferGUID = descriptorUpload.gsub("/descriptor.ovf", "")
 
       ovfFileBasename = File.basename(ovfFile, ".ovf")
-      ovfDir = File.dirname(ovfFile) 
+      ovfDir = File.dirname(ovfFile)
 
       # Send OVF Descriptor
       uploadURL = "/transfer/#{descriptorUpload}"
       uploadFile = "#{ovfDir}/#{ovfFileBasename}.ovf"
-
       upload_file(uploadURL, uploadFile, vAppTemplate, uploadOptions)
 
       # Begin the catch for upload interruption
       begin
-     
         params = {
           'method' => :get,
           'command' => "/vAppTemplate/vappTemplate-#{vAppTemplate}"
@@ -679,7 +676,6 @@ module VCloudClient
         # Send Manifest
         uploadURL = "/transfer/#{transferGUID}/descriptor.mf"
         uploadFile = "#{ovfDir}/#{ovfFileBasename}.mf"
-
         upload_file(uploadURL, uploadFile, vAppTemplate, uploadOptions)
 
         # Start uploading OVF VMDK files
@@ -688,17 +684,14 @@ module VCloudClient
           'command' => "/vAppTemplate/vappTemplate-#{vAppTemplate}"
         }
         response, headers = send_request(params)
-        response.css("Files File [bytesTransferred='0'] Link [rel='upload:default']").each do |file|          
+        response.css("Files File [bytesTransferred='0'] Link [rel='upload:default']").each do |file|
           fileName = file[:href].gsub("#{@host_url}/transfer/#{transferGUID}/","")
           uploadFile = "#{ovfDir}/#{fileName}"
           uploadURL = "/transfer/#{transferGUID}/#{fileName}"
-
-          # Run the private method to upload large file by the chunk
           upload_file(uploadURL, uploadFile, vAppTemplate, uploadOptions)
         end
 
         # Add item to the catalog catalogId
-
         builder = Nokogiri::XML::Builder.new do |xml|
           xml.CatalogItem(
             "xmlns" => "http://www.vmware.com/vcloud/v1.5",
@@ -718,7 +711,7 @@ module VCloudClient
 
         response, headers = send_request(params, builder.to_xml,
                         "application/vnd.vmware.vcloud.catalogItem+xml")
-    
+
       rescue Exception => e
         puts "Exception detected, canceling task..."
 
@@ -981,9 +974,9 @@ module VCloudClient
 
         # Create a progressbar object if progress bar is enabled
         if config[:progressbar_enable] == true && uploadFileHandle.size.to_i > chunkSize
-          progressbar = ProgressBar.create(:title => progressBarTitle, :starting_at => 0, :total => uploadFileHandle.size.to_i, :length => progressBarLength, :format => progressBarFormat) 
+          progressbar = ProgressBar.create(:title => progressBarTitle, :starting_at => 0, :total => uploadFileHandle.size.to_i, :length => progressBarLength, :format => progressBarFormat)
         else
-          puts progressBarTitle 
+          puts progressBarTitle
         end
         # Create a new HTTP client
         clnt = HTTPClient.new
@@ -993,14 +986,14 @@ module VCloudClient
 
         # Suppress SSL depth message
         clnt.ssl_config.verify_callback=proc{ |ok, ctx|; true };
-        
+
         # Perform ranged upload until the file reaches its end
         until uploadFileHandle.eof?
 
           # Create ranges for this chunk upload
           rangeStart = uploadFileHandle.pos
           rangeStop = uploadFileHandle.pos.to_i + chunkSize
-          
+
           # Read current chunk
           fileContent = uploadFileHandle.read(chunkSize)
 
@@ -1010,11 +1003,11 @@ module VCloudClient
             rangeLen = uploadFileHandle.size.to_i - rangeStart.to_i
           else
             contentRange = "bytes " + rangeStart.to_s + "-" + rangeStop.to_s + "/" + uploadFileHandle.size.to_s
-            rangeLen = rangeStop.to_i - rangeStart.to_i 
+            rangeLen = rangeStop.to_i - rangeStart.to_i
           end
 
           # Build headers
-          extheader = { 
+          extheader = {
             'x-vcloud-authorization' => @auth_key,
             'Content-Range' => contentRange,
             'Content-Length' => rangeLen.to_s
