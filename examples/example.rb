@@ -144,3 +144,23 @@ delete = connection.delete_vapp(compose[:vapp_id])
 
 puts "### Wait until the Task is completed"
 wait = connection.wait_task_completion(delete)
+
+### Upload an OVF to 'OvDC-PAYG-Bronze-01' 'Vagrant' catalog
+
+puts "### Upload vcloud_precise64.ovf to 'OvDC-PAYG-Bronze-01' 'Vagrant' catalog"
+upload = connection.upload_ovf(
+	org[:vdcs]["OvDC-PAYG-Bronze-01"], 
+	"precise64", 
+	"Precise64 upload", 
+	"dumpster/vcloud_precise64.ovf", 
+	org[:catalogs]["Vagrant"], 
+	{ 
+		:progressbar_enable => true, 
+		:retry_time => 20, 
+		:chunksize => 5242880, 
+		:progressbar_format => "%t |%w%i| %e", 
+		:progressbar_length => 80 
+	})
+
+### Logout from vCloud Director
+connection.logout

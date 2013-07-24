@@ -33,6 +33,9 @@ FEATURES
 - basic vApp network configuration
 - basic VM network configuration
 - basic VM Guest Customization configuration
+- basic vApp compose capabilities
+- basic vApp NAT port forwarding creation
+- Catalog item upload with byterange upload and retry capabilities
 
 TODO
 --
@@ -43,6 +46,8 @@ PREREQUISITES
 --
 - nokogiri ~> 1.6.0
 - rest-client ~> 1.6.7
+- httpclient ~> 2.3.3
+- ruby-progressbar ~> 1.1.1
 
 For testing purpose:
 - minitest (included in ruby 1.9)
