@@ -616,7 +616,7 @@ module VCloudClient
     end
 
     ##
-    # Upload Ovf
+    # Upload an OVF package
     # - vdcId
     # - vappName
     # - vappDescription
@@ -663,14 +663,10 @@ module VCloudClient
         }
 
         # Loop to wait for the upload links to show up in the vAppTemplate we just created
-        begin
+        while true
           response, headers = send_request(params)
-          if response.css("Files Link [rel='upload:default']").count == 1
-            sleep 1
-            raise "NotHere"
-          end
-        rescue
-          retry
+          break unless response.css("Files Link [rel='upload:default']").count == 1
+          sleep 1
         end
 
         # Send Manifest
@@ -713,7 +709,8 @@ module VCloudClient
                         "application/vnd.vmware.vcloud.catalogItem+xml")
 
       rescue Exception => e
-        puts "Exception detected, canceling task..."
+        puts "Exception detected: #{e.message}."
+        puts "Aborting task..."
 
         # Get vAppTemplate Task
         params = {
