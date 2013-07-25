@@ -593,32 +593,34 @@ module VCloudClient
     # - NatType" is set to "portForwarding
     # This will be required to know how to connect to VMs behind the Edge device.
     def get_vapp_edge_public_ip(vAppId)
-
       # first check that vApp is running (Edge is created on vApp Power On)
       vApp = get_vapp(vAppId)
 
-      if vApp[:status] == 'running'
-        # Check the network configuration section
-        params = {
-          'method' => :get,
-          'command' => "/vApp/vapp-#{vAppId}/networkConfigSection"
-        }
-
-        response, headers = send_request(params)
-
-        # FIXME: this will return nil if the vApp uses multiple vApp Networks
-        # with Edge devices in natRouted/portForwarding mode.
-        config = response.css('NetworkConfigSection/NetworkConfig/Configuration')
-
-        fenceMode = config.css('/FenceMode').text
-        natType = config.css('/Features/NatService/NatType').text
-
-        if fenceMode == "natRouted" && natType == "portForwarding"
-          # Check the routerInfo configuration where the global external IP is defined
-          edgeIp = config.css('/RouterInfo/ExternalIp')
-          edgeIp = edgeIp.text unless edgeIp.nil?
-        end
+      if vApp[:status] != 'running'
+        raise InvalidStateError, "Invalid request because vApp is stopped. Start vApp '#{vAppId}' and try again."
       end
+
+      # Check the network configuration section
+      params = {
+        'method' => :get,
+        'command' => "/vApp/vapp-#{vAppId}/networkConfigSection"
+      }
+
+      response, headers = send_request(params)
+
+      # FIXME: this will return nil if the vApp uses multiple vApp Networks
+      # with Edge devices in natRouted/portForwarding mode.
+      config = response.css('NetworkConfigSection/NetworkConfig/Configuration')
+
+      fenceMode = config.css('/FenceMode').text
+      natType = config.css('/Features/NatService/NatType').text
+
+      raise InvalidStateError, "Invalid request because FenceMode must be set to natRouted." unless fenceMode == "natRouted"
+      raise InvalidStateError, "Invalid request because NatType must be set to portForwarding." unless natType == "portForwarding"
+
+      # Check the routerInfo configuration where the global external IP is defined
+      edgeIp = config.css('/RouterInfo/ExternalIp')
+      edgeIp = edgeIp.text unless edgeIp.nil?
     end
 
     ##
