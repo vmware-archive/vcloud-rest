@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    vcloud-rest (0.2.2)
+    vcloud-rest (0.3.0)
       httpclient (~> 2.3.3)
       nokogiri (~> 1.6.0)
       rest-client (~> 1.6.7)
