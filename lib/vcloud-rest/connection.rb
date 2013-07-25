@@ -588,13 +588,6 @@ module VCloudClient
     # - NatType" is set to "portForwarding
     # This will be required to know how to connect to VMs behind the Edge device.
     def get_vapp_edge_public_ip(vAppId)
-      # first check that vApp is running (Edge is created on vApp Power On)
-      vApp = get_vapp(vAppId)
-
-      if vApp[:status] != 'running'
-        raise InvalidStateError, "Invalid request because vApp is stopped. Start vApp '#{vAppId}' and try again."
-      end
-
       # Check the network configuration section
       params = {
         'method' => :get,
