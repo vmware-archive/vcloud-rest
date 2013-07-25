@@ -556,17 +556,15 @@ module VCloudClient
 
       # FIXME: this will return nil if the vApp uses multiple vApp Networks
       # with Edge devices in natRouted/portForwarding mode.
-
       config = response.css('NetworkConfigSection/NetworkConfig/Configuration')
-
       fenceMode = config.css('/FenceMode').text
       natType = config.css('/Features/NatService/NatType').text
 
+      raise InvalidStateError, "Invalid request because FenceMode must be set to natRouted." unless fenceMode == "natRouted"
+      raise InvalidStateError, "Invalid request because NatType must be set to portForwarding." unless natType == "portForwarding"
+
       nat_rules = {}
-
-      if fenceMode == "natRouted" && natType == "portForwarding"
-        config.css('/Features/NatService/NatRule').each do |rule|
-
+      config.css('/Features/NatService/NatRule').each do |rule|
         # portforwarding rules information
         ruleId = rule.css('Id').text
         vmRule = rule.css('VmRule')
@@ -579,11 +577,8 @@ module VCloudClient
           :InternalPort       => vmRule.css('InternalPort').text,
           :Protocol           => vmRule.css('Protocol').text
         }
-
-        end
-        nat_rules
-     end
-
+      end
+      nat_rules
     end
     ##
     # get vApp edge public IP from the vApp ID
