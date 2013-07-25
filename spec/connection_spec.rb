@@ -436,6 +436,39 @@ describe VCloudClient::Connection do
         }.must_raise VCloudClient::InvalidStateError
       end
     end
+
+    describe "VApp Port Forwarding Rules" do
+      it "should retrieve the correct Nat Rules" do
+        stub_request(:get, @url).
+          to_return(:status => 200,
+           :body => "<?xml version=\"1.0\" ?><VApp xmlns=\"http://www.vmware.com/vcloud/v1.5\"
+           xmlns:rasd=\"http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData\">
+             <NetworkConfigSection><NetworkConfig><Configuration>
+              <FenceMode>natRouted</FenceMode>
+              <Features>
+                <NatService>
+                  <NatType>portForwarding</NatType>
+                  <NatRule>
+                    <Id>1</Id>
+                    <VmRule>
+                      <ExternalIpAddress>10.0.0.1</ExternalIpAddress>
+                      <ExternalPort>80</ExternalPort>
+                      <VAppScopedVmId>11111111-1111-1111-1111-111111111111</VAppScopedVmId>
+                      <VmNicId>0</VmNicId>
+                      <InternalPort>80</InternalPort>
+                      <Protocol>TCP</Protocol>
+                    </VmRule>
+                  </NatRule>
+                </NatService>
+              </Features>
+            </Configuration></NetworkConfig></NetworkConfigSection></VApp>",
+           :headers => {})
+
+        natrules = @connection.get_vapp_port_forwarding_rules("test-vapp")
+        natrules.count.must_equal 1
+        natrules.first.must_equal ["1", {:ExternalIpAddress=>"10.0.0.1", :ExternalPort=>"80", :VAppScopedVmId=>"11111111-1111-1111-1111-111111111111", :VmNicId=>"0", :InternalPort=>"80", :Protocol=>"TCP"}]
+      end
+    end
   end
 
   describe "vm network config" do
