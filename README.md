@@ -28,7 +28,7 @@ FEATURES
 - show VDCs
 - show Catalogs
 - show Catalog Items
-- create/start/stop/delete/show vApps
+- create/start/stop/delete/show/reset/suspend/reboot vApps
 - show VMs
 - basic vApp network configuration
 - basic VM network configuration
