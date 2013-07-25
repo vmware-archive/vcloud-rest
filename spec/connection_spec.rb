@@ -366,6 +366,76 @@ describe VCloudClient::Connection do
       task_id = @connection.set_vapp_network_config("test-vapp", "test-network", { :parent_network => "guid" })
       task_id.must_equal "test-vapp_network_task"
     end
+
+    describe "VApp Edge" do
+      it "should retrieve public IP with natRouted and portForwarding" do
+        stub_request(:get, @url).
+          to_return(:status => 200,
+           :body => "<?xml version=\"1.0\" ?><VApp xmlns=\"http://www.vmware.com/vcloud/v1.5\"
+           xmlns:rasd=\"http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData\">
+             <NetworkConfigSection><NetworkConfig><Configuration>
+              <FenceMode>natRouted</FenceMode>
+              <Features>
+                <NatService>
+                  <NatType>portForwarding</NatType>
+                </NatService>
+              </Features>
+              <RouterInfo>
+                <ExternalIp>10.0.0.1</ExternalIp>
+              </RouterInfo>
+            </Configuration></NetworkConfig></NetworkConfigSection></VApp>",
+           :headers => {})
+
+        edge_id = @connection.get_vapp_edge_public_ip("test-vapp")
+        edge_id.must_equal "10.0.0.1"
+      end
+
+      it "should raise an exception if not natRouted" do
+        stub_request(:get, @url).
+          to_return(:status => 200,
+           :body => "<?xml version=\"1.0\" ?><VApp xmlns=\"http://www.vmware.com/vcloud/v1.5\"
+           xmlns:rasd=\"http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData\">
+             <NetworkConfigSection><NetworkConfig><Configuration>
+              <FenceMode>isolated</FenceMode>
+              <Features>
+                <NatService>
+                  <NatType>portForwarding</NatType>
+                </NatService>
+              </Features>
+              <RouterInfo>
+                <ExternalIp>10.0.0.1</ExternalIp>
+              </RouterInfo>
+            </Configuration></NetworkConfig></NetworkConfigSection></VApp>",
+           :headers => {})
+
+        lambda {
+          edge_id = @connection.get_vapp_edge_public_ip("test-vapp")
+        }.must_raise VCloudClient::InvalidStateError
+      end
+
+      it "should raise an exception if NatType is not portForwarding" do
+        stub_request(:get, @url).
+          to_return(:status => 200,
+           :body => "<?xml version=\"1.0\" ?><VApp xmlns=\"http://www.vmware.com/vcloud/v1.5\"
+           xmlns:rasd=\"http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData\">
+             <NetworkConfigSection><NetworkConfig><Configuration>
+              <FenceMode>natRouted</FenceMode>
+              <Features>
+                <NatService>
+                  <NatType>ipTranslation</NatType>
+                </NatService>
+              </Features>
+              <RouterInfo>
+                <ExternalIp>10.0.0.1</ExternalIp>
+              </RouterInfo>
+            </Configuration></NetworkConfig></NetworkConfigSection></VApp>",
+           :headers => {})
+
+        lambda {
+          edge_id = @connection.get_vapp_edge_public_ip("test-vapp")
+        }.must_raise VCloudClient::InvalidStateError
+      end
+    end
   end
 
   describe "vm network config" do
