@@ -91,6 +91,41 @@ module VCloudClient
     end
 
     ##
+    # friendly helper method to fetch an Organization Id by name
+    # - name (this isn't case sensitive)
+    def get_organization_id_by_name(name)
+      result = nil
+
+      # Fetch all organizations
+      organizations = get_organizations()
+
+      organizations.each do |organization|
+        if organization[0].downcase == name.downcase
+          result = organization[1]
+        end
+      end
+      result
+    end
+
+
+    ##
+    # friendly helper method to fetch an Organization by name
+    # - name (this isn't case sensitive)
+    def get_organization_by_name(name)
+      result = nil
+
+      # Fetch all organizations
+      organizations = get_organizations()
+
+      organizations.each do |organization|
+        if organization[0].downcase == name.downcase
+          result = get_organization(organization[1])
+        end
+      end
+      result
+    end
+
+    ##
     # Fetch details about an organization:
     # - catalogs
     # - vdcs
@@ -145,6 +180,38 @@ module VCloudClient
     end
 
     ##
+    # Friendly helper method to fetch an catalog id by name
+    # - organization hash (from get_organization/get_organization_by_name)
+    # - catalog name
+    def get_catalog_id_by_name(organization, catalogName)
+      result = nil
+
+      organization[:catalogs].each do |catalog|
+        if catalog[0].downcase == catalogName.downcase
+          result = catalog[1]
+        end
+      end
+
+      result
+    end
+
+    ##
+    # Friendly helper method to fetch an catalog by name
+    # - organization hash (from get_organization/get_organization_by_name)
+    # - catalog name
+    def get_catalog_by_name(organization, catalogName)
+      result = nil
+
+      organization[:catalogs].each do |catalog|
+        if catalog[0].downcase == catalogName.downcase
+          result = get_catalog(catalog[1])
+        end
+      end
+
+      result
+    end
+
+    ##
     # Fetch details about a given vdc:
     # - description
     # - vapps
@@ -172,6 +239,38 @@ module VCloudClient
     end
 
     ##
+    # Friendly helper method to fetch a Organization VDC Id by name
+    # - Organization object
+    # - Organization VDC Name
+    def get_vdc_id_by_name(organization, vdcName)
+      result = nil
+
+      organization[:vdcs].each do |vdc|
+        if vdc[0].downcase == vdcName.downcase
+          result = vdc[1]
+        end
+      end
+
+      result
+    end
+
+    ##
+    # Friendly helper method to fetch a Organization VDC by name
+    # - Organization object
+    # - Organization VDC Name
+    def get_vdc_by_name(organization, vdcName)
+      result = nil
+
+      organization[:vdcs].each do |vdc|
+        if vdc[0].downcase == vdcName.downcase
+          result = get_vdc(vdc[1])
+        end
+      end
+
+      result
+    end
+
+    ##
     # Fetch details about a given catalog item:
     # - description
     # - vApp templates
@@ -191,6 +290,45 @@ module VCloudClient
       end
       { :description => description, :items => items }
     end
+
+    ##
+    # friendly helper method to fetch an catalogItem  by name
+    # - catalogId (use get_catalog_name(org, name))
+    # - catalagItemName 
+    def get_catalog_item_by_name(catalogId, catalogItemName)
+      result = nil
+      catalogElems = get_catalog(catalogId)
+      
+      catalogElems[:items].each do |catalogElem|
+        
+        catalogItem = get_catalog_item(catalogElem[1])
+        if catalogItem[:items][catalogItemName]
+          # This is a vApp Catalog Item
+
+          # fetch CatalogItemId
+          catalogItemId = catalogItem[:items][catalogItemName]
+
+          # Fetch the catalogItemId information
+          params = {
+            'method' => :get,
+            'command' => "/vAppTemplate/vappTemplate-#{catalogItemId}"
+          }
+          response, headers = send_request(params)
+
+          # VMs Hash for all the vApp VM entities        
+          vms_hash = {}
+          response.css("/VAppTemplate/Children/Vm").each do |vmElem|
+            vmName = vmElem["name"]
+            vmId = vmElem["href"].gsub("#{@api_url}/vAppTemplate/vm-", "")
+        
+            # Add the VM name/id to the VMs Hash
+            vms_hash[vmName] = { :id => vmId }
+          end
+        result = { catalogItemName => catalogItemId, :vms_hash => vms_hash }
+        end
+      end
+      result 
+    end  
 
     ##
     # Fetch details about a given vapp:
