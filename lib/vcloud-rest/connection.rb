@@ -768,7 +768,7 @@ module VCloudClient
         xml.UploadVAppTemplateParams(
           "xmlns" => "http://www.vmware.com/vcloud/v1.5",
           "xmlns:ovf" => "http://schemas.dmtf.org/ovf/envelope/1",
-          "manifestRequired" => "true",
+          "manifestRequired" => "true",  # FIXME: true/false needed here.
           "name" => vappName) {
           xml.Description vappDescription
         }
@@ -779,8 +779,11 @@ module VCloudClient
         'command' => "/vdc/#{vdcId}/action/uploadVAppTemplate"
       }
 
-      response, headers = send_request(params, builder.to_xml,
-                      "application/vnd.vmware.vcloud.uploadVAppTemplateParams+xml")
+      response, headers = send_request(
+        params, 
+        builder.to_xml,
+        "application/vnd.vmware.vcloud.uploadVAppTemplateParams+xml"
+      )
 
       # Get vAppTemplate Link from location
       vAppTemplate = headers[:location].gsub("#{@api_url}/vAppTemplate/vappTemplate-", "")
@@ -809,7 +812,8 @@ module VCloudClient
           sleep 1
         end
 
-        # Send Manifest
+        # Send Manifest 
+        # FIXME: this should be optional.
         uploadURL = "/transfer/#{transferGUID}/descriptor.mf"
         uploadFile = "#{ovfDir}/#{ovfFileBasename}.mf"
         upload_file(uploadURL, uploadFile, vAppTemplate, uploadOptions)
@@ -1111,7 +1115,13 @@ module VCloudClient
 
         # Create a progressbar object if progress bar is enabled
         if config[:progressbar_enable] == true && uploadFileHandle.size.to_i > chunkSize
-          progressbar = ProgressBar.create(:title => progressBarTitle, :starting_at => 0, :total => uploadFileHandle.size.to_i, :length => progressBarLength, :format => progressBarFormat)
+          progressbar = ProgressBar.create(
+            :title => progressBarTitle,
+            :starting_at => 0,
+            :total => uploadFileHandle.size.to_i,
+            :length => progressBarLength,
+            :format => progressBarFormat
+          )
         else
           puts progressBarTitle
         end
@@ -1136,10 +1146,10 @@ module VCloudClient
 
           # If statement to handle last chunk transfer if is > than filesize
           if rangeStop.to_i > uploadFileHandle.size.to_i
-            contentRange = "bytes " + rangeStart.to_s + "-" + uploadFileHandle.size.to_s + "/" + uploadFileHandle.size.to_s
+            contentRange = "bytes #{rangeStart.to_s}-#{uploadFileHandle.size.to_s}/#{uploadFileHandle.size.to_s}"
             rangeLen = uploadFileHandle.size.to_i - rangeStart.to_i
           else
-            contentRange = "bytes " + rangeStart.to_s + "-" + rangeStop.to_s + "/" + uploadFileHandle.size.to_s
+            contentRange = "bytes #{rangeStart.to_s}-#{rangeStop.to_s}/#{uploadFileHandle.size.to_s}"
             rangeLen = rangeStop.to_i - rangeStart.to_i
           end
 
@@ -1153,6 +1163,7 @@ module VCloudClient
           begin
             uploadRequest = "#{@host_url}#{uploadURL}"
             connection = clnt.request('PUT', uploadRequest, nil, fileContent, extheader)
+
             if config[:progressbar_enable] == true && uploadFileHandle.size.to_i > chunkSize
               params = {
                 'method' => :get,
