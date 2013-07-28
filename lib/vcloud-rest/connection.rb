@@ -70,6 +70,8 @@ module VCloudClient
       }
 
       response, headers = send_request(params)
+      # reset auth key to nil
+      @auth_key = nil
     end
 
     ##
