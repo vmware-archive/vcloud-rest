@@ -764,11 +764,19 @@ module VCloudClient
     # - catalogId
     # - uploadOptions {}
     def upload_ovf(vdcId, vappName, vappDescription, ovfFile, catalogId, uploadOptions={})
+
+      # if send_manifest is not set, setting it true
+      if uploadOptions[:send_manifest].nil? || uploadOptions[:send_manifest]
+        uploadManifest = "true"
+      else
+        uploadManifest = "false"
+      end
+
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.UploadVAppTemplateParams(
           "xmlns" => "http://www.vmware.com/vcloud/v1.5",
           "xmlns:ovf" => "http://schemas.dmtf.org/ovf/envelope/1",
-          "manifestRequired" => "true",  # FIXME: true/false needed here.
+          "manifestRequired" => uploadManifest,
           "name" => vappName) {
           xml.Description vappDescription
         }
@@ -812,11 +820,11 @@ module VCloudClient
           sleep 1
         end
 
-        # Send Manifest 
-        # FIXME: this should be optional.
-        uploadURL = "/transfer/#{transferGUID}/descriptor.mf"
-        uploadFile = "#{ovfDir}/#{ovfFileBasename}.mf"
-        upload_file(uploadURL, uploadFile, vAppTemplate, uploadOptions)
+        if uploadManifest == "true"
+          uploadURL = "/transfer/#{transferGUID}/descriptor.mf"
+          uploadFile = "#{ovfDir}/#{ovfFileBasename}.mf"
+          upload_file(uploadURL, uploadFile, vAppTemplate, uploadOptions)
+        end
 
         # Start uploading OVF VMDK files
         params = {

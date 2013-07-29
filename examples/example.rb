@@ -159,7 +159,8 @@ upload = connection.upload_ovf(
 		:retry_time => 20, 
 		:chunksize => 5242880, 
 		:progressbar_format => "%t |%w%i| %e", 
-		:progressbar_length => 80 
+		:progressbar_length => 80,
+		:send_manifest => false
 	})
 
 ### Logout from vCloud Director
