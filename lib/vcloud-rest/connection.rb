@@ -70,6 +70,8 @@ module VCloudClient
       }
 
       response, headers = send_request(params)
+      # reset auth key to nil
+      @auth_key = nil
     end
 
     ##
@@ -762,11 +764,19 @@ module VCloudClient
     # - catalogId
     # - uploadOptions {}
     def upload_ovf(vdcId, vappName, vappDescription, ovfFile, catalogId, uploadOptions={})
+
+      # if send_manifest is not set, setting it true
+      if uploadOptions[:send_manifest].nil? || uploadOptions[:send_manifest]
+        uploadManifest = "true"
+      else
+        uploadManifest = "false"
+      end
+
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.UploadVAppTemplateParams(
           "xmlns" => "http://www.vmware.com/vcloud/v1.5",
           "xmlns:ovf" => "http://schemas.dmtf.org/ovf/envelope/1",
-          "manifestRequired" => "true",
+          "manifestRequired" => uploadManifest,
           "name" => vappName) {
           xml.Description vappDescription
         }
@@ -777,8 +787,11 @@ module VCloudClient
         'command' => "/vdc/#{vdcId}/action/uploadVAppTemplate"
       }
 
-      response, headers = send_request(params, builder.to_xml,
-                      "application/vnd.vmware.vcloud.uploadVAppTemplateParams+xml")
+      response, headers = send_request(
+        params, 
+        builder.to_xml,
+        "application/vnd.vmware.vcloud.uploadVAppTemplateParams+xml"
+      )
 
       # Get vAppTemplate Link from location
       vAppTemplate = headers[:location].gsub("#{@api_url}/vAppTemplate/vappTemplate-", "")
@@ -807,10 +820,11 @@ module VCloudClient
           sleep 1
         end
 
-        # Send Manifest
-        uploadURL = "/transfer/#{transferGUID}/descriptor.mf"
-        uploadFile = "#{ovfDir}/#{ovfFileBasename}.mf"
-        upload_file(uploadURL, uploadFile, vAppTemplate, uploadOptions)
+        if uploadManifest == "true"
+          uploadURL = "/transfer/#{transferGUID}/descriptor.mf"
+          uploadFile = "#{ovfDir}/#{ovfFileBasename}.mf"
+          upload_file(uploadURL, uploadFile, vAppTemplate, uploadOptions)
+        end
 
         # Start uploading OVF VMDK files
         params = {
@@ -1109,7 +1123,13 @@ module VCloudClient
 
         # Create a progressbar object if progress bar is enabled
         if config[:progressbar_enable] == true && uploadFileHandle.size.to_i > chunkSize
-          progressbar = ProgressBar.create(:title => progressBarTitle, :starting_at => 0, :total => uploadFileHandle.size.to_i, :length => progressBarLength, :format => progressBarFormat)
+          progressbar = ProgressBar.create(
+            :title => progressBarTitle,
+            :starting_at => 0,
+            :total => uploadFileHandle.size.to_i,
+            :length => progressBarLength,
+            :format => progressBarFormat
+          )
         else
           puts progressBarTitle
         end
@@ -1134,10 +1154,10 @@ module VCloudClient
 
           # If statement to handle last chunk transfer if is > than filesize
           if rangeStop.to_i > uploadFileHandle.size.to_i
-            contentRange = "bytes " + rangeStart.to_s + "-" + uploadFileHandle.size.to_s + "/" + uploadFileHandle.size.to_s
+            contentRange = "bytes #{rangeStart.to_s}-#{uploadFileHandle.size.to_s}/#{uploadFileHandle.size.to_s}"
             rangeLen = uploadFileHandle.size.to_i - rangeStart.to_i
           else
-            contentRange = "bytes " + rangeStart.to_s + "-" + rangeStop.to_s + "/" + uploadFileHandle.size.to_s
+            contentRange = "bytes #{rangeStart.to_s}-#{rangeStop.to_s}/#{uploadFileHandle.size.to_s}"
             rangeLen = rangeStop.to_i - rangeStart.to_i
           end
 
@@ -1151,6 +1171,7 @@ module VCloudClient
           begin
             uploadRequest = "#{@host_url}#{uploadURL}"
             connection = clnt.request('PUT', uploadRequest, nil, fileContent, extheader)
+
             if config[:progressbar_enable] == true && uploadFileHandle.size.to_i > chunkSize
               params = {
                 'method' => :get,
