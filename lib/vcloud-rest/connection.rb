@@ -989,7 +989,7 @@ module VCloudClient
       task_id
     end
 
-    ##
+  ##
     # Fetch details about a given VM
     def get_vm(vmId)
       params = {
@@ -1005,10 +1005,14 @@ module VCloudClient
       response.css('NetworkConnection').each do |network|
         ip = network.css('IpAddress').first
         ip = ip.text if ip
+        
+        external_ip = network.css('ExternalIpAddress').first
+        external_ip = external_ip.text if external_ip
 
         networks[network['network']] = {
           :index => network.css('NetworkConnectionIndex').first.text,
           :ip => ip,
+          :external_ip => external_ip,
           :is_connected => network.css('IsConnected').first.text,
           :mac_address => network.css('MACAddress').first.text,
           :ip_allocation_mode => network.css('IpAddressAllocationMode').first.text
