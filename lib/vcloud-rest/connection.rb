@@ -1056,7 +1056,7 @@ module VCloudClient
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.CreateSnapshotParams(
             "xmlns" => "http://www.vmware.com/vcloud/v1.5") {
-          xml.Description  description
+          xml.Description description
         }
       end
       response,headers = send_request(params,builder.to_xml,"application/vnd.vmware.vcloud.createSnapshotParams+xml" )
@@ -1076,7 +1076,7 @@ module VCloudClient
     end
 
 
-    def clone_vapp(vdc_id,source_vapp_id,name,poweron="false",linked="false")
+    def clone_vapp(vdc_id,source_vapp_id,name,poweron="false",linked="false",delete_source="false")
       params = {
           "method" => :post,
           "command" => "/vdc/#{vdc_id}/action/cloneVApp"
@@ -1089,21 +1089,14 @@ module VCloudClient
             "linkedClone"=> linked,
             "powerOn"=> poweron
         ) {
-          xml.Description 'testbme'
           xml.Source "href" => "#{@api_url}/vApp/vapp-#{source_vapp_id}"
-          xml.IsSourceDelete 'false'
+          xml.IsSourceDelete delete_source
         }
       end
       response,headers = send_request(params,builder.to_xml,"application/vnd.vmware.vcloud.cloneVAppParams+xml" )
       task_id = headers[:location].gsub("#{@api_url}/task/", "")
       task_id
     end
-
-
-
-
-
-
     private
       ##
       # Sends a synchronous request to the vCloud API and returns the response as parsed XML + headers.
