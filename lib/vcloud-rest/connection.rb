@@ -1076,7 +1076,7 @@ module VCloudClient
     end
 
 
-    def clone_vapp(vdc_id,source_vapp_id,name,poweron=false,linked=false)
+    def clone_vapp(vdc_id,source_vapp_id,name,poweron="false",linked="false")
       params = {
           "method" => :post,
           "command" => "/vdc/#{vdc_id}/action/cloneVApp"
