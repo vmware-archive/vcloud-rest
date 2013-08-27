@@ -1048,7 +1048,7 @@ module VCloudClient
       { :os_desc => os_desc, :networks => networks, :guest_customizations => guest_customizations }
     end
 
-    def create_snapshot(vappId)
+    def create_snapshot(vappId,description="New Snapshot")
       params = {
           "method" => :post,
           "command" => "/vApp/vapp-#{vappId}/action/createSnapshot"
@@ -1056,7 +1056,7 @@ module VCloudClient
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.CreateSnapshotParams(
             "xmlns" => "http://www.vmware.com/vcloud/v1.5") {
-          xml.Description 'testbme'
+          xml.Description  description
         }
       end
       response,headers = send_request(params,builder.to_xml,"application/vnd.vmware.vcloud.createSnapshotParams+xml" )
