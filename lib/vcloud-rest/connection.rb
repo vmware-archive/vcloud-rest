@@ -1048,7 +1048,9 @@ module VCloudClient
       { :os_desc => os_desc, :networks => networks, :guest_customizations => guest_customizations }
     end
 
-    def create_snapshot(vappId,description="New Snapshot")
+    ##
+    # Create a new snapshot (overwrites any existing)
+    def create_snapshot(vappId, description="New Snapshot")
       params = {
           "method" => :post,
           "command" => "/vApp/vapp-#{vappId}/action/createSnapshot"
@@ -1059,24 +1061,26 @@ module VCloudClient
           xml.Description description
         }
       end
-      response,headers = send_request(params,builder.to_xml,"application/vnd.vmware.vcloud.createSnapshotParams+xml" )
+      response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.createSnapshotParams+xml")
       task_id = headers[:location].gsub("#{@api_url}/task/", "")
       task_id
     end
 
-
+    ##
+    # Revert to an existing snapshot
     def revert_snapshot(vappId)
       params = {
           "method" => :post,
           "command" => "/vApp/vapp-#{vappId}/action/revertToCurrentSnapshot"
       }
-      response,headers = send_request(params)
+      response, headers = send_request(params)
       task_id = headers[:location].gsub("#{@api_url}/task/", "")
       task_id
     end
 
-
-    def clone_vapp(vdc_id,source_vapp_id,name,poweron="false",linked="false",delete_source="false")
+    ##
+    # Clone a vapp in a given VDC to a new Vapp
+    def clone_vapp(vdc_id, source_vapp_id, name, deploy="true", poweron="false", linked="false", delete_source="false")
       params = {
           "method" => :post,
           "command" => "/vdc/#{vdc_id}/action/cloneVApp"
@@ -1085,7 +1089,7 @@ module VCloudClient
         xml.CloneVAppParams(
             "xmlns" => "http://www.vmware.com/vcloud/v1.5",
             "name" => name,
-            "deploy"=>  "true",
+            "deploy"=>  deploy,
             "linkedClone"=> linked,
             "powerOn"=> poweron
         ) {
@@ -1093,10 +1097,11 @@ module VCloudClient
           xml.IsSourceDelete delete_source
         }
       end
-      response,headers = send_request(params,builder.to_xml,"application/vnd.vmware.vcloud.cloneVAppParams+xml" )
+      response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.cloneVAppParams+xml")
       task_id = headers[:location].gsub("#{@api_url}/task/", "")
       task_id
     end
+
     private
       ##
       # Sends a synchronous request to the vCloud API and returns the response as parsed XML + headers.
