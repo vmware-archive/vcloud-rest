@@ -8,8 +8,8 @@ unless Kernel.respond_to?(:require_relative)
 end
 ##
 
-require 'minitest/spec'
 require 'minitest/autorun'
+require 'minitest/spec'
 require 'webmock/minitest'
 require_relative '../lib/vcloud-rest/connection'
 
