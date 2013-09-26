@@ -296,13 +296,13 @@ module VCloudClient
     ##
     # friendly helper method to fetch an catalogItem  by name
     # - catalogId (use get_catalog_name(org, name))
-    # - catalagItemName 
+    # - catalagItemName
     def get_catalog_item_by_name(catalogId, catalogItemName)
       result = nil
       catalogElems = get_catalog(catalogId)
-      
+
       catalogElems[:items].each do |catalogElem|
-        
+
         catalogItem = get_catalog_item(catalogElem[1])
         if catalogItem[:items][catalogItemName]
           # This is a vApp Catalog Item
@@ -317,20 +317,20 @@ module VCloudClient
           }
           response, headers = send_request(params)
 
-          # VMs Hash for all the vApp VM entities        
+          # VMs Hash for all the vApp VM entities
           vms_hash = {}
           response.css("/VAppTemplate/Children/Vm").each do |vmElem|
             vmName = vmElem["name"]
             vmId = vmElem["href"].gsub("#{@api_url}/vAppTemplate/vm-", "")
-        
+
             # Add the VM name/id to the VMs Hash
             vms_hash[vmName] = { :id => vmId }
           end
         result = { catalogItemName => catalogItemId, :vms_hash => vms_hash }
         end
       end
-      result 
-    end  
+      result
+    end
 
     ##
     # Fetch details about a given vapp:
@@ -724,6 +724,7 @@ module VCloudClient
       end
       nat_rules
     end
+
     ##
     # get vApp edge public IP from the vApp ID
     # Only works when:
@@ -788,7 +789,7 @@ module VCloudClient
       }
 
       response, headers = send_request(
-        params, 
+        params,
         builder.to_xml,
         "application/vnd.vmware.vcloud.uploadVAppTemplateParams+xml"
       )
