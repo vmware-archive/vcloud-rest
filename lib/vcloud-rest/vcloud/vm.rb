@@ -1,5 +1,31 @@
 module VCloudClient
   class Connection
+    def get_vm_info(vmid)
+      params = {
+        'method' => :get,
+        'command' => "/vApp/vm-#{vmid}/virtualHardwareSection"
+      }
+
+      response, headers = send_request(params)
+
+      result = {}
+      response.css("ovf|Item [vcloud|href]").each do |item|
+        item_name = item.attribute('href').text.gsub("#{@api_url}/vApp/vm-#{vmid}/virtualHardwareSection/", "")
+        name = item.css("rasd|ElementName")
+        name = name.text unless name.nil?
+
+        description = item.css("rasd|Description")
+        description = description.text unless description.nil?
+
+        result[item_name] = {
+          :name => name,
+          :description => description
+        }
+      end
+
+      result
+    end
+
     ##
     # Set VM Network Config
     def set_vm_network_config(vmid, network_name, config={})

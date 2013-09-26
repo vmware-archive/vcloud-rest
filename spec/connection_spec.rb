@@ -514,4 +514,50 @@ describe VCloudClient::Connection do
       vm_get[:guest_customizations].wont_be_nil
     end
   end
+
+  describe "show vm details" do
+    before { @url = "https://testuser%40testorg:testpass@testhost.local/api/vApp/vm-test-vm/virtualHardwareSection" }
+
+    it "should retrieve the correct number of CPUs" do
+      stub_request(:get, @url).
+        to_return(:status => 200,
+          :body =>   "
+                <?xml version=\"1.0\" encoding=\"UTF-8\"?>
+                <VApp xmlns:vcloud=\"http://www.vmware.com/vcloud/v1.5\"
+                      xmlns:rasd=\"http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData\"
+                      xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\"
+                      xmlns:vssd=\"http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData\"
+                      xmlns:vmw=\"http://www.vmware.com/schema/ovf\"
+                      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
+              >
+               <ovf:VirtualHardwareSection>
+                <ovf:Item vcloud:href=\"https://testhost.local/api/vApp/vm-test-vm/virtualHardwareSection/cpu\" vcloud:type=\"application/vnd.vmware.vcloud.rasdItem+xml\">
+                    <rasd:AllocationUnits>hertz * 10^6</rasd:AllocationUnits>
+                    <rasd:Description>Number of Virtual CPUs</rasd:Description>
+                    <rasd:ElementName>1 virtual CPU(s)</rasd:ElementName>
+                    <rasd:InstanceID>4</rasd:InstanceID>
+                    <rasd:Reservation>0</rasd:Reservation>
+                    <rasd:ResourceType>3</rasd:ResourceType>
+                    <rasd:VirtualQuantity>1</rasd:VirtualQuantity>
+                    <rasd:Weight>0</rasd:Weight>
+                    <Link rel=\"edit\" type=\"application/vnd.vmware.vcloud.rasdItem+xml\" href=\"https://testhost.local/api/vApp/vm-test-vm/virtualHardwareSection/cpu\"/>
+                </ovf:Item>
+                <ovf:Item vcloud:href=\"https://testhost.local/api/vApp/vm-test-vm/virtualHardwareSection/memory\" vcloud:type=\"application/vnd.vmware.vcloud.rasdItem+xml\">
+                    <rasd:AllocationUnits>byte * 2^20</rasd:AllocationUnits>
+                    <rasd:Description>Memory Size</rasd:Description>
+                    <rasd:ElementName>2048 MB of memory</rasd:ElementName>
+                    <rasd:InstanceID>5</rasd:InstanceID>
+                    <rasd:Reservation>0</rasd:Reservation>
+                    <rasd:ResourceType>4</rasd:ResourceType>
+                    <rasd:VirtualQuantity>2048</rasd:VirtualQuantity>
+                    <rasd:Weight>0</rasd:Weight>
+                    <Link rel=\"edit\" type=\"application/vnd.vmware.vcloud.rasdItem+xml\" href=\"https://testhost.local/api/vApp/vm-test-vm/virtualHardwareSection/memory\"/>
+                </ovf:VirtualHardwareSection>
+                </VApp>")
+      vm_get = @connection.get_vm_info("test-vm")
+
+      vm_get["cpu"][:name].must_equal "1 virtual CPU(s)"
+      vm_get["memory"][:name].must_equal "2048 MB of memory"
+    end
+  end
 end
