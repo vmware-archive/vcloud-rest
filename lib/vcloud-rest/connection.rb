@@ -20,6 +20,7 @@ require 'rest-client'
 require 'nokogiri'
 require 'httpclient'
 require 'ruby-progressbar'
+require 'logger'
 
 module VCloudClient
   class UnauthorizedAccess < StandardError; end
@@ -42,6 +43,8 @@ module VCloudClient
       @password = password
       @org_name = org_name
       @api_version = (api_version || "5.1")
+
+      init_logger
     end
 
     ##
@@ -862,8 +865,8 @@ module VCloudClient
                         "application/vnd.vmware.vcloud.catalogItem+xml")
 
       rescue Exception => e
-        puts "Exception detected: #{e.message}."
-        puts "Aborting task..."
+        @logger.error "Exception detected: #{e.message}."
+        @logger.error "Aborting task..."
 
         # Get vAppTemplate Task
         params = {
@@ -1130,8 +1133,10 @@ module VCloudClient
         begin
           response = request.execute
           if ![200, 201, 202, 204].include?(response.code)
-            puts "Warning: unattended code #{response.code}"
+            @logger.warn "Warning: unattended code #{response.code}"
           end
+
+          @logger.debug "Send request result: #{Nokogiri.parse(response)}"
 
           # TODO: handle asynch properly, see TasksList
           [Nokogiri.parse(response), response.headers]
@@ -1193,7 +1198,7 @@ module VCloudClient
             :format => progressBarFormat
           )
         else
-          puts progressBarTitle
+          @logger.info progressBarTitle
         end
         # Create a new HTTP client
         clnt = HTTPClient.new
@@ -1247,7 +1252,7 @@ module VCloudClient
             end
           rescue
             retryTime = (config[:retry_time] || 5)
-            puts "Range #{contentRange} failed to upload, retrying the chunk in #{retryTime.to_s} seconds, to stop the action press CTRL+C."
+            @logger.warn "Range #{contentRange} failed to upload, retrying the chunk in #{retryTime.to_s} seconds, to stop the action press CTRL+C."
             sleep retryTime.to_i
             retry
           end
@@ -1273,6 +1278,16 @@ module VCloudClient
           else
             "Unknown #{status_code}"
         end
+      end
+
+      def init_logger
+        level = if ENV["VCLOUD_REST_DEBUG_LEVEL"]
+            Logger::Severity.constants.find_index ENV["VCLOUD_REST_DEBUG_LEVEL"].upcase.to_sym
+          else
+            Logger::WARN
+          end
+        @logger = Logger.new(ENV["VCLOUD_REST_LOG_FILE"] || STDOUT)
+        @logger.level = level
       end
   end # class
 end
