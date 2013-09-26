@@ -143,7 +143,6 @@ module VCloudClient
                                          :url => "#{@api_url}#{params['command']}",
                                          :payload => payload)
 
-
         begin
           response = request.execute
           if ![200, 201, 202, 204].include?(response.code)
@@ -152,26 +151,13 @@ module VCloudClient
 
           @logger.debug "Send request result: #{Nokogiri.parse(response)}"
 
-          # TODO: handle asynch properly, see TasksList
           [Nokogiri.parse(response), response.headers]
         rescue RestClient::Unauthorized => e
           raise UnauthorizedAccess, "Client not authorized. Please check your credentials."
         rescue RestClient::BadRequest => e
           body = Nokogiri.parse(e.http_body)
           message = body.css("Error").first["message"]
-
-          case message
-          when /The request has invalid accept header/
-            raise WrongAPIVersion, "Invalid accept header. Please verify that the server supports v.#{@api_version} or specify a different API Version."
-          when /validation error on field 'id': String value has invalid format or length/
-            raise WrongItemIDError, "Invalid ID specified. Please verify that the item exists and correctly typed."
-          when /The requested operation could not be executed on vApp "(.*)". Stop the vApp and try again/
-            raise InvalidStateError, "Invalid request because vApp is running. Stop vApp '#{$1}' and try again."
-          when /The requested operation could not be executed since vApp "(.*)" is not running/
-            raise InvalidStateError, "Invalid request because vApp is stopped. Start vApp '#{$1}' and try again."
-          else
-            raise UnhandledError, "BadRequest - unhandled error: #{message}.\nPlease report this issue."
-          end
+          humanize_badrequest(message)
         rescue RestClient::Forbidden => e
           body = Nokogiri.parse(e.http_body)
           message = body.css("Error").first["message"]
@@ -210,6 +196,21 @@ module VCloudClient
           end
         @logger = Logger.new(ENV["VCLOUD_REST_LOG_FILE"] || STDOUT)
         @logger.level = level
+      end
+
+      def humanize_badrequest(message)
+        case message
+        when /The request has invalid accept header/
+          raise WrongAPIVersion, "Invalid accept header. Please verify that the server supports v.#{@api_version} or specify a different API Version."
+        when /validation error on field 'id': String value has invalid format or length/
+          raise WrongItemIDError, "Invalid ID specified. Please verify that the item exists and correctly typed."
+        when /The requested operation could not be executed on vApp "(.*)". Stop the vApp and try again/
+          raise InvalidStateError, "Invalid request because vApp is running. Stop vApp '#{$1}' and try again."
+        when /The requested operation could not be executed since vApp "(.*)" is not running/
+          raise InvalidStateError, "Invalid request because vApp is stopped. Start vApp '#{$1}' and try again."
+        else
+          raise UnhandledError, "BadRequest - unhandled error: #{message}.\nPlease report this issue."
+        end
       end
   end # class
 end
