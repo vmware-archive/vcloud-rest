@@ -28,11 +28,16 @@ FEATURES
 - show VDCs
 - show Catalogs
 - show Catalog Items
-- create/start/stop/delete/show/reset/suspend/reboot vApps
-- show VMs
-- basic vApp network configuration
-- basic VM network configuration
-- basic VM Guest Customization configuration
+- various vApp's commands
+    - show
+    - create/clone
+    - start/stop/delete/reset/suspend/reboot
+    - basic network configuration
+- basic VM configuration
+    - show
+    - set cpu/RAM
+    - basic network configuration
+    - basic VM Guest Customization configuration
 - basic vApp compose capabilities
 - basic vApp NAT port forwarding creation
 - Catalog item upload with byterange upload and retry capabilities
