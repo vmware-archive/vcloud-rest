@@ -905,6 +905,7 @@ module VCloudClient
     # Poll a given task until completion
     def wait_task_completion(taskid)
       errormsg = nil
+      task = {}
 
       loop do
         task = get_task(taskid)
