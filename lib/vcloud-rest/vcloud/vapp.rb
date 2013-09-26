@@ -318,8 +318,13 @@ module VCloudClient
         }
       end
       response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.cloneVAppParams+xml")
-      task_id = headers[:location].gsub("#{@api_url}/task/", "")
-      task_id
+
+      vapp_id = headers[:location].gsub("#{@api_url}/vApp/vapp-", "")
+
+      task = response.css("VApp Task[operationName='vdcCopyVapp']").first
+      task_id = task["href"].gsub("#{@api_url}/task/", "")
+
+      {:vapp_id => vapp_id, :task_id => task_id}
     end
 
     # Fetch details about a given vapp template:
