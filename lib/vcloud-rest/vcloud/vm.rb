@@ -26,6 +26,44 @@ module VCloudClient
       result
     end
 
+    def set_vm_cpus(vmid, cpu_number)
+      params = {
+        'method' => :get,
+        'command' => "/vApp/vm-#{vmid}/virtualHardwareSection/cpu"
+      }
+
+      get_response, headers = send_request(params)
+
+      # Change attributes from the previous invocation
+      get_response.css("rasd|ElementName").first.content = "#{cpu_number} virtual CPU(s)"
+      get_response.css("rasd|VirtualQuantity").first.content = cpu_number
+
+      params['method'] = :put
+      put_response, headers = send_request(params, get_response.to_xml, "application/vnd.vmware.vcloud.rasdItem+xml")
+
+      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id
+    end
+
+    def set_vm_ram(vmid, memory_size)
+      params = {
+        'method' => :get,
+        'command' => "/vApp/vm-#{vmid}/virtualHardwareSection/memory"
+      }
+
+      get_response, headers = send_request(params)
+
+      # Change attributes from the previous invocation
+      get_response.css("rasd|ElementName").first.content = "#{memory_size} MB of memory"
+      get_response.css("rasd|VirtualQuantity").first.content = memory_size
+
+      params['method'] = :put
+      put_response, headers = send_request(params, get_response.to_xml, "application/vnd.vmware.vcloud.rasdItem+xml")
+
+      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id
+    end
+
     ##
     # Set VM Network Config
     def set_vm_network_config(vmid, network_name, config={})
