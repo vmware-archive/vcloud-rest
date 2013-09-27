@@ -29,6 +29,29 @@ module VCloudClient
     end
 
     ##
+    # Retrieve information about Disks
+    def get_vm_disk_info(vmid)
+      response, headers = __get_disk_info(vmid)
+
+      disks = []
+      response.css("Item").each do |entry|
+        # Pick only entries with node "HostResource"
+        resource = entry.css("rasd|HostResource").first
+        next unless resource
+
+        name = entry.css("rasd|ElementName").first
+        name = name.text unless name.nil?
+        capacity = resource.attribute("capacity").text
+
+        disks << {
+          :name => name,
+          :capacity => "#{capacity} MB"
+        }
+      end
+      disks
+    end
+
+    ##
     # Set VM CPUs
     def set_vm_cpus(vmid, cpu_number)
       params = {
@@ -170,5 +193,15 @@ module VCloudClient
 
       { :os_desc => os_desc, :networks => networks, :guest_customizations => guest_customizations }
     end
+
+    private
+      def __get_disk_info(vmid)
+        params = {
+          'method' => :get,
+          'command' => "/vApp/vm-#{vmid}/virtualHardwareSection/disks"
+        }
+
+        send_request(params)
+      end
   end
 end
