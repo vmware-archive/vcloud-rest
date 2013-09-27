@@ -1,5 +1,7 @@
 module VCloudClient
   class Connection
+    ##
+    # Retrieve information (i.e., memory and CPUs)
     def get_vm_info(vmid)
       params = {
         'method' => :get,
@@ -26,6 +28,8 @@ module VCloudClient
       result
     end
 
+    ##
+    # Set VM CPUs
     def set_vm_cpus(vmid, cpu_number)
       params = {
         'method' => :get,
@@ -45,6 +49,8 @@ module VCloudClient
       task_id
     end
 
+    ##
+    # Set VM RAM
     def set_vm_ram(vmid, memory_size)
       params = {
         'method' => :get,
