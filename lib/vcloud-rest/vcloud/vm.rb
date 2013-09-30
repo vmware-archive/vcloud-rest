@@ -162,6 +162,8 @@ module VCloudClient
       vm_name = response.css('Vm').attribute("name")
       vm_name = vm_name.text unless vm_name.nil?
 
+      status = convert_vapp_status(response.css('Vm').attribute("status").text)
+
       os_desc = response.css('ovf|OperatingSystemSection ovf|Description').first.text
 
       networks = {}
@@ -194,7 +196,7 @@ module VCloudClient
       }
 
       { :vm_name => vm_name, :os_desc => os_desc, :networks => networks,
-        :guest_customizations => guest_customizations }
+        :guest_customizations => guest_customizations, :status => status }
     end
 
     private
