@@ -52,6 +52,29 @@ module VCloudClient
     end
 
     ##
+    # Set information about Disks
+    #
+    # Disks can be added, deleted or modified
+    def set_vm_disk_info(vmid, disk_info={})
+      get_response, headers = __get_disk_info(vmid)
+
+      if disk_info[:add]
+        data = add_disk(get_response, disk_info)
+      else
+        data = edit_disk(get_response, disk_info)
+      end
+
+      params = {
+        'method' => :put,
+        'command' => "/vApp/vm-#{vmid}/virtualHardwareSection/disks"
+      }
+      put_response, headers = send_request(params, data, "application/vnd.vmware.vcloud.rasdItemsList+xml")
+
+      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id
+    end
+
+    ##
     # Set VM CPUs
     def set_vm_cpus(vmid, cpu_number)
       params = {
@@ -220,6 +243,62 @@ module VCloudClient
     end
 
     private
+      def add_disk(source_xml, disk_info)
+        disks_count = source_xml.css("Item").css("rasd|HostResource").count
+
+        # FIXME: This is a hack, but dealing with nokogiri APIs can be quite
+        # frustrating sometimes...
+        sibling = source_xml.css("Item").first
+        new_disk = Nokogiri::XML::Node.new "PLACEHOLDER", sibling.parent
+        sibling.add_next_sibling(new_disk)
+        result = source_xml.to_xml
+
+        result.gsub("<PLACEHOLDER/>", """
+          <Item>
+            <rasd:AddressOnParent>#{disks_count}</rasd:AddressOnParent>
+            <rasd:Description>Hard disk</rasd:Description>
+            <rasd:ElementName>Hard disk #{disks_count + 1}</rasd:ElementName>
+            <rasd:HostResource
+                  xmlns:ns12=\"http://www.vmware.com/vcloud/v1.5\"
+                  ns12:capacity=\"#{disk_info[:disk_size]}\"
+                  ns12:busSubType=\"lsilogic\"
+                  ns12:busType=\"6\"/>
+            <rasd:InstanceID>200#{disks_count}</rasd:InstanceID>
+            <rasd:Parent>1</rasd:Parent>
+            <rasd:ResourceType>17</rasd:ResourceType>
+          </Item>""")
+      end
+
+      def edit_disk(source_xml, disk_info)
+        changed = false
+
+        source_xml.css("Item").each do |entry|
+          # Pick only entries with node "HostResource"
+          resource = entry.css("rasd|HostResource").first
+          next unless resource
+
+          name = entry.css("rasd|ElementName").first
+          name = name.text unless name.nil?
+          next unless name == disk_info[:disk_name]
+
+          changed = true
+
+          if disk_info[:delete]
+            entry.remove
+          else
+            # Set disk size
+            resource.attribute("capacity").content = disk_info[:disk_size]
+          end
+          break
+        end
+
+        unless changed
+          @logger.warn "Disk #{disk_info[:disk_name]} not found."
+          raise WrongItemIDError, "Disk #{disk_info[:disk_name]} not found."
+        end
+        source_xml.to_xml
+      end
+
       def __get_disk_info(vmid)
         params = {
           'method' => :get,
