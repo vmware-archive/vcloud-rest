@@ -52,6 +52,23 @@ module VCloudClient
     end
 
     ##
+    # Friendly helper method to fetch a vApp by name
+    # - Organization object
+    # - Organization VDC Name
+    # - vApp name
+    def get_vapp_by_name(organization, vdcName, vAppName)
+      result = nil
+
+      get_vdc_by_name(organization, vdcName)[:vapps].each do |vapp|
+        if vapp[0].downcase == vAppName.downcase
+          result = get_vapp(vapp[1])
+        end
+      end
+
+      result
+    end
+
+    ##
     # Delete a given vapp
     # NOTE: It doesn't verify that the vapp is shutdown
     def delete_vapp(vAppId)
