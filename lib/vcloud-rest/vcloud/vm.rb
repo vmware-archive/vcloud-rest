@@ -159,6 +159,9 @@ module VCloudClient
 
       response, headers = send_request(params)
 
+      vm_name = response.css('Vm').attribute("name")
+      vm_name = vm_name.text unless vm_name.nil?
+
       os_desc = response.css('ovf|OperatingSystemSection ovf|Description').first.text
 
       networks = {}
@@ -187,11 +190,11 @@ module VCloudClient
         :admin_passwd_enabled => response.css('GuestCustomizationSection AdminPasswordEnabled').first.text,
         :admin_passwd_auto => response.css('GuestCustomizationSection AdminPasswordAuto').first.text,
         :admin_passwd => admin_password,
-        :reset_passwd_required => response.css('GuestCustomizationSection ResetPasswordRequired').first.text,
-        :computer_name => response.css('GuestCustomizationSection ComputerName').first.text
+        :reset_passwd_required => response.css('GuestCustomizationSection ResetPasswordRequired').first.text
       }
 
-      { :os_desc => os_desc, :networks => networks, :guest_customizations => guest_customizations }
+      { :vm_name => vm_name, :os_desc => os_desc, :networks => networks,
+        :guest_customizations => guest_customizations }
     end
 
     private
