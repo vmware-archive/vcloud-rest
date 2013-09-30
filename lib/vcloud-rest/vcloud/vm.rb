@@ -200,6 +200,25 @@ module VCloudClient
         :guest_customizations => guest_customizations, :status => status }
     end
 
+    ##
+    # Friendly helper method to fetch a vApp by name
+    # - Organization object
+    # - Organization VDC Name
+    # - vApp Name
+    # - VM Name
+    def get_vm_by_name(organization, vdcName, vAppName, vmName)
+      result = nil
+
+      puts get_vapp_by_name(organization, vdcName, vAppName)
+      get_vapp_by_name(organization, vdcName, vAppName)[:vms_hash].each do |key, values|
+        if key.downcase == vmName.downcase
+          result = get_vm(values[:id])
+        end
+      end
+
+      result
+    end
+
     private
       def __get_disk_info(vmid)
         params = {
