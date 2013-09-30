@@ -195,7 +195,8 @@ module VCloudClient
         :reset_passwd_required => response.css('GuestCustomizationSection ResetPasswordRequired').first.text
       }
 
-      { :vm_name => vm_name, :os_desc => os_desc, :networks => networks,
+      { :id => vmId,
+        :vm_name => vm_name, :os_desc => os_desc, :networks => networks,
         :guest_customizations => guest_customizations, :status => status }
     end
 
