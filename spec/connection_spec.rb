@@ -507,7 +507,24 @@ describe VCloudClient::Connection do
     it "should send the correct content-type and payload" do
       stub_request(:get, @url).
         to_return(:status => 200,
-          :body => "<?xml version=\"1.0\"?>\n<VM xmlns=\"http://www.vmware.com/vcloud/v1.5\" xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\">\n<ovf:OperatingSystemSection><ovf:Description>Test OS</ovf:Description></ovf:OperatingSystemSection>\n<GuestCustomizationSection><Enabled>true</Enabled><AdminPasswordEnabled>false</AdminPasswordEnabled><AdminPasswordAuto>false</AdminPasswordAuto><AdminPassword>testpass</AdminPasswordEnabled><ResetPasswordRequired>false</ResetPasswordRequired><ComputerName>testcomputer</ComputerName></GuestCustomizationSection></VM>\n")
+          :body => "
+            <?xml version=\"1.0\"?>
+            <Vm xmlns=\"http://www.vmware.com/vcloud/v1.5\"
+                xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\"
+                status=\"8\"
+                name=\"test-vm\">
+                <ovf:OperatingSystemSection>
+                  <ovf:Description>Test OS</ovf:Description>
+                </ovf:OperatingSystemSection>
+                <GuestCustomizationSection>
+                  <Enabled>true</Enabled>
+                  <AdminPasswordEnabled>false</AdminPasswordEnabled>
+                  <AdminPasswordAuto>false</AdminPasswordAuto>
+                  <AdminPassword>testpass</AdminPasswordEnabled>
+                  <ResetPasswordRequired>false</ResetPasswordRequired>
+                  <ComputerName>testcomputer</ComputerName>
+                </GuestCustomizationSection></Vm>
+                ")
 
       vm_get = @connection.get_vm("test-vm")
       vm_get[:os_desc].must_equal "Test OS"
