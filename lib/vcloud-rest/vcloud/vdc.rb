@@ -12,6 +12,10 @@ module VCloudClient
       }
 
       response, headers = send_request(params)
+
+      name = response.css("Vdc").attribute("name")
+      name = name.text unless name.nil?
+
       description = response.css("Description").first
       description = description.text unless description.nil?
 
@@ -24,7 +28,8 @@ module VCloudClient
       response.css("Network[type='application/vnd.vmware.vcloud.network+xml']").each do |item|
         networks[item['name']] = item['href'].gsub("#{@api_url}/network/", "")
       end
-      { :description => description, :vapps => vapps, :networks => networks }
+      { :id => vdcId, :name => name, :description => description,
+        :vapps => vapps, :networks => networks }
     end
 
     ##

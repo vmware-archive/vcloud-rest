@@ -209,7 +209,12 @@ describe VCloudClient::Connection do
     it "should return the correct no. of vapps - 1" do
       stub_request(:get, @url).
         to_return(:status => 200,
-         :body => "<ResourceEntity type='application/vnd.vmware.vcloud.vApp+xml' name='vapp_1' href='#{@connection.api_url}/vApp/vapp-vapp_1-url'></CatalogItem>",
+         :body => "<Vdc name='test-vdc'>
+                    <ResourceEntity type='application/vnd.vmware.vcloud.vApp+xml'
+                    name='vapp_1'
+                    href='#{@connection.api_url}/vApp/vapp-vapp_1-url'>
+                    </ResourceEntity>
+                  </Vdc>",
          :headers => {})
 
       vdc_get = @connection.get_vdc("test-vdc")

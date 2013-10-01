@@ -47,8 +47,8 @@ module VCloudClient
         }
       end
 
-      # TODO: EXPAND INFO FROM RESPONSE
-      { :name => name, :description => description, :status => status, :ip => ip, :vms_hash => vms_hash }
+      { :id => vAppId, :name => name, :description => description,
+        :status => status, :ip => ip, :vms_hash => vms_hash }
     end
 
     ##
