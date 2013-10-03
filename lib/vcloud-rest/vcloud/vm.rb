@@ -232,7 +232,6 @@ module VCloudClient
     def get_vm_by_name(organization, vdcName, vAppName, vmName)
       result = nil
 
-      puts get_vapp_by_name(organization, vdcName, vAppName)
       get_vapp_by_name(organization, vdcName, vAppName)[:vms_hash].each do |key, values|
         if key.downcase == vmName.downcase
           result = get_vm(values[:id])
