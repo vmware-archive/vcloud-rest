@@ -72,6 +72,13 @@ A (mostly complete) example can be found in
 
 	examples/example.rb
 
+DEBUGGING
+--
+Debug can be enabled setting the following environment variables:
+
+* _VCLOUD_REST_DEBUG_LEVEL_: to specify the log level (e.g., INFO)
+* _VCLOUD_REST_LOG_FILE_: to specify the output file (defaults to STDOUT)
+
 TESTING
 --
 Simply run:
