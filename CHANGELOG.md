@@ -1,5 +1,33 @@
 Changes
 ==
+Next Version (0.x.y)
+--
+
+FEATURES:
+* Add external ip address to ```get_vm```
+* Add a :send_manifest option to ```upload_ovf```
+* Add methods to create/revert snapshots
+* Add method to clone a vApp
+* Add proper logging (set level via VCLOUD_REST_DEBUG_LEVEL and VCLOUD_REST_LOG_FILE)
+* Add method to retrieve VM info (cpu & RAM)
+* Add method to set VM's CPUs info
+* Add method to set VM's RAM info
+* Add method to retrieve VM's disks info
+* Add method to manage VM's disks (add, delete, resize)
+* Various entities can be searched by name
+
+CHANGES:
+* vApp clone returns an hash to provide also the new vApp's ID
+* retrieve VM's name directly instead of using the GuestCustomization section
+* retrieve VM's status in get_vm
+* Do not track Gemfile.lock anymore
+* Relax nokogiri version to >= 1.5.10
+
+FIXES:
+
+* Reset auth token when a session is destroyed
+* Fix wait_task_completion
+
 2013-07-25 (0.3.0)
 --
 
