@@ -16,7 +16,7 @@ module VCloudClient
       response.css("CatalogItem[type='application/vnd.vmware.vcloud.catalogItem+xml']").each do |item|
         items[item['name']] = item['href'].gsub("#{@api_url}/catalogItem/", "")
       end
-      { :description => description, :items => items }
+      { :id => catalogId, :description => description, :items => items }
     end
 
     ##
