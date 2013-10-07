@@ -65,11 +65,32 @@ module VCloudClient
       description = response.css("Description").first
       description = description.text unless description.nil?
 
-      items = {}
+      items = []
       response.css("Entity[type='application/vnd.vmware.vcloud.vAppTemplate+xml']").each do |item|
-        items[item['name']] = item['href'].gsub("#{@api_url}/vAppTemplate/vappTemplate-", "")
+        itemId = item['href'].gsub("#{@api_url}/vAppTemplate/vappTemplate-", "")
+
+        # Fetch the catalogItemId information
+        params = {
+          'method' => :get,
+          'command' => "/vAppTemplate/vappTemplate-#{itemId}"
+        }
+        response, headers = send_request(params)
+
+        # VMs Hash for all the vApp VM entities
+        vms_hash = {}
+        response.css("/VAppTemplate/Children/Vm").each do |vmElem|
+          vmName = vmElem["name"]
+          vmId = vmElem["href"].gsub("#{@api_url}/vAppTemplate/vm-", "")
+
+          # Add the VM name/id to the VMs Hash
+          vms_hash[vmName] = { :id => vmId }
+        end
+
+        items << { :id => itemId,
+                   :name => item['name'],
+                   :vms_hash => vms_hash }
       end
-      { :description => description, :items => items }
+      { :id => catalogItemId, :description => description, :items => items }
     end
 
     ##
@@ -80,34 +101,12 @@ module VCloudClient
       result = nil
       catalogElems = get_catalog(catalogId)
 
-      catalogElems[:items].each do |catalogElem|
-
-        catalogItem = get_catalog_item(catalogElem[1])
-        if catalogItem[:items][catalogItemName]
-          # This is a vApp Catalog Item
-
-          # fetch CatalogItemId
-          catalogItemId = catalogItem[:items][catalogItemName]
-
-          # Fetch the catalogItemId information
-          params = {
-            'method' => :get,
-            'command' => "/vAppTemplate/vappTemplate-#{catalogItemId}"
-          }
-          response, headers = send_request(params)
-
-          # VMs Hash for all the vApp VM entities
-          vms_hash = {}
-          response.css("/VAppTemplate/Children/Vm").each do |vmElem|
-            vmName = vmElem["name"]
-            vmId = vmElem["href"].gsub("#{@api_url}/vAppTemplate/vm-", "")
-
-            # Add the VM name/id to the VMs Hash
-            vms_hash[vmName] = { :id => vmId }
-          end
-        result = { catalogItemName => catalogItemId, :vms_hash => vms_hash }
+      catalogElems[:items].each do |k, v|
+        if (k.downcase == catalogItemName.downcase)
+          result = get_catalog_item(v)
         end
       end
+
       result
     end
   end

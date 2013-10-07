@@ -231,8 +231,13 @@ describe VCloudClient::Connection do
          :body => "<Entity type='application/vnd.vmware.vcloud.vAppTemplate+xml' name='vapp_templ_1' href='#{@connection.api_url}/vAppTemplate/vappTemplate-vapp_templ_1-url'></CatalogItem>",
          :headers => {})
 
+      stub_request(:get, "https://testuser%40testorg:testpass@testhost.local/api/vAppTemplate/vappTemplate-vapp_templ_1-url").
+          with(:headers => {'Accept'=>'application/*+xml;version=5.1', 'Accept-Encoding'=>'gzip, deflate', 'User-Agent'=>'Ruby'}).
+          to_return(:status => 200, :body => "", :headers => {})
+
       catalog_item_get = @connection.get_catalog_item("test-cat-item")
-      catalog_item_get[:items].first.must_equal ["vapp_templ_1", "vapp_templ_1-url"]
+      catalog_item_get[:items].first[:id].must_equal "vapp_templ_1-url"
+      catalog_item_get[:items].first[:name].must_equal "vapp_templ_1"
     end
   end
 
