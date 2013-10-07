@@ -29,6 +29,7 @@ FIXES:
 * Reset auth token when a session is destroyed
 * Fix wait_task_completion
 * Uniform output for get_catalog_item and get_catalog_item_by_name
+* ParentNetwork is optional
 
 2013-07-25 (0.3.0)
 --
