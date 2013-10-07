@@ -15,6 +15,7 @@ FEATURES:
 * Add method to retrieve VM's disks info
 * Add method to manage VM's disks (add, delete, resize)
 * Various entities can be searched by name
+* Add support to upload a customization script
 
 CHANGES:
 * vApp clone returns an hash to provide also the new vApp's ID

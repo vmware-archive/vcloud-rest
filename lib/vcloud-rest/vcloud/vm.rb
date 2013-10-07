@@ -158,6 +158,7 @@ module VCloudClient
           xml.AdminPasswordEnabled config[:admin_passwd_enabled] if config[:admin_passwd_enabled]
           xml.AdminPassword config[:admin_passwd] if config[:admin_passwd]
           xml.ComputerName computer_name
+          xml.CustomizationScript if config[:customization_script]
       }
       end
 
