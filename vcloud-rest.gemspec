@@ -1,7 +1,11 @@
+# coding: utf-8
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'vcloud-rest/version'
+
 Gem::Specification.new do |s|
   s.name = %q{vcloud-rest}
-  s.version = "0.3.0.pre1"
-  s.date = %q{2013-09-25}
+  s.version = VCloudClient::VERSION
   s.authors = ["Stefano Tortarolo"]
   s.email = ['stefano.tortarolo@gmail.com']
   s.summary = %q{Unofficial ruby bindings for VMWare vCloud's API}
