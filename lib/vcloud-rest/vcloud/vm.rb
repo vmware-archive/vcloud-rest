@@ -174,6 +174,25 @@ module VCloudClient
     end
 
     ##
+    # Force a guest customization
+    def force_customization_vm(vmId)
+      builder = Nokogiri::XML::Builder.new do |xml|
+        xml.DeployVAppParams(
+          "xmlns" => "http://www.vmware.com/vcloud/v1.5",
+          "forceCustomization" => "true")
+      end
+
+      params = {
+        "method" => :post,
+        "command" => "/vApp/vm-#{vmId}/action/deploy"
+      }
+
+      response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.deployVAppParams+xml")
+      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id
+    end
+
+    ##
     # Fetch details about a given VM
     def get_vm(vmId)
       params = {
