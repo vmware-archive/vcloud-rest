@@ -235,12 +235,14 @@ module VCloudClient
         :admin_passwd_enabled => response.css('GuestCustomizationSection AdminPasswordEnabled').first.text,
         :admin_passwd_auto => response.css('GuestCustomizationSection AdminPasswordAuto').first.text,
         :admin_passwd => admin_password,
-        :reset_passwd_required => response.css('GuestCustomizationSection ResetPasswordRequired').first.text
+        :reset_passwd_required => response.css('GuestCustomizationSection ResetPasswordRequired').first.text,
+        :computer_name => response.css('GuestCustomizationSection ComputerName').first.text
       }
 
       { :id => vmId,
         :vm_name => vm_name, :os_desc => os_desc, :networks => networks,
-        :guest_customizations => guest_customizations, :status => status }
+        :guest_customizations => guest_customizations, :status => status
+      }
     end
 
     ##
