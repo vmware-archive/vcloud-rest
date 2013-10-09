@@ -212,5 +212,22 @@ module VCloudClient
           raise UnhandledError, "BadRequest - unhandled error: #{message}.\nPlease report this issue."
         end
       end
+
+    ##
+    # Generic method to send power actions to vApp/VM
+    #
+    # i.e., 'suspend', 'powerOn'
+    def power_action(id, action, type=:vapp)
+      target = "#{type}-#{id}"
+
+      params = {
+        'method' => :post,
+        'command' => "/vApp/#{target}/power/action/#{action}"
+      }
+
+      response, headers = send_request(params)
+      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id
+    end
   end # class
 end

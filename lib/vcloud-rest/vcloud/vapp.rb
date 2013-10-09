@@ -106,14 +106,7 @@ module VCloudClient
     ##
     # Suspend a given vapp
     def suspend_vapp(vAppId)
-      params = {
-        'method' => :post,
-        'command' => "/vApp/vapp-#{vAppId}/power/action/suspend"
-      }
-
-      response, headers = send_request(params)
-      task_id = headers[:location].gsub("#{@api_url}/task/", "")
-      task_id
+      power_action(vAppId, 'suspend')
     end
 
     ##
@@ -122,14 +115,7 @@ module VCloudClient
     # VMware-tools are installed on the underlying VMs.
     # vShield Edge devices are not affected
     def reboot_vapp(vAppId)
-      params = {
-        'method' => :post,
-        'command' => "/vApp/vapp-#{vAppId}/power/action/reboot"
-      }
-
-      response, headers = send_request(params)
-      task_id = headers[:location].gsub("#{@api_url}/task/", "")
-      task_id
+      power_action(vAppId, 'reboot')
     end
 
     ##
@@ -137,27 +123,13 @@ module VCloudClient
     # This will basically reset the VMs within the vApp
     # vShield Edge devices are not affected.
     def reset_vapp(vAppId)
-      params = {
-        'method' => :post,
-        'command' => "/vApp/vapp-#{vAppId}/power/action/reset"
-      }
-
-      response, headers = send_request(params)
-      task_id = headers[:location].gsub("#{@api_url}/task/", "")
-      task_id
+      power_action(vAppId, 'reset')
     end
 
     ##
     # Boot a given vapp
     def poweron_vapp(vAppId)
-      params = {
-        'method' => :post,
-        'command' => "/vApp/vapp-#{vAppId}/power/action/powerOn"
-      }
-
-      response, headers = send_request(params)
-      task_id = headers[:location].gsub("#{@api_url}/task/", "")
-      task_id
+      power_action(vAppId, 'powerOn')
     end
 
     ##
