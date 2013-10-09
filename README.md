@@ -38,6 +38,7 @@ FEATURES
     - set cpu/RAM
     - basic network configuration
     - basic VM Guest Customization configuration
+    - start/stop/delete/reset/suspend/reboot
 - basic vApp compose capabilities
 - basic vApp NAT port forwarding creation
 - Catalog item upload with byterange upload and retry capabilities

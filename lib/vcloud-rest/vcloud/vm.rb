@@ -263,6 +263,54 @@ module VCloudClient
       result
     end
 
+    ##
+    # Shutdown a given vm
+    def poweroff_vm(vmId)
+      builder = Nokogiri::XML::Builder.new do |xml|
+      xml.UndeployVAppParams(
+        "xmlns" => "http://www.vmware.com/vcloud/v1.5") {
+        xml.UndeployPowerAction 'powerOff'
+      }
+      end
+
+      params = {
+        'method' => :post,
+        'command' => "/vApp/vm-#{vmId}/action/undeploy"
+      }
+
+      response, headers = send_request(params, builder.to_xml,
+                      "application/vnd.vmware.vcloud.undeployVAppParams+xml")
+      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id
+    end
+
+    ##
+    # Suspend a given vm
+    def suspend_vm(vmId)
+      power_action(vmId, 'suspend', :vm)
+    end
+
+    ##
+    # reboot a given vm
+    # This will basically initial a guest OS reboot, and will only work if
+    # VMware-tools are installed on the underlying VMs.
+    # vShield Edge devices are not affected
+    def reboot_vm(vmId)
+      power_action(vmId, 'reboot', :vm)
+    end
+
+    ##
+    # reset a given vm
+    def reset_vm(vmId)
+      power_action(vmId, 'reset', :vm)
+    end
+
+    ##
+    # Boot a given vm
+    def poweron_vm(vmId)
+      power_action(vmId, 'powerOn', :vm)
+    end
+
     private
       def add_disk(source_xml, disk_info)
         disks_count = source_xml.css("Item").css("rasd|HostResource").count

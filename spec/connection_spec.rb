@@ -587,4 +587,18 @@ describe VCloudClient::Connection do
       vm_get["memory"][:name].must_equal "2048 MB of memory"
     end
   end
+
+  describe "poweron vm" do
+    before { @url = "https://testuser%40testorg:testpass@testhost.local/api/vApp/vm-test-vm/power/action/powerOn" }
+
+    it "should send the correct request" do
+      stub_request(:post, @url).
+        to_return(:status => 200,
+            :headers => {:location => "#{@connection.api_url}/task/test-startup_task"})
+
+      task_id = @connection.poweron_vm("test-vm")
+      task_id.must_equal "test-startup_task"
+    end
+  end
+
 end
