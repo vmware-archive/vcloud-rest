@@ -28,11 +28,17 @@ FEATURES
 - show VDCs
 - show Catalogs
 - show Catalog Items
-- create/start/stop/delete/show/reset/suspend/reboot vApps
-- show VMs
-- basic vApp network configuration
-- basic VM network configuration
-- basic VM Guest Customization configuration
+- various vApp's commands
+    - show
+    - create/clone
+    - start/stop/delete/reset/suspend/reboot
+    - basic network configuration
+- basic VM configuration
+    - show
+    - set cpu/RAM
+    - basic network configuration
+    - basic VM Guest Customization configuration
+    - start/stop/delete/reset/suspend/reboot
 - basic vApp compose capabilities
 - basic vApp NAT port forwarding creation
 - Catalog item upload with byterange upload and retry capabilities
@@ -66,6 +72,13 @@ EXAMPLE
 A (mostly complete) example can be found in
 
 	examples/example.rb
+
+DEBUGGING
+--
+Debug can be enabled setting the following environment variables:
+
+* _VCLOUD_REST_DEBUG_LEVEL_: to specify the log level (e.g., INFO)
+* _VCLOUD_REST_LOG_FILE_: to specify the output file (defaults to STDOUT)
 
 TESTING
 --

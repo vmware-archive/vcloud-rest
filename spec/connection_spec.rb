@@ -8,8 +8,8 @@ unless Kernel.respond_to?(:require_relative)
 end
 ##
 
-require 'minitest/spec'
 require 'minitest/autorun'
+require 'minitest/spec'
 require 'webmock/minitest'
 require_relative '../lib/vcloud-rest/connection'
 
@@ -209,7 +209,12 @@ describe VCloudClient::Connection do
     it "should return the correct no. of vapps - 1" do
       stub_request(:get, @url).
         to_return(:status => 200,
-         :body => "<ResourceEntity type='application/vnd.vmware.vcloud.vApp+xml' name='vapp_1' href='#{@connection.api_url}/vApp/vapp-vapp_1-url'></CatalogItem>",
+         :body => "<Vdc name='test-vdc'>
+                    <ResourceEntity type='application/vnd.vmware.vcloud.vApp+xml'
+                    name='vapp_1'
+                    href='#{@connection.api_url}/vApp/vapp-vapp_1-url'>
+                    </ResourceEntity>
+                  </Vdc>",
          :headers => {})
 
       vdc_get = @connection.get_vdc("test-vdc")
@@ -226,8 +231,13 @@ describe VCloudClient::Connection do
          :body => "<Entity type='application/vnd.vmware.vcloud.vAppTemplate+xml' name='vapp_templ_1' href='#{@connection.api_url}/vAppTemplate/vappTemplate-vapp_templ_1-url'></CatalogItem>",
          :headers => {})
 
+      stub_request(:get, "https://testuser%40testorg:testpass@testhost.local/api/vAppTemplate/vappTemplate-vapp_templ_1-url").
+          with(:headers => {'Accept'=>'application/*+xml;version=5.1', 'Accept-Encoding'=>'gzip, deflate', 'User-Agent'=>'Ruby'}).
+          to_return(:status => 200, :body => "", :headers => {})
+
       catalog_item_get = @connection.get_catalog_item("test-cat-item")
-      catalog_item_get[:items].first.must_equal ["vapp_templ_1", "vapp_templ_1-url"]
+      catalog_item_get[:items].first[:id].must_equal "vapp_templ_1-url"
+      catalog_item_get[:items].first[:name].must_equal "vapp_templ_1"
     end
   end
 
@@ -507,11 +517,88 @@ describe VCloudClient::Connection do
     it "should send the correct content-type and payload" do
       stub_request(:get, @url).
         to_return(:status => 200,
-          :body => "<?xml version=\"1.0\"?>\n<VM xmlns=\"http://www.vmware.com/vcloud/v1.5\" xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\">\n<ovf:OperatingSystemSection><ovf:Description>Test OS</ovf:Description></ovf:OperatingSystemSection>\n<GuestCustomizationSection><Enabled>true</Enabled><AdminPasswordEnabled>false</AdminPasswordEnabled><AdminPasswordAuto>false</AdminPasswordAuto><AdminPassword>testpass</AdminPasswordEnabled><ResetPasswordRequired>false</ResetPasswordRequired><ComputerName>testcomputer</ComputerName></GuestCustomizationSection></VM>\n")
+          :body => "
+            <?xml version=\"1.0\"?>
+            <Vm xmlns=\"http://www.vmware.com/vcloud/v1.5\"
+                xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\"
+                status=\"8\"
+                name=\"test-vm\">
+                <ovf:OperatingSystemSection>
+                  <ovf:Description>Test OS</ovf:Description>
+                </ovf:OperatingSystemSection>
+                <GuestCustomizationSection>
+                  <Enabled>true</Enabled>
+                  <AdminPasswordEnabled>false</AdminPasswordEnabled>
+                  <AdminPasswordAuto>false</AdminPasswordAuto>
+                  <AdminPassword>testpass</AdminPasswordEnabled>
+                  <ResetPasswordRequired>false</ResetPasswordRequired>
+                  <ComputerName>testcomputer</ComputerName>
+                </GuestCustomizationSection></Vm>
+                ")
 
       vm_get = @connection.get_vm("test-vm")
       vm_get[:os_desc].must_equal "Test OS"
       vm_get[:guest_customizations].wont_be_nil
     end
   end
+
+  describe "show vm details" do
+    before { @url = "https://testuser%40testorg:testpass@testhost.local/api/vApp/vm-test-vm/virtualHardwareSection" }
+
+    it "should retrieve the correct number of CPUs" do
+      stub_request(:get, @url).
+        to_return(:status => 200,
+          :body =>   "
+                <?xml version=\"1.0\" encoding=\"UTF-8\"?>
+                <VApp xmlns:vcloud=\"http://www.vmware.com/vcloud/v1.5\"
+                      xmlns:rasd=\"http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData\"
+                      xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\"
+                      xmlns:vssd=\"http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData\"
+                      xmlns:vmw=\"http://www.vmware.com/schema/ovf\"
+                      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
+              >
+               <ovf:VirtualHardwareSection>
+                <ovf:Item vcloud:href=\"https://testhost.local/api/vApp/vm-test-vm/virtualHardwareSection/cpu\" vcloud:type=\"application/vnd.vmware.vcloud.rasdItem+xml\">
+                    <rasd:AllocationUnits>hertz * 10^6</rasd:AllocationUnits>
+                    <rasd:Description>Number of Virtual CPUs</rasd:Description>
+                    <rasd:ElementName>1 virtual CPU(s)</rasd:ElementName>
+                    <rasd:InstanceID>4</rasd:InstanceID>
+                    <rasd:Reservation>0</rasd:Reservation>
+                    <rasd:ResourceType>3</rasd:ResourceType>
+                    <rasd:VirtualQuantity>1</rasd:VirtualQuantity>
+                    <rasd:Weight>0</rasd:Weight>
+                    <Link rel=\"edit\" type=\"application/vnd.vmware.vcloud.rasdItem+xml\" href=\"https://testhost.local/api/vApp/vm-test-vm/virtualHardwareSection/cpu\"/>
+                </ovf:Item>
+                <ovf:Item vcloud:href=\"https://testhost.local/api/vApp/vm-test-vm/virtualHardwareSection/memory\" vcloud:type=\"application/vnd.vmware.vcloud.rasdItem+xml\">
+                    <rasd:AllocationUnits>byte * 2^20</rasd:AllocationUnits>
+                    <rasd:Description>Memory Size</rasd:Description>
+                    <rasd:ElementName>2048 MB of memory</rasd:ElementName>
+                    <rasd:InstanceID>5</rasd:InstanceID>
+                    <rasd:Reservation>0</rasd:Reservation>
+                    <rasd:ResourceType>4</rasd:ResourceType>
+                    <rasd:VirtualQuantity>2048</rasd:VirtualQuantity>
+                    <rasd:Weight>0</rasd:Weight>
+                    <Link rel=\"edit\" type=\"application/vnd.vmware.vcloud.rasdItem+xml\" href=\"https://testhost.local/api/vApp/vm-test-vm/virtualHardwareSection/memory\"/>
+                </ovf:VirtualHardwareSection>
+                </VApp>")
+      vm_get = @connection.get_vm_info("test-vm")
+
+      vm_get["cpu"][:name].must_equal "1 virtual CPU(s)"
+      vm_get["memory"][:name].must_equal "2048 MB of memory"
+    end
+  end
+
+  describe "poweron vm" do
+    before { @url = "https://testuser%40testorg:testpass@testhost.local/api/vApp/vm-test-vm/power/action/powerOn" }
+
+    it "should send the correct request" do
+      stub_request(:post, @url).
+        to_return(:status => 200,
+            :headers => {:location => "#{@connection.api_url}/task/test-startup_task"})
+
+      task_id = @connection.poweron_vm("test-vm")
+      task_id.must_equal "test-startup_task"
+    end
+  end
+
 end
