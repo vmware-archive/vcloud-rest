@@ -123,7 +123,6 @@ module VCloudClient
         :start_time => task[:start_time], :end_time => task[:end_time] }
     end
 
-
     private
       ##
       # Sends a synchronous request to the vCloud API and returns the response as parsed XML + headers.
