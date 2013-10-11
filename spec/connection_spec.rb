@@ -140,6 +140,17 @@ describe VCloudClient::Connection do
       orgs.must_be_kind_of Hash
       orgs.first.must_equal ['test-org', 'test-org-url']
     end
+
+
+    it "should return only the organisation id as a value" do
+      stub_request(:get, @url).
+          to_return(:status => 200,
+                    :body => "<OrgList><Org href='https://testhost.local/api/org/test-org-url' name='test-org'></Org></OrgList>",
+                    :headers => {})
+
+      orgs = @connection.get_organizations
+      orgs.values.first.must_match(/^(\w+-)+\w+$/)
+    end
   end
 
   describe "get organization" do
