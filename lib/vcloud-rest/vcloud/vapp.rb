@@ -1,5 +1,4 @@
-#require 'vcloud-rest/vcloud/vapp_networking'
-require_relative 'vapp_networking'
+require 'vcloud-rest/vcloud/vapp_networking'
 
 module VCloudClient
   class Connection
