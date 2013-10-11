@@ -39,7 +39,7 @@ module VCloudClient
       )
 
       # Get vAppTemplate Link from location
-      vAppTemplate = headers[:location].gsub("#{@api_url}/vAppTemplate/vappTemplate-", "")
+      vAppTemplate = headers[:location].gsub(/.*\/vAppTemplate\/vappTemplate\-/, "")
       descriptorUpload = response.css("Files Link [rel='upload:default']").first[:href].gsub("#{@host_url}/transfer/", "")
       transferGUID = descriptorUpload.gsub("/descriptor.ovf", "")
 

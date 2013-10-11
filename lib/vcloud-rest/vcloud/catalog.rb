@@ -14,7 +14,7 @@ module VCloudClient
 
       items = {}
       response.css("CatalogItem[type='application/vnd.vmware.vcloud.catalogItem+xml']").each do |item|
-        items[item['name']] = item['href'].gsub("#{@api_url}/catalogItem/", "")
+        items[item['name']] = item['href'].gsub(/.*\/catalogItem\//, "")
       end
       { :id => catalogId, :description => description, :items => items }
     end
@@ -67,7 +67,7 @@ module VCloudClient
 
       items = []
       response.css("Entity[type='application/vnd.vmware.vcloud.vAppTemplate+xml']").each do |item|
-        itemId = item['href'].gsub("#{@api_url}/vAppTemplate/vappTemplate-", "")
+        itemId = item['href'].gsub(/.*\/vAppTemplate\/vappTemplate\-/, "")
 
         # Fetch the catalogItemId information
         params = {
@@ -80,7 +80,7 @@ module VCloudClient
         vms_hash = {}
         response.css("/VAppTemplate/Children/Vm").each do |vmElem|
           vmName = vmElem["name"]
-          vmId = vmElem["href"].gsub("#{@api_url}/vAppTemplate/vm-", "")
+          vmId = vmElem["href"].gsub(/.*\/vAppTemplate\/vm\-/, "")
 
           # Add the VM name/id to the VMs Hash
           vms_hash[vmName] = { :id => vmId }

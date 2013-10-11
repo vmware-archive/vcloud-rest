@@ -1,4 +1,5 @@
-require 'vcloud-rest/vcloud/vapp_networking'
+#require 'vcloud-rest/vcloud/vapp_networking'
+require_relative 'vapp_networking'
 
 module VCloudClient
   class Connection
@@ -42,7 +43,7 @@ module VCloudClient
         vms_hash[vm['name']] = {
           :addresses => addresses,
           :status => convert_vapp_status(vm['status']),
-          :id => vm['href'].gsub("#{@api_url}/vApp/vm-", ''),
+          :id => vm['href'].gsub(/.*\/vApp\/vm\-/, ""),
           :vapp_scoped_local_id => vapp_local_id.text
         }
       end
@@ -78,7 +79,7 @@ module VCloudClient
       }
 
       response, headers = send_request(params)
-      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id = headers[:location].gsub(/.*\/task\//, "")
       task_id
     end
 
@@ -99,7 +100,7 @@ module VCloudClient
 
       response, headers = send_request(params, builder.to_xml,
                       "application/vnd.vmware.vcloud.undeployVAppParams+xml")
-      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id = headers[:location].gsub(/.*\/task\//, "")
       task_id
     end
 
@@ -161,10 +162,9 @@ module VCloudClient
 
       response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.instantiateVAppTemplateParams+xml")
 
-      vapp_id = headers[:location].gsub("#{@api_url}/vApp/vapp-", "")
-
+      vapp_id = headers[:location].gsub(/.*\/vApp\/vapp\-/, "")
       task = response.css("VApp Task[operationName='vdcInstantiateVapp']").first
-      task_id = task["href"].gsub("#{@api_url}/task/", "")
+      task_id = task["href"].gsub(/.*\/task\//, "")
 
       { :vapp_id => vapp_id, :task_id => task_id }
     end
@@ -249,10 +249,10 @@ module VCloudClient
 
       response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.composeVAppParams+xml")
 
-      vapp_id = headers[:location].gsub("#{@api_url}/vApp/vapp-", "")
+      vapp_id = headers[:location].gsub(/.*\/vApp\/vapp\-/, "")
 
       task = response.css("VApp Task[operationName='vdcComposeVapp']").first
-      task_id = task["href"].gsub("#{@api_url}/task/", "")
+      task_id = task["href"].gsub(/.*\/task\//, "")
 
       { :vapp_id => vapp_id, :task_id => task_id }
     end
@@ -271,7 +271,7 @@ module VCloudClient
         }
       end
       response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.createSnapshotParams+xml")
-      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id = headers[:location].gsub(/.*\/task\//, "")
       task_id
     end
 
@@ -283,7 +283,7 @@ module VCloudClient
           "command" => "/vApp/vapp-#{vappId}/action/revertToCurrentSnapshot"
       }
       response, headers = send_request(params)
-      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id = headers[:location].gsub(/.*\/task\//, "")
       task_id
     end
 
@@ -308,10 +308,10 @@ module VCloudClient
       end
       response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.cloneVAppParams+xml")
 
-      vapp_id = headers[:location].gsub("#{@api_url}/vApp/vapp-", "")
+      vapp_id = headers[:location].gsub(/.*\/vApp\/vapp\-/, "")
 
       task = response.css("VApp Task[operationName='vdcCopyVapp']").first
-      task_id = task["href"].gsub("#{@api_url}/task/", "")
+      task_id = task["href"].gsub(/.*\/task\//, "")
 
       {:vapp_id => vapp_id, :task_id => task_id}
     end
@@ -346,7 +346,7 @@ module VCloudClient
 
       vms.each do |vm|
         vms_hash[vm['name']] = {
-          :id => vm['href'].gsub("#{@api_url}/vAppTemplate/vm-", '')
+          :id => vm['href'].gsub(/.*\/vAppTemplate\/vm\-/, "")
         }
       end
 

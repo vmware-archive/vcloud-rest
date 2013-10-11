@@ -137,7 +137,7 @@ module VCloudClient
         }
       end
       response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.createSnapshotParams+xml")
-      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id = headers[:location].gsub("#{@base_url}/task/", "")
       task_id
     end
 
@@ -149,7 +149,7 @@ module VCloudClient
           "command" => "/vApp/vapp-#{vappId}/action/revertToCurrentSnapshot"
       }
       response, headers = send_request(params)
-      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id = headers[:location].gsub("#{@base_url}/task/", "")
       task_id
     end
 
@@ -173,7 +173,7 @@ module VCloudClient
         }
       end
       response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.cloneVAppParams+xml")
-      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id = headers[:location].gsub("#{@base_url}/task/", "")
       task_id
     end
 
@@ -280,7 +280,7 @@ module VCloudClient
       }
 
       response, headers = send_request(params)
-      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id = headers[:location].gsub(/.*\/task\//, "")
       task_id
     end
   end # class
