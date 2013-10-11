@@ -32,6 +32,7 @@ FIXES:
 * Fix wait_task_completion
 * Uniform output for get_catalog_item and get_catalog_item_by_name
 * ParentNetwork is optional
+* Fix ID retrievals using regexps
 
 2013-07-25 (0.3.0)
 --
