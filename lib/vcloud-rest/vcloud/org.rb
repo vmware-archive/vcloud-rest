@@ -13,7 +13,7 @@ module VCloudClient
 
       results = {}
       orgs.each do |org|
-        results[org['name']] = org['href'].gsub("#{@api_url}/org/", "")
+        results[org['name']] = org['href'].gsub(/.*\/org\//, "")
       end
       results
     end
@@ -67,22 +67,22 @@ module VCloudClient
       response, headers = send_request(params)
       catalogs = {}
       response.css("Link[type='application/vnd.vmware.vcloud.catalog+xml']").each do |item|
-        catalogs[item['name']] = item['href'].gsub("#{@api_url}/catalog/", "")
+        catalogs[item['name']] = item['href'].gsub(/.*\/catalog\//, "")
       end
 
       vdcs = {}
       response.css("Link[type='application/vnd.vmware.vcloud.vdc+xml']").each do |item|
-        vdcs[item['name']] = item['href'].gsub("#{@api_url}/vdc/", "")
+        vdcs[item['name']] = item['href'].gsub(/.*\/vdc\//, "")
       end
 
       networks = {}
       response.css("Link[type='application/vnd.vmware.vcloud.orgNetwork+xml']").each do |item|
-        networks[item['name']] = item['href'].gsub("#{@api_url}/network/", "")
+        networks[item['name']] = item['href'].gsub(/.*\/network\//, "")
       end
 
       tasklists = {}
       response.css("Link[type='application/vnd.vmware.vcloud.tasksList+xml']").each do |item|
-        tasklists[item['name']] = item['href'].gsub("#{@api_url}/tasksList/", "")
+        tasklists[item['name']] = item['href'].gsub(/.*\/tasksList\//, "")
       end
 
       { :catalogs => catalogs, :vdcs => vdcs, :networks => networks, :tasklists => tasklists }

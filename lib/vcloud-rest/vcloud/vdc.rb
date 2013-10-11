@@ -21,12 +21,12 @@ module VCloudClient
 
       vapps = {}
       response.css("ResourceEntity[type='application/vnd.vmware.vcloud.vApp+xml']").each do |item|
-        vapps[item['name']] = item['href'].gsub("#{@api_url}/vApp/vapp-", "")
+        vapps[item['name']] = item['href'].gsub(/.*\/vApp\/vapp\-/, "")
       end
 
       networks = {}
       response.css("Network[type='application/vnd.vmware.vcloud.network+xml']").each do |item|
-        networks[item['name']] = item['href'].gsub("#{@api_url}/network/", "")
+        networks[item['name']] = item['href'].gsub(/.*\/network\//, "")
       end
       { :id => vdcId, :name => name, :description => description,
         :vapps => vapps, :networks => networks }

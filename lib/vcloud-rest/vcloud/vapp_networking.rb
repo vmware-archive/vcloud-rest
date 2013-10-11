@@ -25,7 +25,7 @@ module VCloudClient
 
       response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.networkConfigSection+xml")
 
-      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id = headers[:location].gsub(/.*\/task\//, "")
       task_id
     end
 
@@ -75,7 +75,7 @@ module VCloudClient
 
       response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.networkConfigSection+xml")
 
-      task_id = headers[:location].gsub("#{@api_url}/task/", "")
+      task_id = headers[:location].gsub(/.*\/task\//, "")
       task_id
     end
 
