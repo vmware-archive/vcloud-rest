@@ -32,6 +32,31 @@ module VCloudClient
       ip = response.css('IpAddress').first
       ip = ip.text unless ip.nil?
 
+      networks = response.css('NetworkConfig').collect do |network|
+        name = network.attribute('networkName').text
+        ipscopes = response.css('NetworkConfig').collect do |scope|
+          gateway = scope.css('Gateway')
+          gateway = gateway.text unless gateway.nil?
+
+          netmask = scope.css('Netmask')
+          netmask = netmask.text unless netmask.nil?
+
+          fence_mode = scope.css('FenceMode')
+          fence_mode = fence_mode.text unless fence_mode.nil?
+
+          {
+            :gateway => gateway,
+            :netmask => netmask,
+            :fence_mode => fence_mode
+          }
+        end
+
+        {
+          :name => name,
+          :scopes => ipscopes
+        }
+      end
+
       vms = response.css('Children Vm')
       vms_hash = {}
 
@@ -48,7 +73,7 @@ module VCloudClient
       end
 
       { :id => vAppId, :name => name, :description => description,
-        :status => status, :ip => ip, :vms_hash => vms_hash }
+        :status => status, :ip => ip, :networks => networks, :vms_hash => vms_hash }
     end
 
     ##

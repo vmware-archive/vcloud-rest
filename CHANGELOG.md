@@ -18,6 +18,7 @@ FEATURES:
 * Add support to upload a customization script
 * Add support to force Guest Customization for VMs
 * Add support to manage VM's status (start/stop...)
+* get_vapp: retrieve network information
 
 CHANGES:
 * vApp clone returns an hash to provide also the new vApp's ID
