@@ -28,6 +28,7 @@ require 'vcloud-rest/vcloud/catalog'
 require 'vcloud-rest/vcloud/vdc'
 require 'vcloud-rest/vcloud/vm'
 require 'vcloud-rest/vcloud/ovf'
+require 'vcloud-rest/vcloud/network'
 
 module VCloudClient
   class UnauthorizedAccess < StandardError; end

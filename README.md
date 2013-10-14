@@ -42,6 +42,7 @@ FEATURES
 - basic vApp compose capabilities
 - basic vApp NAT port forwarding creation
 - Catalog item upload with byterange upload and retry capabilities
+- show Network details
 
 TODO
 --

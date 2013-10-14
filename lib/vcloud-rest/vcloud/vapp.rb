@@ -34,26 +34,24 @@ module VCloudClient
 
       networks = response.css('NetworkConfig').collect do |network|
         name = network.attribute('networkName').text
-        ipscopes = response.css('NetworkConfig').collect do |scope|
-          gateway = scope.css('Gateway')
-          gateway = gateway.text unless gateway.nil?
+        gateway = network.css('Gateway')
+        gateway = gateway.text unless gateway.nil?
 
-          netmask = scope.css('Netmask')
-          netmask = netmask.text unless netmask.nil?
+        netmask = network.css('Netmask')
+        netmask = netmask.text unless netmask.nil?
 
-          fence_mode = scope.css('FenceMode')
-          fence_mode = fence_mode.text unless fence_mode.nil?
+        fence_mode = network.css('FenceMode')
+        fence_mode = fence_mode.text unless fence_mode.nil?
 
-          {
+        ipscope =  {
             :gateway => gateway,
             :netmask => netmask,
             :fence_mode => fence_mode
           }
-        end
 
         {
           :name => name,
-          :scopes => ipscopes
+          :scope => ipscope
         }
       end
 
