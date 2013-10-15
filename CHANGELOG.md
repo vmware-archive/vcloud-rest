@@ -17,6 +17,7 @@ FEATURES:
 * Various entities can be searched by name
 * Add support to upload a customization script
 * Add support to force Guest Customization for VMs
+* Add support to force Guest Customization for vApps
 * Add support to manage VM's status (start/stop...)
 * get_vapp: retrieve network information
 * Add command to show network details

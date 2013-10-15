@@ -372,8 +372,26 @@ module VCloudClient
         }
       end
 
-      # TODO: EXPAND INFO FROM RESPONSE
       { :name => name, :description => description, :vms_hash => vms_hash }
+    end
+
+    ##
+    # Force a guest customization
+    def force_customization_vapp(vappId)
+      builder = Nokogiri::XML::Builder.new do |xml|
+        xml.DeployVAppParams(
+          "xmlns" => "http://www.vmware.com/vcloud/v1.5",
+          "forceCustomization" => "true")
+      end
+
+      params = {
+        "method" => :post,
+        "command" => "/vApp/vapp-#{vappId}/action/deploy"
+      }
+
+      response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.deployVAppParams+xml")
+      task_id = headers[:location].gsub(/.*\/task\//, "")
+      task_id
     end
   end
 end
