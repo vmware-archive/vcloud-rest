@@ -2,28 +2,54 @@ module VCloudClient
   class Connection
     ##
     # Set vApp Network Config
-    def set_vapp_network_config(vappid, network_name, config={})
-      builder = Nokogiri::XML::Builder.new do |xml|
-      xml.NetworkConfigSection(
-        "xmlns" => "http://www.vmware.com/vcloud/v1.5",
-        "xmlns:ovf" => "http://schemas.dmtf.org/ovf/envelope/1") {
-        xml['ovf'].Info "Network configuration"
-        xml.NetworkConfig("networkName" => network_name) {
-          xml.Configuration {
-            xml.FenceMode(config[:fence_mode] || 'isolated')
-            xml.RetainNetInfoAcrossDeployments(config[:retain_net] || false)
-            xml.ParentNetwork("href" => config[:parent_network]) if config[:parent_network]
-          }
-        }
+    #
+    # Retrieve the existing network config section and edit it
+    # to ensure settings are not lost
+    def set_vapp_network_config(vappid, network, config={})
+      params = {
+        'method' => :get,
+        'command' => "/vApp/vapp-#{vappid}/networkConfigSection"
       }
+
+      netconfig_response, headers = send_request(params)
+
+      picked_network = netconfig_response.css("NetworkConfig").select do |net|
+        net.attribute('networkName').text == network[:name]
+      end.first
+
+      raise WrongItemIDError, "Network named #{network[:name]} not found." unless picked_network
+
+      picked_network.css('FenceMode').first.content = config[:fence_mode] if config[:fence_mode]
+      picked_network.css('IsInherited').first.content = "true"
+
+      if config[:parent_network]
+        parent_network = picked_network.css('ParentNetwork').first
+        new_parent = false
+
+        unless parent_network
+          new_parent = true
+          ipscopes = picked_network.css('IpScopes').first
+          parent_network = Nokogiri::XML::Node.new "ParentNetwork", ipscopes.parent
+        end
+
+        parent_network["name"] = "#{config[:parent_network][:name]}"
+        parent_network["id"] = "#{config[:parent_network][:id]}"
+        parent_network["href"] = "#{@api_url}/admin/network/#{config[:parent_network][:id]}"
+        ipscopes.add_next_sibling(parent_network) if new_parent
       end
+
+      data = netconfig_response.to_xml
 
       params = {
         'method' => :put,
         'command' => "/vApp/vapp-#{vappid}/networkConfigSection"
       }
 
-      response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.networkConfigSection+xml")
+      response, headers = send_request(params, data, "application/vnd.vmware.vcloud.networkConfigSection+xml")
+
+      task_id = headers[:location].gsub(/.*\/task\//, "")
+      task_id
+    end
 
       task_id = headers[:location].gsub(/.*\/task\//, "")
       task_id

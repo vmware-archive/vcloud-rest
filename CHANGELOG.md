@@ -28,6 +28,7 @@ CHANGES:
 * retrieve VM's status in get_vm
 * Do not track Gemfile.lock anymore
 * Relax nokogiri version to >= 1.5.10
+* set_vapp_network_config requires different parameters
 
 FIXES:
 
@@ -36,6 +37,7 @@ FIXES:
 * Uniform output for get_catalog_item and get_catalog_item_by_name
 * ParentNetwork is optional
 * Fix ID retrievals using regexps
+* set_vapp_network_config to ensure existing configs are not lost
 
 2013-07-25 (0.3.0)
 --

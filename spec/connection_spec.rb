@@ -378,13 +378,19 @@ describe VCloudClient::Connection do
     before { @url = "https://testuser%40testorg:testpass@testhost.local/api/vApp/vapp-test-vapp/networkConfigSection" }
 
     it "should send the correct content-type and payload" do
-      stub_request(:put, @url).
-        with(:body => "<?xml version=\"1.0\"?>\n<NetworkConfigSection xmlns=\"http://www.vmware.com/vcloud/v1.5\" xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\">\n  <ovf:Info>Network configuration</ovf:Info>\n  <NetworkConfig networkName=\"test-network\">\n    <Configuration>\n      <FenceMode>isolated</FenceMode>\n      <RetainNetInfoAcrossDeployments>false</RetainNetInfoAcrossDeployments>\n      <ParentNetwork href=\"guid\"/>\n    </Configuration>\n  </NetworkConfig>\n</NetworkConfigSection>\n",
-             :headers => {'Content-Type'=>'application/vnd.vmware.vcloud.networkConfigSection+xml'}).
+      stub_request(:get, "https://testuser%40testorg:testpass@testhost.local/api/vApp/vapp-test-vapp/networkConfigSection").
         to_return(:status => 200,
-             :headers => {:location => "#{@connection.api_url}/task/test-vapp_network_task"})
+          :body => "<?xml version=\"1.0\"?>\n<NetworkConfigSection>\n<NetworkConfig networkName=\"test-network\">\n<Description>This is a special place-holder used for disconnected network interfaces.</Description>\n<Configuration>\n<IpScopes>\n<IpScope>\n<IsInherited>true</IsInherited>\n<Gateway>196.254.254.254</Gateway>\n<Netmask>255.255.0.0</Netmask>\n<Dns1>196.254.254.254</Dns1>\n</IpScope>\n</IpScopes><ParentNetwork name=\"guid\" id=\"tst-par\" href=\"https://testhost.local/api/admin/network/tst-par\"/>\n<FenceMode>isolated</FenceMode>\n</Configuration>\n<IsDeployed>false</IsDeployed>\n</NetworkConfig>\n</NetworkConfigSection>\n",
+      )
 
-      task_id = @connection.set_vapp_network_config("test-vapp", "test-network", { :parent_network => "guid" })
+      stub_request(:put, "https://testuser%40testorg:testpass@testhost.local/api/vApp/vapp-test-vapp/networkConfigSection").
+        with(:body => "<?xml version=\"1.0\"?>\n<NetworkConfigSection>\n<NetworkConfig networkName=\"test-network\">\n<Description>This is a special place-holder used for disconnected network interfaces.</Description>\n<Configuration>\n<IpScopes>\n<IpScope>\n<IsInherited>true</IsInherited>\n<Gateway>196.254.254.254</Gateway>\n<Netmask>255.255.0.0</Netmask>\n<Dns1>196.254.254.254</Dns1>\n</IpScope>\n</IpScopes><ParentNetwork name=\"guid\" id=\"tst-par\" href=\"https://testhost.local/api/admin/network/tst-par\"/>\n<FenceMode>isolated</FenceMode>\n</Configuration>\n<IsDeployed>false</IsDeployed>\n</NetworkConfig>\n</NetworkConfigSection>\n",
+             :headers => {'Accept'=>'application/*+xml;version=5.1', 'Accept-Encoding'=>'gzip, deflate', 'Content-Length'=>'593', 'Content-Type'=>'application/vnd.vmware.vcloud.networkConfigSection+xml', 'User-Agent'=>'Ruby'}).
+        to_return(:status => 200, :body => "", :headers => {:location => "#{@connection.api_url}/task/test-vapp_network_task"})
+
+      task_id = @connection.set_vapp_network_config("test-vapp",
+                                          {:name => "test-network", :id => 'tst-id'},
+                                          { :parent_network => {:name => "guid", :id => 'tst-par'} })
       task_id.must_equal "test-vapp_network_task"
     end
 
