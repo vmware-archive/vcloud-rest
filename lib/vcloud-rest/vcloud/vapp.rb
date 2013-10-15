@@ -34,6 +34,10 @@ module VCloudClient
 
       networks = response.css('NetworkConfig').collect do |network|
         name = network.attribute('networkName').text
+
+        # Skip placeholder network
+        next if name == 'none'
+
         gateway = network.css('Gateway')
         gateway = gateway.text unless gateway.nil?
 
@@ -43,10 +47,16 @@ module VCloudClient
         fence_mode = network.css('FenceMode')
         fence_mode = fence_mode.text unless fence_mode.nil?
 
+        parent_network = network.css('ParentNetwork')
+        if parent_network
+          parent_network = parent_network.attribute('name').text
+        end
+
         ipscope =  {
             :gateway => gateway,
             :netmask => netmask,
-            :fence_mode => fence_mode
+            :fence_mode => fence_mode,
+            :parent_network => parent_network
           }
 
         {
