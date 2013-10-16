@@ -51,10 +51,6 @@ module VCloudClient
       task_id
     end
 
-      task_id = headers[:location].gsub(/.*\/task\//, "")
-      task_id
-    end
-
     ##
     # Set vApp port forwarding rules
     #
