@@ -20,7 +20,8 @@ FEATURES:
 * Add support to force Guest Customization for vApps
 * Add support to manage VM's status (start/stop...)
 * get_vapp: retrieve network information
-* Add command to show network details
+* Add method to show network details
+* Add method to remove a network from a vApp
 
 CHANGES:
 * vApp clone returns an hash to provide also the new vApp's ID

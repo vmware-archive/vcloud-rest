@@ -52,6 +52,35 @@ module VCloudClient
     end
 
     ##
+    # Remove an existing network
+    def delete_vapp_network(vAppId, network)
+      params = {
+        'method' => :get,
+        'command' => "/vApp/vapp-#{vAppId}/networkConfigSection"
+      }
+
+      netconfig_response, headers = send_request(params)
+
+      picked_network = netconfig_response.css("NetworkConfig").select do |net|
+        net.attribute('networkName').text == network[:name]
+      end.first
+
+      raise WrongItemIDError, "Network #{network[:name]} not found on this vApp." unless picked_network
+
+      picked_network.remove
+
+      params = {
+        'method' => :put,
+        'command' => "/vApp/vapp-#{vAppId}/networkConfigSection"
+      }
+
+      put_response, headers = send_request(params, netconfig_response.to_xml, "application/vnd.vmware.vcloud.networkConfigSection+xml")
+
+      task_id = headers[:location].gsub(/.*\/task\//, "")
+      task_id
+    end
+
+    ##
     # Set vApp port forwarding rules
     #
     # - vappid: id of the vapp to be modified
