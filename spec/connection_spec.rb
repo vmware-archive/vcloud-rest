@@ -377,7 +377,7 @@ describe VCloudClient::Connection do
   describe "vapp network config" do
     before { @url = "https://testuser%40testorg:testpass@testhost.local/api/vApp/vapp-test-vapp/networkConfigSection" }
 
-    it "should send the correct content-type and payload" do
+    it "set_vapp_network_config should send the correct content-type and payload" do
       stub_request(:get, "https://testuser%40testorg:testpass@testhost.local/api/vApp/vapp-test-vapp/networkConfigSection").
         to_return(:status => 200,
           :body => "<?xml version=\"1.0\"?>\n<NetworkConfigSection>\n<NetworkConfig networkName=\"test-network\">\n<Description>This is a special place-holder used for disconnected network interfaces.</Description>\n<Configuration>\n<IpScopes>\n<IpScope>\n<IsInherited>true</IsInherited>\n<Gateway>196.254.254.254</Gateway>\n<Netmask>255.255.0.0</Netmask>\n<Dns1>196.254.254.254</Dns1>\n</IpScope>\n</IpScopes><ParentNetwork name=\"guid\" id=\"tst-par\" href=\"https://testhost.local/api/admin/network/tst-par\"/>\n<FenceMode>isolated</FenceMode>\n</Configuration>\n<IsDeployed>false</IsDeployed>\n</NetworkConfig>\n</NetworkConfigSection>\n",
@@ -393,6 +393,71 @@ describe VCloudClient::Connection do
                                           { :parent_network => {:name => "guid", :id => 'tst-par'} })
       task_id.must_equal "test-vapp_network_task"
     end
+
+    it "add_org_network_to_vapp should send the correct content-type and payload" do
+      stub_request(:get, "https://testuser%40testorg:testpass@testhost.local/api/network/tst-id").
+        with(:headers => {'Accept'=>'application/*+xml;version=5.1', 'Accept-Encoding'=>'gzip, deflate', 'User-Agent'=>'Ruby'}).
+        to_return(:status => 200, :body => """
+            <OrgVdcNetwork>
+                <Description>10.202.3.251 - 10.202.3.254</Description>
+                <Configuration>
+                    <IpScopes>
+                        <IpScope>
+                            <IsInherited>true</IsInherited>
+                            <Gateway>10.202.3.129</Gateway>
+                            <Netmask>255.255.255.128</Netmask>
+                            <Dns1>10.101.0.10</Dns1>
+                            <Dns2>10.101.0.105</Dns2>
+                            <DnsSuffix>testdns.example.local</DnsSuffix>
+                            <IsEnabled>true</IsEnabled>
+                            <IpRanges>
+                                <IpRange>
+                                    <StartAddress>10.202.3.251</StartAddress>
+                                    <EndAddress>10.202.3.254</EndAddress>
+                                </IpRange>
+                            </IpRanges>
+                        </IpScope>
+                    </IpScopes>
+                    <FenceMode>bridged</FenceMode>
+                    <RetainNetInfoAcrossDeployments>false</RetainNetInfoAcrossDeployments>
+                </Configuration>
+                <IsShared>false</IsShared>
+            </OrgVdcNetwork>""")
+
+      stub_request(:get, "https://testuser%40testorg:testpass@testhost.local/api/vApp/vapp-test-vapp/networkConfigSection").
+        with(:headers => {'Accept'=>'application/*+xml;version=5.1', 'Accept-Encoding'=>'gzip, deflate', 'User-Agent'=>'Ruby'}).
+        to_return(:status => 200,
+          :body => """<NetworkConfigSection>
+          <NetworkConfig networkName=\"none\">
+            <Description>This is a special place-holder used for disconnected network interfaces.</Description>
+            <Configuration>
+                <IpScopes>
+                    <IpScope>
+                        <IsInherited>false</IsInherited>
+                        <Gateway>196.254.254.254</Gateway>
+                        <Netmask>255.255.0.0</Netmask>
+                        <Dns1>196.254.254.254</Dns1>
+                    </IpScope>
+                </IpScopes>
+                <FenceMode>isolated</FenceMode>
+            </Configuration>
+            <IsDeployed>false</IsDeployed>
+          </NetworkConfig>
+        </NetworkConfigSection>""")
+
+      stub_request(:put, "https://testuser%40testorg:testpass@testhost.local/api/vApp/vapp-test-vapp/networkConfigSection").
+        with(:body => "<?xml version=\"1.0\"?>\n<NetworkConfigSection>\n          <NetworkConfig networkName=\"none\">\n            <Description>This is a special place-holder used for disconnected network interfaces.</Description>\n            <Configuration>\n                <IpScopes>\n                    <IpScope>\n                        <IsInherited>false</IsInherited>\n                        <Gateway>196.254.254.254</Gateway>\n                        <Netmask>255.255.0.0</Netmask>\n                        <Dns1>196.254.254.254</Dns1>\n                    </IpScope>\n                </IpScopes>\n                <FenceMode>isolated</FenceMode>\n            </Configuration>\n            <IsDeployed>false</IsDeployed>\n          </NetworkConfig>\n        <NetworkConfig networkName=\"test-network\"><Configuration>\n                    <IpScopes>\n                        <IpScope>\n                            <IsInherited>true</IsInherited>\n                            <Gateway>10.202.3.129</Gateway>\n                            <Netmask>255.255.255.128</Netmask>\n                            <Dns1>10.101.0.10</Dns1>\n                            <Dns2>10.101.0.105</Dns2>\n                            <DnsSuffix>testdns.example.local</DnsSuffix>\n                            <IsEnabled>true</IsEnabled>\n                            <IpRanges>\n                                <IpRange>\n                                    <StartAddress>10.202.3.251</StartAddress>\n                                    <EndAddress>10.202.3.254</EndAddress>\n                                </IpRange>\n                            </IpRanges>\n                        </IpScope>\n                    </IpScopes><ParentNetwork href=\"https://testhost.local/api/network/tst-id\" name=\"test-network\" type=\"application/vnd.vmware.vcloud.network+xml\"/>\n                    <FenceMode>bridged</FenceMode>\n                    <RetainNetInfoAcrossDeployments>false</RetainNetInfoAcrossDeployments>\n                <Features><FirewallService><IsEnabled>false</IsEnabled></FirewallService></Features></Configuration></NetworkConfig></NetworkConfigSection>\n",
+             :headers => {'Accept'=>'application/*+xml;version=5.1', 'Accept-Encoding'=>'gzip, deflate', 'Content-Length'=>'2082', 'Content-Type'=>'application/vnd.vmware.vcloud.networkConfigSection+xml', 'User-Agent'=>'Ruby'}).
+        to_return(:status => 200,
+             :headers => {:location => "#{@connection.api_url}/task/test-vapp_network_task"})
+
+      task_id = @connection.add_org_network_to_vapp("test-vapp",
+                                          {:name => "test-network", :id => 'tst-id'},
+                                          {:parent_network => {:name => "test-network", :id => 'tst-id'},
+                                           :fence_mode => 'bridged' })
+      task_id.must_equal "test-vapp_network_task"
+    end
+
 
     describe "VApp Edge" do
       it "should retrieve public IP with natRouted and portForwarding" do

@@ -52,6 +52,70 @@ module VCloudClient
     end
 
     ##
+    # Add an existing network (from Org) to vApp
+    def add_org_network_to_vapp(vAppId, network, config={})
+      params = {
+        'method' => :get,
+        'command' => "/vApp/vapp-#{vAppId}/networkConfigSection"
+      }
+
+      vapp_networks, headers = send_request(params)
+
+      params = {
+        'method' => :get,
+        'command' => "/network/#{network[:id]}"
+      }
+
+      # Retrieve the requested network and prepare it for customization
+      base_network, headers = send_request(params)
+
+      # Create a network configuration based on the info retrieved from /network
+      net_configuration = base_network.css('Configuration').first
+
+      if config[:parent_network]
+        # At this stage, set itself as parent network
+        parent_network = Nokogiri::XML::Node.new "ParentNetwork", net_configuration
+        parent_network["href"] = "#{@api_url}/network/#{config[:parent_network][:id]}"
+        parent_network["name"] = config[:parent_network][:name]
+        parent_network["type"] = "application/vnd.vmware.vcloud.network+xml"
+        base_network.css('IpScopes').first.add_next_sibling(parent_network)
+      end
+
+      fence_mode = net_configuration.css('FenceMode').first
+      fence_mode.content = config[:fence_mode] || 'isolated'
+
+      parent_section = vapp_networks.css('NetworkConfigSection').first
+      new_network = Nokogiri::XML::Node.new "NetworkConfig", parent_section
+      new_network['networkName'] = network[:name]
+      # Note: this is a hack to avoid wrong merges through Nokogiri
+      # that would add a default: namespace
+      placeholder = Nokogiri::XML::Node.new "PLACEHOLDER", new_network
+      new_network.add_child placeholder
+      parent_section.add_child(new_network)
+
+      network_features = Nokogiri::XML::Node.new "Features", net_configuration
+      firewall_service = Nokogiri::XML::Node.new "FirewallService", network_features
+      firewall_enabled = Nokogiri::XML::Node.new "IsEnabled", firewall_service
+      firewall_enabled.content = config[:firewall_enabled] || "false"
+
+      firewall_service.add_child(firewall_enabled)
+      network_features.add_child(firewall_service)
+      net_configuration.add_child(network_features)
+
+      data = vapp_networks.to_xml.gsub("<PLACEHOLDER/>", base_network.css('Configuration').to_xml)
+
+      params = {
+        'method' => :put,
+        'command' => "/vApp/vapp-#{vAppId}/networkConfigSection"
+      }
+
+      put_response, headers = send_request(params, data, "application/vnd.vmware.vcloud.networkConfigSection+xml")
+
+      task_id = headers[:location].gsub(/.*\/task\//, "")
+      task_id
+    end
+
+    ##
     # Remove an existing network
     def delete_vapp_network(vAppId, network)
       params = {

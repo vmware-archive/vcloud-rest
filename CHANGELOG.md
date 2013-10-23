@@ -22,6 +22,7 @@ FEATURES:
 * get_vapp: retrieve network information
 * Add method to show network details
 * Add method to remove a network from a vApp
+* Add method to add an external (from vDC) network to a vApp
 
 CHANGES:
 * vApp clone returns an hash to provide also the new vApp's ID
