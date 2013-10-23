@@ -48,9 +48,8 @@ module VCloudClient
         fence_mode = fence_mode.text unless fence_mode.nil?
 
         parent_network = network.css('ParentNetwork')
-        if parent_network
-          parent_network = parent_network.attribute('name').text
-        end
+        parent_network = parent_network.attribute('name').text unless parent_network.empty?
+        parent_network = nil if parent_network.empty?
 
         ipscope =  {
             :gateway => gateway,
