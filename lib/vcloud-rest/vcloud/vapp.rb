@@ -49,12 +49,16 @@ module VCloudClient
           parent_network = parent_network.attribute('name').text unless parent_network.empty?
           parent_network = nil if parent_network.empty?
 
+          retain_network = network.css('RetainNetInfoAcrossDeployments')
+          retain_network = retain_network.text unless retain_network.nil?
+
           # TODO: handle multiple scopes?
           ipscope =  {
               :gateway => gateway,
               :netmask => netmask,
               :fence_mode => fence_mode,
-              :parent_network => parent_network
+              :parent_network => parent_network,
+              :retain_network => retain_network
             }
 
           {

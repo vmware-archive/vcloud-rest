@@ -31,6 +31,7 @@ CHANGES:
 * Do not track Gemfile.lock anymore
 * Relax nokogiri version to >= 1.5.10
 * set_vapp_network_config requires different parameters
+* retrieve vApp's RetainNetInfoAcrossDeployments setting
 
 FIXES:
 
