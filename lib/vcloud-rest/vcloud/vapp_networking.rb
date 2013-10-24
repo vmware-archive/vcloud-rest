@@ -51,68 +51,21 @@ module VCloudClient
       task_id
     end
 
+
     ##
     # Add an existing network (from Org) to vApp
-    def add_org_network_to_vapp(vAppId, network, config={})
-      params = {
-        'method' => :get,
-        'command' => "/vApp/vapp-#{vAppId}/networkConfigSection"
-      }
+    #
+    #
+    def add_org_network_to_vapp(vAppId, network, config)
+      network_section = generate_network_section(vAppId, network, config, :external)
+      add_network_to_vapp(vAppId, network_section)
+    end
 
-      vapp_networks, headers = send_request(params)
-
-      params = {
-        'method' => :get,
-        'command' => "/network/#{network[:id]}"
-      }
-
-      # Retrieve the requested network and prepare it for customization
-      base_network, headers = send_request(params)
-
-      # Create a network configuration based on the info retrieved from /network
-      net_configuration = base_network.css('Configuration').first
-
-      if config[:parent_network]
-        # At this stage, set itself as parent network
-        parent_network = Nokogiri::XML::Node.new "ParentNetwork", net_configuration
-        parent_network["href"] = "#{@api_url}/network/#{config[:parent_network][:id]}"
-        parent_network["name"] = config[:parent_network][:name]
-        parent_network["type"] = "application/vnd.vmware.vcloud.network+xml"
-        base_network.css('IpScopes').first.add_next_sibling(parent_network)
-      end
-
-      fence_mode = net_configuration.css('FenceMode').first
-      fence_mode.content = config[:fence_mode] || 'isolated'
-
-      parent_section = vapp_networks.css('NetworkConfigSection').first
-      new_network = Nokogiri::XML::Node.new "NetworkConfig", parent_section
-      new_network['networkName'] = network[:name]
-      # Note: this is a hack to avoid wrong merges through Nokogiri
-      # that would add a default: namespace
-      placeholder = Nokogiri::XML::Node.new "PLACEHOLDER", new_network
-      new_network.add_child placeholder
-      parent_section.add_child(new_network)
-
-      network_features = Nokogiri::XML::Node.new "Features", net_configuration
-      firewall_service = Nokogiri::XML::Node.new "FirewallService", network_features
-      firewall_enabled = Nokogiri::XML::Node.new "IsEnabled", firewall_service
-      firewall_enabled.content = config[:firewall_enabled] || "false"
-
-      firewall_service.add_child(firewall_enabled)
-      network_features.add_child(firewall_service)
-      net_configuration.add_child(network_features)
-
-      data = vapp_networks.to_xml.gsub("<PLACEHOLDER/>", base_network.css('Configuration').to_xml)
-
-      params = {
-        'method' => :put,
-        'command' => "/vApp/vapp-#{vAppId}/networkConfigSection"
-      }
-
-      put_response, headers = send_request(params, data, "application/vnd.vmware.vcloud.networkConfigSection+xml")
-
-      task_id = headers[:location].gsub(/.*\/task\//, "")
-      task_id
+    ##
+    # Add an existing network (from Org) to vApp
+    def add_internal_network_to_vapp(vAppId, network, config)
+      network_section = generate_network_section(vAppId, network, config, :internal)
+      add_network_to_vapp(vAppId, network_section)
     end
 
     ##
@@ -263,5 +216,115 @@ module VCloudClient
       edgeIp = config.css('/RouterInfo/ExternalIp')
       edgeIp = edgeIp.text unless edgeIp.nil?
     end
+
+    private
+      ##
+      # Merge the Configuration section of a new network and add specific configuration
+      def merge_network_config(vapp_networks, new_network, config)
+        net_configuration = new_network.css('Configuration').first
+
+        fence_mode = new_network.css('FenceMode').first
+        fence_mode.content = config[:fence_mode] || 'isolated'
+
+        network_features = Nokogiri::XML::Node.new "Features", net_configuration
+        firewall_service = Nokogiri::XML::Node.new "FirewallService", network_features
+        firewall_enabled = Nokogiri::XML::Node.new "IsEnabled", firewall_service
+        firewall_enabled.content = config[:firewall_enabled] || "false"
+
+        firewall_service.add_child(firewall_enabled)
+        network_features.add_child(firewall_service)
+        net_configuration.add_child(network_features)
+
+        if config[:parent_network]
+          # At this stage, set itself as parent network
+          parent_network = Nokogiri::XML::Node.new "ParentNetwork", net_configuration
+          parent_network["href"] = "#{@api_url}/network/#{config[:parent_network][:id]}"
+          parent_network["name"] = config[:parent_network][:name]
+          parent_network["type"] = "application/vnd.vmware.vcloud.network+xml"
+          new_network.css('IpScopes').first.add_next_sibling(parent_network)
+        end
+
+        vapp_networks.to_xml.gsub("<PLACEHOLDER/>", new_network.css('Configuration').to_xml)
+      end
+
+      ##
+      # Add a new network to a vApp
+      def add_network_to_vapp(vAppId, network_section)
+        params = {
+          'method' => :put,
+          'command' => "/vApp/vapp-#{vAppId}/networkConfigSection"
+        }
+
+        response, headers = send_request(params, network_section, "application/vnd.vmware.vcloud.networkConfigSection+xml")
+
+        task_id = headers[:location].gsub(/.*\/task\//, "")
+        task_id
+      end
+
+      ##
+      # Create a fake NetworkConfig node whose content will be replaced later
+      #
+      # Note: this is a hack to avoid wrong merges through Nokogiri
+      # that would add a default: namespace
+      def create_fake_network_node(vapp_networks, network_name)
+        parent_section = vapp_networks.css('NetworkConfigSection').first
+        new_network = Nokogiri::XML::Node.new "NetworkConfig", parent_section
+        new_network['networkName'] = network_name
+        placeholder = Nokogiri::XML::Node.new "PLACEHOLDER", new_network
+        new_network.add_child placeholder
+        parent_section.add_child(new_network)
+        vapp_networks
+      end
+
+      ##
+      # Create a fake Configuration node for internal networking
+      def create_internal_network_node(network_config)
+        builder = Nokogiri::XML::Builder.new do |xml|
+          xml.Configuration {
+            xml.IpScopes {
+              xml.IpScope {
+                xml.IsInherited(network_config[:is_inherited] || "false")
+                xml.Gateway network_config[:gateway]
+                xml.Netmask network_config[:netmask]
+                xml.Dns1 network_config[:dns1] if network_config[:dns1]
+                xml.Dns2 network_config[:dns2] if network_config[:dns2]
+                xml.DnsSuffix network_config[:dns_suffix] if network_config[:dns_suffix]
+                xml.IsEnabled(network_config[:is_enabled] || true)
+                xml.IpRanges {
+                  xml.IpRange {
+                    xml.StartAddress network_config[:start_address]
+                    xml.EndAddress network_config[:end_address]
+                  }
+                }
+              }
+            }
+            xml.FenceMode 'isolated'
+            xml.RetainNetInfoAcrossDeployments(network_config[:retain_info] || false)
+          }
+        end
+        builder.doc
+      end
+
+      ##
+      # Create a NetworkConfigSection for a new internal or external network
+      def generate_network_section(vAppId, network, config, type)
+        params = {
+          'method' => :get,
+          'command' => "/vApp/vapp-#{vAppId}/networkConfigSection"
+        }
+
+        vapp_networks, headers = send_request(params)
+        create_fake_network_node(vapp_networks, network[:name])
+
+        if type.to_sym == :internal
+          # Create a network configuration based on the config
+          new_network = create_internal_network_node(config)
+        else
+          # Retrieve the requested network and prepare it for customization
+          new_network = get_base_network(network[:id])
+        end
+
+        merge_network_config(vapp_networks, new_network, config)
+      end
   end
 end

@@ -3,12 +3,7 @@ module VCloudClient
     ##
     # Fetch details about a given network
     def get_network(networkId)
-      params = {
-        'method' => :get,
-        'command' => "/network/#{networkId}"
-      }
-
-      response, headers = send_request(params)
+      response = get_base_network(networkId)
 
       name = response.css('OrgVdcNetwork').attribute('name').text
 
@@ -67,5 +62,17 @@ module VCloudClient
 
       result
     end
+
+    private
+      # Get a network configuration
+      def get_base_network(networkId)
+        params = {
+          'method' => :get,
+          'command' => "/network/#{networkId}"
+        }
+
+        base_network, headers = send_request(params)
+        base_network
+      end
   end
 end
