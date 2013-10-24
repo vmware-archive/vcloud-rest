@@ -70,10 +70,9 @@ module VCloudClient
       vms = response.css('Children Vm')
       vms_hash = {}
 
-      # ipAddress could be namespaced or not: see https://github.com/astratto/vcloud-rest/issues/3
       vms.each do |vm|
         vapp_local_id = vm.css('VAppScopedLocalId')
-        addresses = vm.css('rasd|Connection').collect{|n| n['vcloud:ipAddress'] || n['ipAddress'] }
+        addresses = vm.css('rasd|Connection').collect{|n| n.attribute('ipAddress') }
         vms_hash[vm['name']] = {
           :addresses => addresses,
           :status => convert_vapp_status(vm['status']),
