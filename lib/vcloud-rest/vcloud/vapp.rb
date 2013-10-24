@@ -32,37 +32,36 @@ module VCloudClient
       ip = response.css('IpAddress').first
       ip = ip.text unless ip.nil?
 
-      networks = response.css('NetworkConfig').collect do |network|
-        name = network.attribute('networkName').text
+      networks = response.css('NetworkConfig').reject{|n| n.attribute('networkName').text == 'none'}.
+        collect do |network|
+          net_name = network.attribute('networkName').text
 
-        # Skip placeholder network
-        next if name == 'none'
+          gateway = network.css('Gateway')
+          gateway = gateway.text unless gateway.nil?
 
-        gateway = network.css('Gateway')
-        gateway = gateway.text unless gateway.nil?
+          netmask = network.css('Netmask')
+          netmask = netmask.text unless netmask.nil?
 
-        netmask = network.css('Netmask')
-        netmask = netmask.text unless netmask.nil?
+          fence_mode = network.css('FenceMode')
+          fence_mode = fence_mode.text unless fence_mode.nil?
 
-        fence_mode = network.css('FenceMode')
-        fence_mode = fence_mode.text unless fence_mode.nil?
+          parent_network = network.css('ParentNetwork')
+          parent_network = parent_network.attribute('name').text unless parent_network.empty?
+          parent_network = nil if parent_network.empty?
 
-        parent_network = network.css('ParentNetwork')
-        parent_network = parent_network.attribute('name').text unless parent_network.empty?
-        parent_network = nil if parent_network.empty?
+          # TODO: handle multiple scopes?
+          ipscope =  {
+              :gateway => gateway,
+              :netmask => netmask,
+              :fence_mode => fence_mode,
+              :parent_network => parent_network
+            }
 
-        ipscope =  {
-            :gateway => gateway,
-            :netmask => netmask,
-            :fence_mode => fence_mode,
-            :parent_network => parent_network
+          {
+            :name => net_name,
+            :scope => ipscope
           }
-
-        {
-          :name => name,
-          :scope => ipscope
-        }
-      end
+        end
 
       vms = response.css('Children Vm')
       vms_hash = {}
