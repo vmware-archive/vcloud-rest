@@ -21,6 +21,7 @@ module VCloudClient
 
       picked_network.css('FenceMode').first.content = config[:fence_mode] if config[:fence_mode]
       picked_network.css('IsInherited').first.content = "true"
+      picked_network.css('RetainNetInfoAcrossDeployments').first.content = config[:retain_network] if config[:retain_network]
 
       if config[:parent_network]
         parent_network = picked_network.css('ParentNetwork').first
