@@ -288,7 +288,7 @@ describe VCloudClient::Connection do
     it "should return the correct no. of VMs - 1" do
       stub_request(:get, @url).
         to_return(:status => 200,
-         :body => "<?xml version=\"1.0\" ?><VApp xmlns=\"http://www.vmware.com/vcloud/v1.5\" xmlns:rasd=\"http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData\"><Children><Vm name='vm_1' status='4' href='#{@connection.api_url}/vApp/vm-vm_1'><rasd:Connection vcloud:ipAddress='127.0.0.1'></rasd:Connection></Vm></Children></VApp>",
+         :body => "<?xml version=\"1.0\" ?><VApp xmlns=\"http://www.vmware.com/vcloud/v1.5\" xmlns:ns1=\"http://testnamespace\" xmlns:rasd=\"http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData\"><Children><Vm name='vm_1' status='4' href='#{@connection.api_url}/vApp/vm-vm_1'><rasd:Connection ns1:ipAddress='127.0.0.1'></rasd:Connection></Vm></Children></VApp>",
          :headers => {})
 
       vapp_get = @connection.get_vapp("test-vapp")

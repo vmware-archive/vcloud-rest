@@ -72,7 +72,12 @@ module VCloudClient
 
       vms.each do |vm|
         vapp_local_id = vm.css('VAppScopedLocalId')
-        addresses = vm.css('rasd|Connection').collect{|n| n.attribute('ipAddress') }
+        addresses = vm.css('rasd|Connection').collect do |n|
+          address = n['vcloud:ipAddress']
+          address = n.attributes['ipAddress'] unless address
+          address = address.value if address
+        end
+
         vms_hash[vm['name']] = {
           :addresses => addresses,
           :status => convert_vapp_status(vm['status']),
