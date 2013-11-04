@@ -20,18 +20,19 @@ FEATURES:
 * Add support to force Guest Customization for vApps
 * Add support to manage VM's status (start/stop...)
 * get_vapp: retrieve network information
+* get_vapp: retrieve vApp snapshot info
 * Add method to show network details
 * Add method to remove a network from a vApp
 * Add method to add an external (from vDC) network to a vApp
+* retrieve vApp's RetainNetInfoAcrossDeployments setting
+* retrieve VM's status in get_vm
 
 CHANGES:
 * vApp clone returns an hash to provide also the new vApp's ID
 * retrieve VM's name directly instead of using the GuestCustomization section
-* retrieve VM's status in get_vm
 * Do not track Gemfile.lock anymore
 * Relax nokogiri version to >= 1.5.10
 * set_vapp_network_config requires different parameters
-* retrieve vApp's RetainNetInfoAcrossDeployments setting
 
 FIXES:
 
