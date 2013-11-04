@@ -67,6 +67,18 @@ module VCloudClient
           }
         end
 
+      vapp_snapshot = nil
+      response.css('SnapshotSection').each do |snapshot_section|
+        if snapshot_section['href'] =~ /.*\/vApp\/vapp\-/
+          snapshot = snapshot_section.css("Snapshot").first
+          vapp_snapshot = {
+            :size => snapshot['size'],
+            :creation_date => snapshot['created']
+          }
+          break
+        end
+      end
+
       vms = response.css('Children Vm')
       vms_hash = {}
 
@@ -87,7 +99,8 @@ module VCloudClient
       end
 
       { :id => vAppId, :name => name, :description => description,
-        :status => status, :ip => ip, :networks => networks, :vms_hash => vms_hash }
+        :status => status, :ip => ip, :networks => networks,
+        :vapp_snapshot => vapp_snapshot, :vms_hash => vms_hash }
     end
 
     ##
