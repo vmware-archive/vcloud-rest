@@ -26,6 +26,7 @@ FEATURES:
 * Add method to add an external (from vDC) network to a vApp
 * retrieve vApp's RetainNetInfoAcrossDeployments setting
 * retrieve VM's status in get_vm
+* Add methods to list/cancel Tasks
 
 CHANGES:
 * vApp clone returns an hash to provide also the new vApp's ID

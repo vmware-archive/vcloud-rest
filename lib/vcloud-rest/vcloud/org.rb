@@ -58,6 +58,7 @@ module VCloudClient
     # - catalogs
     # - vdcs
     # - networks
+    # - task lists
     def get_organization(orgId)
       params = {
         'method' => :get,
@@ -86,6 +87,59 @@ module VCloudClient
       end
 
       { :catalogs => catalogs, :vdcs => vdcs, :networks => networks, :tasklists => tasklists }
+    end
+
+    ##
+    # Fetch tasks from a given task list
+    #
+    # Note: id can be retrieved using get_organization
+    def get_tasks_list(id)
+      params = {
+        'method' => :get,
+        'command' => "/tasksList/#{id}"
+      }
+
+      response, headers = send_request(params)
+
+      tasks = []
+
+      response.css('Task').each do |task|
+        id = task['href'].gsub(/.*\/task\//, "")
+        operation = task['operationName']
+        status = task['status']
+        error = nil
+        error = task.css('Error').first['message'] if task['status'] == 'error'
+        start_time = task['startTime']
+        end_time = task['endTime']
+        user_canceled = task['cancelRequested'] == 'true'
+
+        tasks << {
+          :id => id,
+          :operation => operation,
+          :status => status,
+          :error => error,
+          :start_time => start_time,
+          :end_time => end_time,
+          :user_canceled => user_canceled
+         }
+      end
+      tasks
+    end
+
+    ##
+    # Cancel a given task
+    #
+    # The task will be marked for cancellation
+    def cancel_task(id)
+      params = {
+        'method' => :post,
+        'command' => "/task/#{id}/action/cancel"
+      }
+
+      # Nothing useful is returned here
+      # If return code is 20x return true
+      send_request(params)
+      true
     end
   end
 end
