@@ -116,6 +116,16 @@ module VCloudClient
         @logger.debug "Add item to catalog."
         response, headers = send_request(params, builder.to_xml,
                         "application/vnd.vmware.vcloud.catalogItem+xml")
+
+        entity = response.css("Entity").first
+
+        # TODO: the best thing would detect the real importing status.
+        result = {}
+        if entity
+          result[:id] = entity['href'].gsub(/.*\/vAppTemplate\/vappTemplate\-/, "")
+          result[:name] = entity['name']
+        end
+        result
       rescue Exception => e
         @logger.error "Exception detected: #{e.message}."
 
@@ -140,7 +150,7 @@ module VCloudClient
             end
           end
         end
-      ensure
+
         raise e
       end
     end
