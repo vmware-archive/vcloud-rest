@@ -36,8 +36,8 @@ module VCloudClient
   class WrongItemIDError < StandardError; end
   class InvalidStateError < StandardError; end
   class InternalServerError < StandardError; end
+  class MethodNotAllowed < StandardError; end
   class UnhandledError < StandardError; end
-
 
   # Main class to access vCloud rest APIs
   class Connection
@@ -167,6 +167,10 @@ module VCloudClient
           body = Nokogiri.parse(e.http_body)
           message = body.css("Error").first["message"]
           raise InternalServerError, "Internal Server Error: #{message}."
+        rescue RestClient::MethodNotAllowed => e
+          body = Nokogiri.parse(e.http_body)
+          message = body.css("Error").first["message"]
+          raise MethodNotAllowed, "#{params['method']} to #{params['command']} not allowed: #{message}."
         end
       end
 
