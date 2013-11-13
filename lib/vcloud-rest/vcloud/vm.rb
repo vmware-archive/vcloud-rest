@@ -192,6 +192,22 @@ module VCloudClient
       task_id
     end
 
+    def rename_vm(vmId, name)
+      params = {
+        'method' => :get,
+        'command' => "/vApp/vm-#{vmId}"
+      }
+
+      response, headers = send_request(params)
+      response.css('Vm').attribute("name").content = name
+
+      params['method'] = :put
+      response, headers = send_request(params, response.to_xml,
+                                    "application/vnd.vmware.vcloud.vm+xml")
+      task_id = headers[:location].gsub(/.*\/task\//, "")
+      task_id
+    end
+
     ##
     # Fetch details about a given VM
     def get_vm(vmId)

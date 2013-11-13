@@ -27,6 +27,7 @@ FEATURES:
 * retrieve vApp's RetainNetInfoAcrossDeployments setting
 * retrieve VM's status in get_vm
 * Add methods to list/cancel Tasks
+* Add method to rename VMs
 
 CHANGES:
 * vApp clone returns an hash to provide also the new vApp's ID
