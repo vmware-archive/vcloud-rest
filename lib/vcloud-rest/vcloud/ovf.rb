@@ -9,6 +9,7 @@ module VCloudClient
     # - catalogId
     # - uploadOptions {}
     def upload_ovf(vdcId, vappName, vappDescription, ovfFile, catalogId, uploadOptions={})
+      raise ::IOError, "OVF #{ovfFile} is missing." unless File.exists?(ovfFile)
 
       # if send_manifest is not set, setting it true
       if uploadOptions[:send_manifest].nil? || uploadOptions[:send_manifest]
@@ -51,6 +52,8 @@ module VCloudClient
       uploadFile = "#{ovfDir}/#{ovfFileBasename}.ovf"
       upload_file(uploadURL, uploadFile, vAppTemplate, uploadOptions)
 
+      @logger.debug "OVF Descriptor uploaded."
+
       # Begin the catch for upload interruption
       begin
         params = {
@@ -61,6 +64,13 @@ module VCloudClient
         # Loop to wait for the upload links to show up in the vAppTemplate we just created
         while true
           response, headers = send_request(params)
+
+          errored_task = response.css("Tasks Task [status='error']").first
+          if errored_task
+            error_msg = errored_task.css('Error').first['message']
+            raise OVFError, "OVF Upload failed: #{error_msg}"
+          end
+
           break unless response.css("Files Link [rel='upload:default']").count == 1
           sleep 1
         end
@@ -69,6 +79,7 @@ module VCloudClient
           uploadURL = "/transfer/#{transferGUID}/descriptor.mf"
           uploadFile = "#{ovfDir}/#{ovfFileBasename}.mf"
           upload_file(uploadURL, uploadFile, vAppTemplate, uploadOptions)
+          @logger.debug "OVF Manifest uploaded."
         end
 
         # Start uploading OVF VMDK files
@@ -102,12 +113,11 @@ module VCloudClient
           'command' => "/catalog/#{catalogId}/catalogItems"
         }
 
+        @logger.debug "Add item to catalog."
         response, headers = send_request(params, builder.to_xml,
                         "application/vnd.vmware.vcloud.catalogItem+xml")
-
       rescue Exception => e
         @logger.error "Exception detected: #{e.message}."
-        @logger.error "Aborting task..."
 
         # Get vAppTemplate Task
         params = {
@@ -117,13 +127,21 @@ module VCloudClient
         response, headers = send_request(params)
 
         # Cancel Task
-        cancelHook = response.css("Tasks Task Link [rel='task:cancel']").first[:href].gsub("#{@api_url}","")
-        params = {
-          'method' => :post,
-          'command' => cancelHook
-        }
-        response, headers = send_request(params)
-        raise
+        # Note that it might not exist (i.e., error for existing vdc entity)
+        tasks = response.css("Tasks")
+        unless tasks.empty?
+          tasks.css("Task").each do |task|
+            if task['status'] == 'error'
+              @logger.error task.css('Error').first['message']
+            else
+              id = task['href'].gsub(/.*\/task\//, "")
+              @logger.error "Aborting task #{id}..."
+              cancel_task(id)
+            end
+          end
+        end
+      ensure
+        raise e
       end
     end
 
@@ -131,6 +149,7 @@ module VCloudClient
       ##
       # Upload a large file in configurable chunks, output an optional progressbar
       def upload_file(uploadURL, uploadFile, vAppTemplate, config={})
+        raise ::IOError, "#{uploadFile} not found." unless File.exists?(uploadFile)
 
         # Set chunksize to 10M if not specified otherwise
         chunkSize = (config[:chunksize] || 10485760)

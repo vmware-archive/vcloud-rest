@@ -43,6 +43,7 @@ FIXES:
 * ParentNetwork is optional
 * Fix ID retrievals using regexps
 * set_vapp_network_config to ensure existing configs are not lost
+* Better error handling for upload OVF
 
 2013-07-25 (0.3.0)
 --

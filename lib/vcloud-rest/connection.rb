@@ -36,6 +36,7 @@ module VCloudClient
   class WrongItemIDError < StandardError; end
   class InvalidStateError < StandardError; end
   class InternalServerError < StandardError; end
+  class OVFError < StandardError; end
   class MethodNotAllowed < StandardError; end
   class UnhandledError < StandardError; end
 
