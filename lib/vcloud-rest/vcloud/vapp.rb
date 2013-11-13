@@ -71,10 +71,12 @@ module VCloudClient
       response.css('SnapshotSection').each do |snapshot_section|
         if snapshot_section['href'] =~ /.*\/vApp\/vapp\-/
           snapshot = snapshot_section.css("Snapshot").first
-          vapp_snapshot = {
-            :size => snapshot['size'],
-            :creation_date => snapshot['created']
-          }
+          if snapshot
+            vapp_snapshot = {
+              :size => snapshot['size'],
+              :creation_date => snapshot['created']
+            }
+          end
           break
         end
       end
