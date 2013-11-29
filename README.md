@@ -9,8 +9,6 @@ Note: at this stage both _v.1.5_ and _v.5.1_ are supported. It defaults to _v.5.
 
 See [vCloud API](http://pubs.vmware.com/vcd-51/topic/com.vmware.vcloud.api.doc_51/GUID-86CA32C2-3753-49B2-A471-1CE460109ADB.html) for details.
 
-This code is BETA QUALITY.
-
 INSTALLATION
 --
 This plugin is distributed as a Ruby Gem. To install it, run:

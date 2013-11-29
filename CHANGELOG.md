@@ -1,35 +1,48 @@
 Changes
 ==
-Next Version (0.x.y)
+2013-11-29 (1.0.0)
 --
 
+This is the first release that leaves beta status.
+It's actively used in production by at least one company and thus it's important
+to offer a more stable interface.
+
 FEATURES:
-* Add external ip address to ```get_vm```
-* Add a :send_manifest option to ```upload_ovf```
-* Add methods to create/revert snapshots
-* Add method to clone a vApp
-* Add proper logging (set level via VCLOUD_REST_DEBUG_LEVEL and VCLOUD_REST_LOG_FILE)
-* Add method to retrieve VM info (cpu & RAM)
-* Add method to set VM's CPUs info
-* Add method to set VM's RAM info
-* Add method to retrieve VM's disks info
-* Add method to manage VM's disks (add, delete, resize)
-* Various entities can be searched by name
-* Add support to upload a customization script
-* Add support to force Guest Customization for VMs
-* Add support to force Guest Customization for vApps
-* Add support to manage VM's status (start/stop...)
-* get_vapp: retrieve network information
-* get_vapp: retrieve vApp snapshot info
-* Add method to show network details
-* Add method to remove a network from a vApp
-* Add method to add an external (from vDC) network to a vApp
-* retrieve vApp's RetainNetInfoAcrossDeployments setting
-* retrieve VM's status in get_vm
-* Add methods to list/cancel Tasks
-* Add method to rename VMs
+
+* General
+    * Add proper logging
+        (set env vars *VCLOUD_REST_DEBUG_LEVEL* and *VCLOUD_REST_LOG_FILE*)
+    * Various entities can be searched by name
+* vApp
+    * Add methods to create/revert snapshots
+    * Add method to clone a vApp
+    * Add support to force vApp's Guest Customization
+    * get_vapp: retrieve network information
+    * get_vapp: retrieve vApp snapshot info
+    * Add method to remove a network from a vApp
+    * Add method to add an external (from vDC) network to a vApp
+    * retrieve vApp's RetainNetInfoAcrossDeployments setting
+* VM
+    * Add external ip address to ```get_vm```
+    * Add method to retrieve VM info (cpu & RAM)
+    * Add method to set VM's CPUs info
+    * Add method to set VM's RAM info
+    * Add method to retrieve VM's disks info
+    * Add method to manage VM's disks (add, delete, resize)
+    * Add support to upload a customization script
+    * Add support to force VM's Guest Customization
+    * Add support to manage VM's status (start/stop...)
+    * retrieve VM's status in get_vm
+    * Add method to rename VMs
+* OVF
+    * Add a :send_manifest option to ```upload_ovf```
+* Network
+    * Add method to show network details
+* Tasks
+    * Add methods to list/cancel Tasks
 
 CHANGES:
+
 * vApp clone returns an hash to provide also the new vApp's ID
 * retrieve VM's name directly instead of using the GuestCustomization section
 * Do not track Gemfile.lock anymore
