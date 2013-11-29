@@ -72,7 +72,7 @@ EXAMPLE
 --
 A (mostly complete) example can be found in
 
-	examples/example.rb
+    examples/example.rb
 
 DEBUGGING
 --
