@@ -1,5 +1,16 @@
 Changes
 ==
+Next Version (1.1.0)
+--
+
+FEATURES:
+
+* Add commands *[add|edit|delete]_vm_network* to manage multiple networks
+
+DEPRECATIONS:
+
+* *set_vm_network_config* is now deprecated
+
 2013-11-29 (1.0.0)
 --
 

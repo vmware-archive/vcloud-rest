@@ -117,8 +117,143 @@ module VCloudClient
     end
 
     ##
+    # Edit VM Network Config
+    #
+    # Retrieve the existing network config section and edit it
+    # to ensure settings are not lost
+    def edit_vm_network(vmId, network, config={})
+      params = {
+        'method' => :get,
+        'command' => "/vApp/vm-#{vmId}/networkConnectionSection"
+      }
+
+      netconfig_response, headers = send_request(params)
+
+      picked_network = netconfig_response.css("NetworkConnection").select do |net|
+        net.attribute('network').text == network[:name]
+      end.first
+
+      raise WrongItemIDError, "Network named #{network[:name]} not found." unless picked_network
+
+      if config[:ip_allocation_mode]
+        node = picked_network.css('IpAddressAllocationMode').first
+        node.content = config[:ip_allocation_mode]
+      end
+
+      if config[:network_index]
+        node = picked_network.css('NetworkConnectionIndex').first
+        node.content = config[:network_index]
+      end
+
+      if config[:is_connected]
+        node = picked_network.css('IsConnected').first
+        node.content = config[:is_connected]
+      end
+
+      if config[:ip]
+        node = picked_network.css('IpAddress').first
+        node.content = config[:ip]
+      end
+
+      params = {
+        'method' => :put,
+        'command' => "/vApp/vm-#{vmId}/networkConnectionSection"
+      }
+
+      response, headers = send_request(params, netconfig_response.to_xml, "application/vnd.vmware.vcloud.networkConnectionSection+xml")
+
+      task_id = headers[:location].gsub(/.*\/task\//, "")
+      task_id
+    end
+
+    ##
+    # Add a new network to a VM
+    def add_network_to_vm(vmId, network, config={})
+      params = {
+        'method' => :get,
+        'command' => "/vApp/vm-#{vmId}/networkConnectionSection"
+      }
+
+      netconfig_response, headers = send_request(params)
+
+      parent_section = netconfig_response.css('NetworkConnectionSection').first
+
+      # For some reasons these elements must be removed
+      netconfig_response.css("Link").each {|n| n.remove}
+
+      networks_count = netconfig_response.css('NetworkConnection').count
+
+      new_network = Nokogiri::XML::Node.new "NetworkConnection", parent_section
+      new_network["network"] = network[:name]
+      new_network["needsCustomization"] = true
+
+      idx_node = Nokogiri::XML::Node.new "NetworkConnectionIndex", new_network
+      idx_node.content = config[:network_index] || networks_count
+      new_network.add_child(idx_node)
+
+      is_connected_node = Nokogiri::XML::Node.new "IsConnected", new_network
+      is_connected_node.content = config[:is_connected] || true
+      new_network.add_child(is_connected_node)
+
+      allocation_node = Nokogiri::XML::Node.new "IpAddressAllocationMode", new_network
+      allocation_node.content = config[:ip_allocation_mode] || "POOL"
+      new_network.add_child(allocation_node)
+
+      if config[:ip]
+        ip_node = Nokogiri::XML::Node.new "IpAddress", new_network
+        ip_node.content = config[:ip]
+        new_network.add_child(ip_node)
+      end
+
+      parent_section.add_child(new_network)
+
+      params = {
+        'method' => :put,
+        'command' => "/vApp/vm-#{vmId}/networkConnectionSection"
+      }
+
+      put_response, headers = send_request(params, netconfig_response.to_xml, "application/vnd.vmware.vcloud.networkConnectionSection+xml")
+
+      task_id = headers[:location].gsub(/.*\/task\//, "")
+      task_id
+    end
+
+    ##
+    # Remove an existing network
+    def delete_vm_network(vmId, network)
+      params = {
+        'method' => :get,
+        'command' => "/vApp/vm-#{vmId}/networkConnectionSection"
+      }
+
+      netconfig_response, headers = send_request(params)
+
+      picked_network = netconfig_response.css("NetworkConnection").select do |net|
+        net.attribute('network').text == network[:name]
+      end.first
+
+      raise WrongItemIDError, "Network #{network[:name]} not found on this VM." unless picked_network
+
+      picked_network.remove
+
+      params = {
+        'method' => :put,
+        'command' => "/vApp/vm-#{vmId}/networkConnectionSection"
+      }
+
+      put_response, headers = send_request(params, netconfig_response.to_xml, "application/vnd.vmware.vcloud.networkConnectionSection+xml")
+
+      task_id = headers[:location].gsub(/.*\/task\//, "")
+      task_id
+    end
+
+    ##
     # Set VM Network Config
+    #
+    # DEPRECATED: use set_vm_network
     def set_vm_network_config(vmid, network_name, config={})
+      @logger.warn 'DEPRECATION WARNING: use [add,delete,edit]_vm_network instead.'
+
       builder = Nokogiri::XML::Builder.new do |xml|
       xml.NetworkConnectionSection(
         "xmlns" => "http://www.vmware.com/vcloud/v1.5",
