@@ -1,6 +1,6 @@
 Changes
 ==
-Next Version (1.1.0)
+2013-12-13 (1.1.0)
 --
 
 FEATURES:
