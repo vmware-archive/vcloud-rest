@@ -679,21 +679,6 @@ describe VCloudClient::Connection do
     end
   end
 
-  describe "vm network config" do
-    before { @url = "https://testuser%40testorg:testpass@testhost.local/api/vApp/vm-test-vm/networkConnectionSection" }
-
-    it "should send the correct content-type and payload" do
-      stub_request(:put, @url).
-      with(:body => "<?xml version=\"1.0\"?>\n<NetworkConnectionSection xmlns=\"http://www.vmware.com/vcloud/v1.5\" xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\">\n  <ovf:Info>VM Network configuration</ovf:Info>\n  <PrimaryNetworkConnectionIndex>0</PrimaryNetworkConnectionIndex>\n  <NetworkConnection network=\"test-network\" needsCustomization=\"true\">\n    <NetworkConnectionIndex>0</NetworkConnectionIndex>\n    <IsConnected>true</IsConnected>\n  </NetworkConnection>\n</NetworkConnectionSection>\n",
-             :headers => {'Content-Type'=>'application/vnd.vmware.vcloud.networkConnectionSection+xml'}).
-        to_return(:status => 200,
-             :headers => {:location => "#{@connection.api_url}/task/test-vm_network_task"})
-
-      task_id = @connection.set_vm_network_config("test-vm", "test-network")
-      task_id.must_equal "test-vm_network_task"
-    end
-  end
-
   describe "vm guest customization" do
     before { @url = "https://testuser%40testorg:testpass@testhost.local/api/vApp/vm-test-vm/guestCustomizationSection" }
 
