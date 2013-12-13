@@ -168,7 +168,7 @@ module VCloudClient
 
     ##
     # Add a new network to a VM
-    def add_network_to_vm(vmId, network, config={})
+    def add_vm_network(vmId, network, config={})
       params = {
         'method' => :get,
         'command' => "/vApp/vm-#{vmId}/networkConnectionSection"
