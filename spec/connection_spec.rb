@@ -278,7 +278,7 @@ describe VCloudClient::Connection do
     it "should return the correct IP" do
       stub_request(:get, @url).
         to_return(:status => 200,
-         :body => "<VApp name='test-vapp'><IpAddress>127.0.0.1</IpAddress></VApp>",
+         :body => "<VApp xmlns:rasd=\"blah\"> <Children> <Vm href=\"https://localhost/api/vApp/vm-8eb169b2-7792-446d-8bcb-4ac7d324d579\"> <ovf:VirtualHardwareSection> <ovf:Item> <rasd:Connection vcloud:ipAddress=\"127.0.0.1\" vcloud:primaryNetworkConnection=\"true\" vcloud:ipAddressingMode=\"MANUAL\">127.0.0.0-APP</rasd:Connection> </ovf:Item> <NetworkConnection > <IpAddress>127.0.0.1</IpAddress> </NetworkConnection> </NetworkConnectionSection> </Vm> </Children> </VApp>",
          :headers => {})
 
       vapp_get = @connection.get_vapp("test-vapp")
