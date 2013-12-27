@@ -89,7 +89,9 @@ module VCloudClient
         addresses = vm.css('rasd|Connection').collect do |n|
           address = n['vcloud:ipAddress']
           address = n.attributes['ipAddress'] unless address
-          address = address.value if address
+          if address.respond_to?(:value=)
+            address = address.value if address
+          end
         end
 
         vms_hash[vm['name']] = {
