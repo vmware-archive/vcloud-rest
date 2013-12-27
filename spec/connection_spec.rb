@@ -295,6 +295,17 @@ describe VCloudClient::Connection do
       vapp_get[:vms_hash].count.must_equal 1
       vapp_get[:vms_hash].first.must_equal ["vm_1", {:addresses=>["127.0.0.1"], :status=>"running", :id=>"vm_1", :vapp_scoped_local_id => ""}]
     end
+
+    it "should return the correct no. of VMs - 2" do
+      stub_request(:get, @url).
+        to_return(:status => 200,
+         :body => "<?xml version=\"1.0\" ?><VApp xmlns=\"http://www.vmware.com/vcloud/v1.5\" xmlns:vcloud=\"http://testnamespace\" xmlns:rasd=\"http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData\"><Children><Vm name='vm_1' status='4' href='#{@connection.api_url}/vApp/vm-vm_1'><rasd:Connection vcloud:ipAddress='127.0.0.1'></rasd:Connection></Vm></Children></VApp>",
+         :headers => {})
+
+      vapp_get = @connection.get_vapp("test-vapp")
+      vapp_get[:vms_hash].count.must_equal 1
+      vapp_get[:vms_hash].first.must_equal ["vm_1", {:addresses=>["127.0.0.1"], :status=>"running", :id=>"vm_1", :vapp_scoped_local_id => ""}]
+    end
   end
 
   describe "delete vapp" do
