@@ -1,5 +1,11 @@
 Changes
 ==
+Next Version ()
+--
+
+FIXES:
+* Unify IP address retrieval (issue #20)
+
 2013-12-13 (1.1.0)
 --
 
