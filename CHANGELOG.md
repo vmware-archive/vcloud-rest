@@ -1,6 +1,6 @@
 Changes
 ==
-Next Version ()
+2013-12-31 (1.1.1)
 --
 
 FIXES:
