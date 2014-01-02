@@ -235,5 +235,37 @@ module VCloudClient
       task_id = headers[:location].gsub(/.*\/task\//, "")
       task_id
     end
+
+    ##
+    # Create a new vapp/vm snapshot (overwrites any existing)
+    def create_snapshot_action(id, description="New Snapshot", type=:vapp)
+      params = {
+          "method" => :post,
+          "command" => "/vApp/#{type}-#{id}/action/createSnapshot"
+      }
+      builder = Nokogiri::XML::Builder.new do |xml|
+        xml.CreateSnapshotParams(
+            "xmlns" => "http://www.vmware.com/vcloud/v1.5") {
+          xml.Description description
+        }
+      end
+      response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.createSnapshotParams+xml")
+      task_id = headers[:location].gsub(/.*\/task\//, "")
+      task_id
+    end
+
+    ##
+    # Revert to an existing snapshot (vapp/vm)
+    def revert_snapshot_action(id, type=:vapp)
+      params = {
+          "method" => :post,
+          "command" => "/vApp/#{type}-#{id}/action/revertToCurrentSnapshot"
+      }
+      response, headers = send_request(params)
+      task_id = headers[:location].gsub(/.*\/task\//, "")
+      task_id
+    end
+
+
   end # class
 end

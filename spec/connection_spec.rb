@@ -795,4 +795,32 @@ describe VCloudClient::Connection do
     end
   end
 
+
+   describe "snapshot vapp" do
+    before { @url = "https://testuser%40testorg:testpass@testhost.local/api/vApp/vapp-test-vapp/action/createSnapshot" }
+
+    it "should send the correct request" do
+      stub_request(:post, @url).
+        to_return(:status => 200,
+            :headers => {:location => "#{@connection.api_url}/task/test-vapp-snapshot_task"})
+
+      task_id = @connection.create_vapp_snapshot("test-vapp", :vm)
+      task_id.must_equal "test-vapp-snapshot_task"
+    end
+  end
+
+
+   describe "snapshot vapp - Deprecated mehtod" do
+    before { @url = "https://testuser%40testorg:testpass@testhost.local/api/vApp/vapp-test-vapp/action/createSnapshot" }
+
+    it "should send the correct request" do
+      stub_request(:post, @url).
+        to_return(:status => 200,
+            :headers => {:location => "#{@connection.api_url}/task/test-vapp-snapshot_deprecated_task"})
+
+      task_id = @connection.create_snapshot("test-vapp")
+      task_id.must_equal "test-vapp-snapshot_deprecated_task"
+    end
+  end
+
 end

@@ -462,6 +462,19 @@ module VCloudClient
       power_action(vmId, 'powerOn', :vm)
     end
 
+    ##
+    # Create a new vm snapshot (overwrites any existing)
+    def create_vm_snapshot(vmId, description="New Snapshot")
+      create_snapshot_action(vmId, description, :vm)
+    end
+
+    ##
+    # Revert to an existing snapshot
+    def revert_vm_snapshot(vmId)
+      revert_snapshot_action(vmId, :vm)
+    end
+
+
     private
       def add_disk(source_xml, disk_info)
         disks_count = source_xml.css("Item").css("rasd|HostResource").count
