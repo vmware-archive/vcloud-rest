@@ -1,5 +1,17 @@
 Changes
 ==
+2014-1-TBD (1.1.2)
+
+FEATURES:
+* vm
+    * actions to control vm snapshots just as vApp snapshots
+        * create_vm_snapshot 
+        * revert_vm_snapshot
+
+DEPRECATIONS:
+* `create_snapshot` is deprecated in favour of create_vapp_snapshot
+* `revert_snapshot` is deprecated in favour of revert_vapp_snapshot
+
 2013-12-31 (1.1.1)
 --
 

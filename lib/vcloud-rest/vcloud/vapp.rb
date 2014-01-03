@@ -316,6 +316,7 @@ module VCloudClient
     # Create a new vm snapshot (overwrites any existing)
     # DEPRECATED - use create_vapp_snapshot instead. 
     def create_snapshot(vmId, description="New Snapshot")
+      @logger.warn 'DEPRECATION WARNING: use [create,revert]_vapp_snapshot instead.'
       create_snapshot_action(vmId, description, :vapp)
     end
 
@@ -323,6 +324,7 @@ module VCloudClient
     # Revert to an existing snapshot
     # DEPRECATED - use revert_vapp_snapshot instead. 
     def revert_snapshot(vmId)
+      @logger.warn 'DEPRECATION WARNING: use [create,revert]_vapp_snapshot instead.'
       revert_snapshot_action(vmId, :vapp)
     end
 
