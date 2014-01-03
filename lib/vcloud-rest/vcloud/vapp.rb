@@ -310,34 +310,34 @@ module VCloudClient
       { :vapp_id => vapp_id, :task_id => task_id }
     end
 
+
+    
     ##
-    # Create a new snapshot (overwrites any existing)
-    def create_snapshot(vappId, description="New Snapshot")
-      params = {
-          "method" => :post,
-          "command" => "/vApp/vapp-#{vappId}/action/createSnapshot"
-      }
-      builder = Nokogiri::XML::Builder.new do |xml|
-        xml.CreateSnapshotParams(
-            "xmlns" => "http://www.vmware.com/vcloud/v1.5") {
-          xml.Description description
-        }
-      end
-      response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.createSnapshotParams+xml")
-      task_id = headers[:location].gsub(/.*\/task\//, "")
-      task_id
+    # Create a new vm snapshot (overwrites any existing)
+    # DEPRECATED - use create_vapp_snapshot instead. 
+    def create_snapshot(vmId, description="New Snapshot")
+      @logger.warn 'DEPRECATION WARNING: use [create,revert]_vapp_snapshot instead.'
+      create_snapshot_action(vmId, description, :vapp)
     end
 
     ##
     # Revert to an existing snapshot
-    def revert_snapshot(vappId)
-      params = {
-          "method" => :post,
-          "command" => "/vApp/vapp-#{vappId}/action/revertToCurrentSnapshot"
-      }
-      response, headers = send_request(params)
-      task_id = headers[:location].gsub(/.*\/task\//, "")
-      task_id
+    # DEPRECATED - use revert_vapp_snapshot instead. 
+    def revert_snapshot(vmId)
+      @logger.warn 'DEPRECATION WARNING: use [create,revert]_vapp_snapshot instead.'
+      revert_snapshot_action(vmId, :vapp)
+    end
+
+    ##
+    # Create a new vm snapshot (overwrites any existing)
+    def create_vapp_snapshot(vmId, description="New Snapshot")
+      create_snapshot_action(vmId, description, :vapp)
+    end
+
+    ##
+    # Revert to an existing snapshot
+    def revert_vapp_snapshot(vmId)
+      revert_snapshot_action(vmId, :vapp)
     end
 
     ##
