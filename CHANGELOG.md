@@ -14,6 +14,10 @@ DEPRECATIONS:
 * `create_snapshot` is deprecated in favour of create_vapp_snapshot
 * `revert_snapshot` is deprecated in favour of revert_vapp_snapshot
 
+FIXES:
+
+* Fix upload link retrieval (issue #23)
+
 2013-12-31 (1.1.1)
 --
 
