@@ -129,6 +129,11 @@ module VCloudClient
 
       netconfig_response, headers = send_request(params)
 
+      if config[:primary_index]
+        node = netconfig_response.css('PrimaryNetworkConnectionIndex').first
+        node.content = config[:primary_index]
+      end
+
       picked_network = netconfig_response.css("NetworkConnection").select do |net|
         net.attribute('network').text == network[:name]
       end.first
@@ -185,6 +190,13 @@ module VCloudClient
       netconfig_response.css('NetworkConnection').find{|n| n.attribute('network').text == 'none'}.remove
 
       networks_count = netconfig_response.css('NetworkConnection').count
+
+      primary_index_node = netconfig_response.css('PrimaryNetworkConnectionIndex').first
+      unless primary_index_node
+        primary_index_node = Nokogiri::XML::Node.new "PrimaryNetworkConnectionIndex", parent_section
+        parent_section.add_child(primary_index_node)
+      end
+      primary_index_node.content = config[:primary_index] || 0
 
       new_network = Nokogiri::XML::Node.new "NetworkConnection", parent_section
       new_network["network"] = network[:name]

@@ -8,6 +8,7 @@ FEATURES:
     * actions to control vm snapshots just as vApp snapshots
         * create_vm_snapshot
         * revert_vm_snapshot
+    * network add/edit handle PrimaryNetworkConnectionIndex
 
 DEPRECATIONS:
 
