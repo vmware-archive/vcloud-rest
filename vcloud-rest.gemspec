@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.add_dependency "nokogiri", ">= 1.5.10"
   s.add_dependency "rest-client", "~> 1.6.7"
   s.add_dependency "httpclient", "~> 2.3.3"
-  s.add_dependency "ruby-progressbar", "~> 1.2.0"
+  s.add_dependency "ruby-progressbar", "~> 1.4.0"
 
   s.require_path = 'lib'
   s.files = ["CHANGELOG.md","README.md", "LICENSE"] + Dir.glob("lib/**/*")
