@@ -1,6 +1,6 @@
 Changes
 ==
-Next Version (x.x.x)
+2014-02-06 (1.2.0)
 
 FEATURES:
 
@@ -18,7 +18,7 @@ DEPRECATIONS:
 
 FIXES:
 
-* Fix upload link retrieval (issue #23)
+* OVF: fix upload link retrieval (issue #23)
 * Remove network placeholder when adding a network to a VM
 
 2013-12-31 (1.1.1)
