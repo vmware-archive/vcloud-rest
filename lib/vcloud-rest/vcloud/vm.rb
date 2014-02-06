@@ -181,6 +181,9 @@ module VCloudClient
       # For some reasons these elements must be removed
       netconfig_response.css("Link").each {|n| n.remove}
 
+      # Delete placeholder network
+      netconfig_response.css('NetworkConnection').find{|n| n.attribute('network').text == 'none'}.remove
+
       networks_count = netconfig_response.css('NetworkConnection').count
 
       new_network = Nokogiri::XML::Node.new "NetworkConnection", parent_section
