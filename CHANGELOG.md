@@ -14,6 +14,7 @@ DEPRECATIONS:
 
 * `create_snapshot` is deprecated in favour of create_vapp_snapshot
 * `revert_snapshot` is deprecated in favour of revert_vapp_snapshot
+* remove `set_vm_network_config` deprecated in 1.1.0
 
 FIXES:
 
