@@ -46,7 +46,8 @@ describe VCloudClient::Connection do
     [:login, :logout, :get_organizations, :get_organization,
      :get_vdc, :get_catalog, :get_catalog_item, :get_vapp,
      :delete_vapp, :poweroff_vapp, :poweron_vapp,
-     :create_vapp_from_template].each do |method|
+     :create_vapp_from_template, :add_vm_to_vapp,
+     :upload_media, :upload_ovf].each do |method|
       it "must respond to #{method}" do
         @connection.must_respond_to method
       end
