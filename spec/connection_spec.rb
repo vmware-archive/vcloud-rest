@@ -385,6 +385,21 @@ describe VCloudClient::Connection do
     end
   end
 
+  describe "add a vm to a vapp" do
+    before { @url = "https://testuser%40testorg:testpass@testhost.local/api/vApp/vapp-vapp_id/action/recomposeVApp" }
+
+    it "add_vm_to_vapp should send the correct content-type and payload" do
+      stub_request(:post, @url).
+        with(:body => "<?xml version=\"1.0\"?>\n<RecomposeVAppParams xmlns=\"http://www.vmware.com/vcloud/v1.5\" xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\" name=\"vapp_name\">\n  <SourcedItem>\n    <Source href=\"https://testhost.local/api/vAppTemplate/vm-template_id\" name=\"vm_name\"/>\n    <InstantiationParams>\n      <NetworkConnectionSection type=\"application/vnd.vmware.vcloud.networkConnectionSection+xml\" href=\"https://testhost.local/api/vAppTemplate/vm-template_id/networkConnectionSection/\">\n        <ovf:Info>Network config for sourced item</ovf:Info>\n        <PrimaryNetworkConnectionIndex>0</PrimaryNetworkConnectionIndex>\n        <NetworkConnection network=\"vm_net\">\n          <NetworkConnectionIndex>0</NetworkConnectionIndex>\n          <IsConnected>true</IsConnected>\n          <IpAddressAllocationMode>POOL</IpAddressAllocationMode>\n        </NetworkConnection>\n      </NetworkConnectionSection>\n    </InstantiationParams>\n    <NetworkAssignment containerNetwork=\"vm_net\" innerNetwork=\"vm_net\"/>\n  </SourcedItem>\n  <AllEULAsAccepted>true</AllEULAsAccepted>\n</RecomposeVAppParams>\n",
+          :headers => {'Accept'=>'application/*+xml;version=5.1', 'Accept-Encoding'=>'gzip, deflate', 'Content-Type'=>'application/vnd.vmware.vcloud.recomposeVAppParams+xml'}).
+        to_return(:status => 200, :headers => {},
+          :body => "<VApp><Task operationName=\"vdcRecomposeVapp\" href=\"#{@connection.api_url}/task/test-task_id\"></VApp>")
+
+      task_id = @connection.add_vm_to_vapp({ :id => "vapp_id", :name => "vapp_name" }, { :template_id => "template_id", :vm_name => "vm_name" }, { :name => "vm_net", :ip_allocation_mode => "POOL" })
+      task_id.must_equal "test-task_id"
+    end
+  end
+
   describe "vapp network config" do
     before { @url = "https://testuser%40testorg:testpass@testhost.local/api/vApp/vapp-test-vapp/networkConfigSection" }
 
