@@ -1,13 +1,12 @@
 module VCloudClient
   class Connection
 
-    def upload_media(vdcId, mediaName, mediaDescription, mediaFile, catalogId, uploadOptions={})
+    def upload_media(vdcId, mediaName, mediaDescription, mediaFile, type, catalogId, uploadOptions={})
       raise ::IOError, "File #{mediaFile} is missing." unless File.exists?(mediaFile)
 
-      # Going to assume media files are isos, because the only other thing allowed is floppies
-      type = "iso"
       fileName = File.basename(mediaFile)
-      mediaName = File.basename(fileName, ".iso") if mediaName.nil? || mediaName.empty?
+      mediaName = File.basename(fileName, ".*") if mediaName.nil? || mediaName.empty?
+      type = File.extname(fileName).delete(".") if type.nil? || type.empty?
       size = File.size(mediaFile)
 
       builder = Nokogiri::XML::Builder.new do |xml|
@@ -40,7 +39,7 @@ module VCloudClient
 
       begin
         @logger.debug "Uploading #{mediaFile}"
-        upload_file(fileUpload, mediaFile, "/media/#{mediaId}")
+        upload_file(fileUpload, mediaFile, "/media/#{mediaId}", uploadOptions)
 
         # Add item to the catalog catalogId
         builder = Nokogiri::XML::Builder.new do |xml|
