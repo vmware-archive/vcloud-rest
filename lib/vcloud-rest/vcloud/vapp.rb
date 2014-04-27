@@ -310,7 +310,52 @@ module VCloudClient
       { :vapp_id => vapp_id, :task_id => task_id }
     end
 
+    ##
+    # Create a new virtual machine from a template in an existing vApp.
+    #
+    # Params:
+    # - vapp: the target vapp
+    # - vm: hash with template ID and new VM name
+    # - network_config: hash of the network configuration for the VM
+    def add_vm_to_vapp(vapp, vm, network_config={})
+      builder = Nokogiri::XML::Builder.new do |xml|
+        xml.RecomposeVAppParams(
+          "xmlns" => "http://www.vmware.com/vcloud/v1.5",
+          "xmlns:ovf" => "http://schemas.dmtf.org/ovf/envelope/1",
+          "name" => vapp[:name]) {
+            xml.SourcedItem {
+              xml.Source("href" => "#{@api_url}/vAppTemplate/vm-#{vm[:template_id]}", "name" => vm[:vm_name])
+              xml.InstantiationParams {
+                xml.NetworkConnectionSection(
+                  "xmlns:ovf" => "http://schemas.dmtf.org/ovf/envelope/1",
+                  "type" => "application/vnd.vmware.vcloud.networkConnectionSection+xml",
+                  "href" => "#{@api_url}/vAppTemplate/vm-#{vm[:template_id]}/networkConnectionSection/") {
+                    xml['ovf'].Info "Network config for sourced item"
+                    xml.PrimaryNetworkConnectionIndex "0"
+                    xml.NetworkConnection("network" => network_config[:name]) {
+                      xml.NetworkConnectionIndex "0"
+                      xml.IsConnected "true"
+                      xml.IpAddressAllocationMode(network_config[:ip_allocation_mode] || "POOL")
+                    }
+                  }
+              }
+              xml.NetworkAssignment("containerNetwork" => network_config[:name], "innerNetwork" => network_config[:name])
+            }
+            xml.AllEULAsAccepted "true"
+          }
+      end
 
+      params = {
+        "method" => :post,
+        "command" => "/vApp/vapp-#{vapp[:id]}/action/recomposeVApp"
+      }
+
+      response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.recomposeVAppParams+xml")
+
+      task = response.css("Task[operationName='vdcRecomposeVapp']").first
+      task_id = task["href"].gsub(/.*\/task\//, "")
+      task_id
+    end
 
     ##
     # Create a new vm snapshot (overwrites any existing)

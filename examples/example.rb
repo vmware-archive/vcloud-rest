@@ -103,6 +103,16 @@ puts "### Details of the new vApp"
 newvapp = connection.get_vapp(compose[:vapp_id])
 ap newvapp
 
+### Add another VM to the vApp just created
+
+puts "### Add another VM from 'precise32' in vApp 'Composed vApp'"
+task_id = connection.add_vm_to_vapp(newvapp, { :template_id => vapp[:vms_hash]["precise32"][:id], :vm_name => "VM5" }, { :name => "test-network", :ip_allocation_mode => "POOL" })
+connection.wait_task_completion(task_id)
+
+### Show the vApp again so we can see the new VM in it
+newvapp = connection.get_vapp(newvapp[:id])
+ap newvapp
+
 ### Here we build an array with the needed info, be aware that vm_id != vapp_scoped_local_id
 
 puts "### Building Port Forwarding NAT Rules"

@@ -46,7 +46,8 @@ describe VCloudClient::Connection do
     [:login, :logout, :get_organizations, :get_organization,
      :get_vdc, :get_catalog, :get_catalog_item, :get_vapp,
      :delete_vapp, :poweroff_vapp, :poweron_vapp,
-     :create_vapp_from_template].each do |method|
+     :create_vapp_from_template, :add_vm_to_vapp,
+     :upload_media, :upload_ovf].each do |method|
       it "must respond to #{method}" do
         @connection.must_respond_to method
       end
@@ -382,6 +383,21 @@ describe VCloudClient::Connection do
       vapp_created = @connection.compose_vapp_from_vm("vdc_id", "vapp_name", "vapp_desc", { "vm_name" => "vm_id" }, { :name => "vapp_net", :gateway => "10.250.254.253", :netmask => "255.255.255.0", :start_address => "10.250.254.1", :end_address => "10.250.254.100", :fence_mode => "natRouted", :ip_allocation_mode => "POOL", :parent_network =>  "guid", :enable_firewall => "false" })
       vapp_created[:vapp_id].must_equal "vapp_created"
       vapp_created[:task_id].must_equal "test-task_id"
+    end
+  end
+
+  describe "add a vm to a vapp" do
+    before { @url = "https://testuser%40testorg:testpass@testhost.local/api/vApp/vapp-vapp_id/action/recomposeVApp" }
+
+    it "add_vm_to_vapp should send the correct content-type and payload" do
+      stub_request(:post, @url).
+        with(:body => "<?xml version=\"1.0\"?>\n<RecomposeVAppParams xmlns=\"http://www.vmware.com/vcloud/v1.5\" xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\" name=\"vapp_name\">\n  <SourcedItem>\n    <Source href=\"https://testhost.local/api/vAppTemplate/vm-template_id\" name=\"vm_name\"/>\n    <InstantiationParams>\n      <NetworkConnectionSection type=\"application/vnd.vmware.vcloud.networkConnectionSection+xml\" href=\"https://testhost.local/api/vAppTemplate/vm-template_id/networkConnectionSection/\">\n        <ovf:Info>Network config for sourced item</ovf:Info>\n        <PrimaryNetworkConnectionIndex>0</PrimaryNetworkConnectionIndex>\n        <NetworkConnection network=\"vm_net\">\n          <NetworkConnectionIndex>0</NetworkConnectionIndex>\n          <IsConnected>true</IsConnected>\n          <IpAddressAllocationMode>POOL</IpAddressAllocationMode>\n        </NetworkConnection>\n      </NetworkConnectionSection>\n    </InstantiationParams>\n    <NetworkAssignment containerNetwork=\"vm_net\" innerNetwork=\"vm_net\"/>\n  </SourcedItem>\n  <AllEULAsAccepted>true</AllEULAsAccepted>\n</RecomposeVAppParams>\n",
+          :headers => {'Accept'=>'application/*+xml;version=5.1', 'Accept-Encoding'=>'gzip, deflate', 'Content-Type'=>'application/vnd.vmware.vcloud.recomposeVAppParams+xml'}).
+        to_return(:status => 200, :headers => {},
+          :body => "<VApp><Task operationName=\"vdcRecomposeVapp\" href=\"#{@connection.api_url}/task/test-task_id\"></VApp>")
+
+      task_id = @connection.add_vm_to_vapp({ :id => "vapp_id", :name => "vapp_name" }, { :template_id => "template_id", :vm_name => "vm_name" }, { :name => "vm_net", :ip_allocation_mode => "POOL" })
+      task_id.must_equal "test-task_id"
     end
   end
 
