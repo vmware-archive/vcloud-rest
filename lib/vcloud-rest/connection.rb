@@ -140,7 +140,7 @@ module VCloudClient
         end
 
         request = RestClient::Request.new(:method => params['method'],
-                                         :user => "#{@username}@#{@org_name}",
+                                         :user => "#{@username}",
                                          :password => @password,
                                          :headers => headers,
                                          :url => "#{@api_url}#{params['command']}",
