@@ -4,6 +4,8 @@ module VCloudClient
     # Fetch details about a given vdc:
     # - description
     # - vapps
+    # - templates
+    # - disks
     # - networks
     def get_vdc(vdcId)
       params = {
@@ -24,12 +26,24 @@ module VCloudClient
         vapps[item['name']] = item['href'].gsub(/.*\/vApp\/vapp\-/, "")
       end
 
+      templates = {}
+      response.css("ResourceEntity[type='application/vnd.vmware.vcloud.vAppTemplate+xml']").each do |item|
+        templates[item['name']] = item['href'].gsub(/.*\/vAppTemplate\/vappTemplate\-/, "")
+      end
+
+      disks = {}
+      response.css("ResourceEntity[type='application/vnd.vmware.vcloud.disk+xml']").each do |item|
+        disks[item['name']] = item['href'].gsub(/.*\/disk\//, "")
+      end
+
       networks = {}
       response.css("Network[type='application/vnd.vmware.vcloud.network+xml']").each do |item|
         networks[item['name']] = item['href'].gsub(/.*\/network\//, "")
       end
+
       { :id => vdcId, :name => name, :description => description,
-        :vapps => vapps, :networks => networks }
+        :vapps => vapps, :templates => templates, :disks => disks,
+        :networks => networks }
     end
 
     ##
