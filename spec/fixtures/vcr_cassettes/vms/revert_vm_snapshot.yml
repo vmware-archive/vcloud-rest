@@ -1,0 +1,89 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://testuser%40testorg:testpass@testurl.local/api/sessions
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 23 May 2014 07:45:56 GMT
+      - Fri, 23 May 2014 07:45:56 GMT
+      X-Vcloud-Authorization:
+      - h3nqsUGP32SPiHEEtyNFjgtpEf446a+0Rq/8wUR6UGc=
+      Set-Cookie:
+      - vcloud-token=h3nqsUGP32SPiHEEtyNFjgtpEf446a+0Rq/8wUR6UGc=; Secure; Path=/
+      Content-Type:
+      - application/vnd.vmware.vcloud.session+xml;version=5.1
+      Content-Length:
+      - '1149'
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Session xmlns="http://www.vmware.com/vcloud/v1.5" user="testuser" org="Test" type="application/vnd.vmware.vcloud.session+xml" href="https://testurl.local/api/session/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="down" type="application/vnd.vmware.vcloud.orgList+xml" href="https://testurl.local/api/org/"/>
+            <Link rel="down" type="application/vnd.vmware.admin.vcloud+xml" href="https://testurl.local/api/admin/"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.query.queryList+xml" href="https://testurl.local/api/query"/>
+            <Link rel="entityResolver" type="application/vnd.vmware.vcloud.entity+xml" href="https://testurl.local/api/entity/"/>
+            <Link rel="down:extensibility" type="application/vnd.vmware.vcloud.apiextensibility+xml" href="https://testurl.local/api/extensibility"/>
+        </Session>
+    http_version: 
+  recorded_at: Fri, 23 May 2014 07:45:55 GMT
+- request:
+    method: post
+    uri: https://testurl.local/api/vApp/vm-9bb33684-8642-4279-8af2-24eed5f129a6/action/revertToCurrentSnapshot
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      X-Vcloud-Authorization:
+      - h3nqsUGP32SPiHEEtyNFjgtpEf446a+0Rq/8wUR6UGc=
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 202
+      message: Accepted
+    headers:
+      Date:
+      - Fri, 23 May 2014 07:45:56 GMT
+      - Fri, 23 May 2014 07:45:57 GMT
+      Location:
+      - https://testurl.local/api/task/ac3b6345-5b20-4ca9-8aec-4600aa62cd13
+      Content-Type:
+      - application/vnd.vmware.vcloud.task+xml;version=5.1
+      Content-Length:
+      - '1360'
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Task xmlns="http://www.vmware.com/vcloud/v1.5" status="running" startTime="2014-05-23T09:45:56.959+02:00" serviceNamespace="com.vmware.vcloud" operationName="vappRevertToCurrentSnapshot" operation="Reverting to Snapshot Virtual Machine (9bb33684-8642-4279-8af2-24eed5f129a6)" expiryTime="2014-08-21T09:45:56.959+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:ac3b6345-5b20-4ca9-8aec-4600aa62cd13" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/ac3b6345-5b20-4ca9-8aec-4600aa62cd13" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="task:cancel" href="https://testurl.local/api/task/ac3b6345-5b20-4ca9-8aec-4600aa62cd13/action/cancel"/>
+            <Owner type="application/vnd.vmware.vcloud.vm+xml" name="" href="https://testurl.local/api/vApp/vm-9bb33684-8642-4279-8af2-24eed5f129a6"/>
+            <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+            <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+            <Progress>0</Progress>
+            <Details/>
+        </Task>
+    http_version: 
+  recorded_at: Fri, 23 May 2014 07:45:55 GMT
+recorded_with: VCR 2.9.0

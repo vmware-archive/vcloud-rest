@@ -1,0 +1,115 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://testuser%40testorg:testpass@testurl.local/api/sessions
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 22 May 2014 14:39:18 GMT
+      - Thu, 22 May 2014 14:39:19 GMT
+      X-Vcloud-Authorization:
+      - rqy2d5EUGeXO28fG8SJfEwpe1Bb8maQnoTu/IoIGRbg=
+      Set-Cookie:
+      - vcloud-token=rqy2d5EUGeXO28fG8SJfEwpe1Bb8maQnoTu/IoIGRbg=; Secure; Path=/
+      Content-Type:
+      - application/vnd.vmware.vcloud.session+xml;version=5.1
+      Content-Length:
+      - '1149'
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Session xmlns="http://www.vmware.com/vcloud/v1.5" user="testuser" org="Test" type="application/vnd.vmware.vcloud.session+xml" href="https://testurl.local/api/session/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="down" type="application/vnd.vmware.vcloud.orgList+xml" href="https://testurl.local/api/org/"/>
+            <Link rel="down" type="application/vnd.vmware.admin.vcloud+xml" href="https://testurl.local/api/admin/"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.query.queryList+xml" href="https://testurl.local/api/query"/>
+            <Link rel="entityResolver" type="application/vnd.vmware.vcloud.entity+xml" href="https://testurl.local/api/entity/"/>
+            <Link rel="down:extensibility" type="application/vnd.vmware.vcloud.apiextensibility+xml" href="https://testurl.local/api/extensibility"/>
+        </Session>
+    http_version:
+  recorded_at: Thu, 22 May 2014 14:39:22 GMT
+- request:
+    method: post
+    uri: https://testurl.local/api/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1/action/cloneVApp
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0"?>
+        <CloneVAppParams xmlns="http://www.vmware.com/vcloud/v1.5" name="Test_vapp1" deploy="true" linkedClone="false" powerOn="false">
+          <Source href="https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b"/>
+          <IsSourceDelete>false</IsSourceDelete>
+        </CloneVAppParams>
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      X-Vcloud-Authorization:
+      - rqy2d5EUGeXO28fG8SJfEwpe1Bb8maQnoTu/IoIGRbg=
+      Content-Type:
+      - application/vnd.vmware.vcloud.cloneVAppParams+xml
+      Content-Length:
+      - '304'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Date:
+      - Thu, 22 May 2014 14:39:19 GMT
+      - Thu, 22 May 2014 14:39:27 GMT
+      Location:
+      - https://testurl.local/api/vApp/vapp-891add70-b262-4b81-a9ac-186d6fd33e50
+      Content-Type:
+      - application/vnd.vmware.vcloud.vapp+xml;version=5.1
+      Content-Length:
+      - '3328'
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <VApp xmlns="http://www.vmware.com/vcloud/v1.5" deployed="false" status="0" name="Test_vapp1" id="urn:vcloud:vapp:891add70-b262-4b81-a9ac-186d6fd33e50" type="application/vnd.vmware.vcloud.vApp+xml" href="https://testurl.local/api/vApp/vapp-891add70-b262-4b81-a9ac-186d6fd33e50" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="down" type="application/vnd.vmware.vcloud.vAppNetwork+xml" name="Test_network1" href="https://testurl.local/api/network/57a43375-e500-4e88-8a7c-f5683c4e92b1"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.vAppNetwork+xml" name="test-network" href="https://testurl.local/api/network/3879af71-60ff-4068-8557-6dd0bcd3bfe6"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.controlAccess+xml" href="https://testurl.local/api/vApp/vapp-891add70-b262-4b81-a9ac-186d6fd33e50/controlAccess/"/>
+            <Link rel="up" type="application/vnd.vmware.vcloud.vdc+xml" href="https://testurl.local/api/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.owner+xml" href="https://testurl.local/api/vApp/vapp-891add70-b262-4b81-a9ac-186d6fd33e50/owner"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.metadata+xml" href="https://testurl.local/api/vApp/vapp-891add70-b262-4b81-a9ac-186d6fd33e50/metadata"/>
+            <Link rel="ovf" type="text/xml" href="https://testurl.local/api/vApp/vapp-891add70-b262-4b81-a9ac-186d6fd33e50/ovf"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.productSections+xml" href="https://testurl.local/api/vApp/vapp-891add70-b262-4b81-a9ac-186d6fd33e50/productSections/"/>
+            <Tasks>
+                <Task status="running" startTime="2014-05-22T16:39:26.914+02:00" serviceNamespace="com.vmware.vcloud" operationName="vdcCopyVapp" operation="Copying Virtual Application Test_vapp1(891add70-b262-4b81-a9ac-186d6fd33e50)" expiryTime="2014-08-20T16:39:26.914+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:1a66be3e-030a-473a-a33c-5a4e005e53b6" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/1a66be3e-030a-473a-a33c-5a4e005e53b6">
+                    <Link rel="task:cancel" href="https://testurl.local/api/task/1a66be3e-030a-473a-a33c-5a4e005e53b6/action/cancel"/>
+                    <Owner type="application/vnd.vmware.vcloud.vApp+xml" name="Test_vapp1" href="https://testurl.local/api/vApp/vapp-891add70-b262-4b81-a9ac-186d6fd33e50"/>
+                    <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                    <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                    <Progress>1</Progress>
+                    <Details/>
+                </Task>
+            </Tasks>
+            <DateCreated>2014-05-22T16:39:21.966+02:00</DateCreated>
+            <Owner type="application/vnd.vmware.vcloud.owner+xml">
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+            </Owner>
+            <InMaintenanceMode>false</InMaintenanceMode>
+        </VApp>
+    http_version:
+  recorded_at: Thu, 22 May 2014 14:39:29 GMT
+recorded_with: VCR 2.9.0

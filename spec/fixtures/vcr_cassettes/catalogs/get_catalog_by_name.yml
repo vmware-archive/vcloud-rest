@@ -1,0 +1,177 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://testuser%40testorg:testpass@testurl.local/api/sessions
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 19 May 2014 13:08:31 GMT
+      - Mon, 19 May 2014 13:08:31 GMT
+      X-Vcloud-Authorization:
+      - zCrLu4ghtUeC05IdAxUuZHiMPrvdHBG6km99uPI2Ahw=
+      Set-Cookie:
+      - vcloud-token=zCrLu4ghtUeC05IdAxUuZHiMPrvdHBG6km99uPI2Ahw=; Secure; Path=/
+      Content-Type:
+      - application/vnd.vmware.vcloud.session+xml;version=5.1
+      Content-Length:
+      - '1149'
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Session xmlns="http://www.vmware.com/vcloud/v1.5" user="testuser" org="Test" type="application/vnd.vmware.vcloud.session+xml" href="testurl.local/api/session/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="down" type="application/vnd.vmware.vcloud.orgList+xml" href="testurl.local/api/org/"/>
+            <Link rel="down" type="application/vnd.vmware.admin.vcloud+xml" href="testurl.local/api/admin/"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.org+xml" name="Test" href="testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.query.queryList+xml" href="testurl.local/api/query"/>
+            <Link rel="entityResolver" type="application/vnd.vmware.vcloud.entity+xml" href="testurl.local/api/entity/"/>
+            <Link rel="down:extensibility" type="application/vnd.vmware.vcloud.apiextensibility+xml" href="testurl.local/api/extensibility"/>
+        </Session>
+    http_version:
+  recorded_at: Mon, 19 May 2014 13:08:32 GMT
+- request:
+    method: get
+    uri: https://testurl.local/api/org
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      X-Vcloud-Authorization:
+      - zCrLu4ghtUeC05IdAxUuZHiMPrvdHBG6km99uPI2Ahw=
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 19 May 2014 13:08:34 GMT
+      - Mon, 19 May 2014 13:08:34 GMT
+      Content-Type:
+      - application/vnd.vmware.vcloud.orglist+xml;version=5.1
+      Content-Length:
+      - '494'
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <OrgList xmlns="http://www.vmware.com/vcloud/v1.5" type="application/vnd.vmware.vcloud.orgList+xml" href="testurl.local/api/org/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Org type="application/vnd.vmware.vcloud.org+xml" name="Test" href="testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+        </OrgList>
+    http_version:
+  recorded_at: Mon, 19 May 2014 13:08:34 GMT
+- request:
+    method: get
+    uri: https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      X-Vcloud-Authorization:
+      - zCrLu4ghtUeC05IdAxUuZHiMPrvdHBG6km99uPI2Ahw=
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 19 May 2014 13:08:39 GMT
+      - Mon, 19 May 2014 13:08:40 GMT
+      Content-Type:
+      - application/vnd.vmware.vcloud.org+xml;version=5.1
+      Content-Length:
+      - '4220'
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Org xmlns="http://www.vmware.com/vcloud/v1.5" name="Test" id="urn:vcloud:org:562f56be-fa9f-48bd-a5fe-a0f9b0acceae" type="application/vnd.vmware.vcloud.org+xml" href="testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="down" type="application/vnd.vmware.vcloud.vdc+xml" name="Test_vdc" href="testurl.local/api/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.tasksList+xml" href="testurl.local/api/tasksList/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.catalog+xml" name="Test_catalog" href="testurl.local/api/catalog/6aff519e-9eb8-4831-b10c-92b22534567b"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.controlAccess+xml" href="testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae/catalog/6aff519e-9eb8-4831-b10c-92b22534567b/controlAccess/"/>
+            <Link rel="controlAccess" type="application/vnd.vmware.vcloud.controlAccess+xml" href="testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae/catalog/6aff519e-9eb8-4831-b10c-92b22534567b/action/controlAccess"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.catalog+xml" name="Test_catalog2" href="testurl.local/api/catalog/9b335990-b163-46d3-869c-4d3cfe80dabf"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.controlAccess+xml" href="testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae/catalog/9b335990-b163-46d3-869c-4d3cfe80dabf/controlAccess/"/>
+            <Link rel="add" type="application/vnd.vmware.admin.catalog+xml" href="testurl.local/api/admin/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae/catalogs"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.orgNetwork+xml" name="Test_network1" href="testurl.local/api/network/163b1865-6176-4498-9048-be056aaa6e5e"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.orgNetwork+xml" name="Test_network2" href="testurl.local/api/network/3782a2eb-e408-4764-8986-1ae5fc033363"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.orgNetwork+xml" name="Test_network3" href="testurl.local/api/network/6e9ced1c-ee39-4a39-aed8-c619c8693029"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.supportedSystemsInfo+xml" href="testurl.local/api/supportedSystemsInfo/"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.metadata+xml" href="testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae/metadata"/>
+            <Description>Test Organization</Description>
+            <FullName>Test</FullName>
+        </Org>
+    http_version:
+  recorded_at: Mon, 19 May 2014 13:08:41 GMT
+- request:
+    method: get
+    uri: https://testurl.local/api/catalog/6aff519e-9eb8-4831-b10c-92b22534567b
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      X-Vcloud-Authorization:
+      - zCrLu4ghtUeC05IdAxUuZHiMPrvdHBG6km99uPI2Ahw=
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 19 May 2014 13:08:51 GMT
+      - Mon, 19 May 2014 13:08:51 GMT
+      Content-Type:
+      - application/vnd.vmware.vcloud.catalog+xml;version=5.1
+      Content-Length:
+      - '2016'
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Catalog xmlns="http://www.vmware.com/vcloud/v1.5" name="Test_catalog" id="urn:vcloud:catalog:6aff519e-9eb8-4831-b10c-92b22534567b" type="application/vnd.vmware.vcloud.catalog+xml" href="testurl.local/api/catalog/6aff519e-9eb8-4831-b10c-92b22534567b" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="up" type="application/vnd.vmware.vcloud.org+xml" href="testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.metadata+xml" href="testurl.local/api/catalog/6aff519e-9eb8-4831-b10c-92b22534567b/metadata"/>
+            <Link rel="add" type="application/vnd.vmware.vcloud.catalogItem+xml" href="testurl.local/api/catalog/6aff519e-9eb8-4831-b10c-92b22534567b/catalogItems"/>
+            <Description>Catalog description</Description>
+            <CatalogItems>
+                <CatalogItem type="application/vnd.vmware.vcloud.catalogItem+xml" name="Test_catalog_item1" href="testurl.local/api/catalogItem/f0212516-1e41-49f1-b034-fde4bd321456"/>
+                <CatalogItem type="application/vnd.vmware.vcloud.catalogItem+xml" name="Test_catalog_item2" href="testurl.local/api/catalogItem/694439b1-9197-42d0-8555-a891cde5f026"/>
+            </CatalogItems>
+            <IsPublished>false</IsPublished>
+            <DateCreated>2013-04-19T09:04:46.060+02:00</DateCreated>
+        </Catalog>
+    http_version:
+  recorded_at: Mon, 19 May 2014 13:08:52 GMT
+recorded_with: VCR 2.9.0

@@ -1,0 +1,210 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://testuser%40testorg:testpass@testurl.local/api/sessions
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 19 May 2014 13:39:20 GMT
+      - Mon, 19 May 2014 13:39:20 GMT
+      X-Vcloud-Authorization:
+      - X0r01mRsGw9ozJwzJY4ykiXn5SS6MDCS3KoYBGpP698=
+      Set-Cookie:
+      - vcloud-token=X0r01mRsGw9ozJwzJY4ykiXn5SS6MDCS3KoYBGpP698=; Secure; Path=/
+      Content-Type:
+      - application/vnd.vmware.vcloud.session+xml;version=5.1
+      Content-Length:
+      - '1149'
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Session xmlns="http://www.vmware.com/vcloud/v1.5" user="testuser" org="Test" type="application/vnd.vmware.vcloud.session+xml" href="testurl.local/api/session/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="down" type="application/vnd.vmware.vcloud.orgList+xml" href="testurl.local/api/org/"/>
+            <Link rel="down" type="application/vnd.vmware.admin.vcloud+xml" href="testurl.local/api/admin/"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.org+xml" name="Test" href="testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.query.queryList+xml" href="testurl.local/api/query"/>
+            <Link rel="entityResolver" type="application/vnd.vmware.vcloud.entity+xml" href="testurl.local/api/entity/"/>
+            <Link rel="down:extensibility" type="application/vnd.vmware.vcloud.apiextensibility+xml" href="testurl.local/api/extensibility"/>
+        </Session>
+    http_version:
+  recorded_at: Mon, 19 May 2014 13:39:21 GMT
+- request:
+    method: get
+    uri: https://testurl.local/api/catalogItem/f0212516-1e41-49f1-b034-fde4bd321456
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      X-Vcloud-Authorization:
+      - X0r01mRsGw9ozJwzJY4ykiXn5SS6MDCS3KoYBGpP698=
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 19 May 2014 13:39:20 GMT
+      - Mon, 19 May 2014 13:39:20 GMT
+      Content-Type:
+      - application/vnd.vmware.vcloud.catalogitem+xml;version=5.1
+      Content-Length:
+      - '1354'
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <CatalogItem xmlns="http://www.vmware.com/vcloud/v1.5" name="Test_catalog_item1" id="urn:vcloud:catalogitem:f0212516-1e41-49f1-b034-fde4bd321456" type="application/vnd.vmware.vcloud.catalogItem+xml" href="testurl.local/api/catalogItem/f0212516-1e41-49f1-b034-fde4bd321456" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="up" type="application/vnd.vmware.vcloud.catalog+xml" href="testurl.local/api/catalog/6aff519e-9eb8-4831-b10c-92b22534567b"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.metadata+xml" href="testurl.local/api/catalogItem/f0212516-1e41-49f1-b034-fde4bd321456/metadata"/>
+            <Link rel="edit" type="application/vnd.vmware.vcloud.catalogItem+xml" href="testurl.local/api/catalogItem/f0212516-1e41-49f1-b034-fde4bd321456"/>
+            <Link rel="remove" href="testurl.local/api/catalogItem/f0212516-1e41-49f1-b034-fde4bd321456"/>
+            <Description/>
+            <Entity type="application/vnd.vmware.vcloud.vAppTemplate+xml" name="Test_catalog_item1" href="testurl.local/api/vAppTemplate/vappTemplate-89e33fd7-04a7-4b5f-830b-2423c41089e3"/>
+            <DateCreated>2013-07-25T16:09:02.013+02:00</DateCreated>
+        </CatalogItem>
+    http_version:
+  recorded_at: Mon, 19 May 2014 13:39:22 GMT
+- request:
+    method: get
+    uri: https://testurl.local/api/vAppTemplate/vappTemplate-89e33fd7-04a7-4b5f-830b-2423c41089e3
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      X-Vcloud-Authorization:
+      - X0r01mRsGw9ozJwzJY4ykiXn5SS6MDCS3KoYBGpP698=
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 19 May 2014 13:39:20 GMT
+      - Mon, 19 May 2014 13:39:21 GMT
+      Content-Type:
+      - application/vnd.vmware.vcloud.vAppTemplate+xml;version=5.1
+      Content-Length:
+      - '8273'
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <VAppTemplate xmlns="http://www.vmware.com/vcloud/v1.5" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" ovfDescriptorUploaded="true" goldMaster="true" status="8" name="Test_catalog_item1" id="urn:vcloud:vapptemplate:89e33fd7-04a7-4b5f-830b-2423c41089e3" type="application/vnd.vmware.vcloud.vAppTemplate+xml" href="testurl.local/api/vAppTemplate/vappTemplate-89e33fd7-04a7-4b5f-830b-2423c41089e3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 http://schemas.dmtf.org/ovf/envelope/1/dsp8023_1.1.0.xsd http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="up" type="application/vnd.vmware.vcloud.vdc+xml" href="testurl.local/api/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1"/>
+            <Link rel="catalogItem" type="application/vnd.vmware.vcloud.catalogItem+xml" href="testurl.local/api/catalogItem/f0212516-1e41-49f1-b034-fde4bd321456"/>
+            <Link rel="remove" href="testurl.local/api/vAppTemplate/vappTemplate-89e33fd7-04a7-4b5f-830b-2423c41089e3"/>
+            <Link rel="edit" type="application/vnd.vmware.vcloud.vAppTemplate+xml" href="testurl.local/api/vAppTemplate/vappTemplate-89e33fd7-04a7-4b5f-830b-2423c41089e3"/>
+            <Link rel="enable" href="testurl.local/api/vAppTemplate/vappTemplate-89e33fd7-04a7-4b5f-830b-2423c41089e3/action/enableDownload"/>
+            <Link rel="disable" href="testurl.local/api/vAppTemplate/vappTemplate-89e33fd7-04a7-4b5f-830b-2423c41089e3/action/disableDownload"/>
+            <Link rel="ovf" type="text/xml" href="testurl.local/api/vAppTemplate/vappTemplate-89e33fd7-04a7-4b5f-830b-2423c41089e3/ovf"/>
+            <Link rel="storageProfile" type="application/vnd.vmware.vcloud.vdcStorageProfile+xml" href="testurl.local/api/vdcStorageProfile/d070c1ed-4246-4b1c-8a90-7659a1037cb9"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.owner+xml" href="testurl.local/api/vAppTemplate/vappTemplate-89e33fd7-04a7-4b5f-830b-2423c41089e3/owner"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.metadata+xml" href="testurl.local/api/vAppTemplate/vappTemplate-89e33fd7-04a7-4b5f-830b-2423c41089e3/metadata"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.productSections+xml" href="testurl.local/api/vAppTemplate/vappTemplate-89e33fd7-04a7-4b5f-830b-2423c41089e3/productSections/"/>
+            <Description/>
+            <Owner type="application/vnd.vmware.vcloud.owner+xml">
+                <User type="application/vnd.vmware.admin.user+xml" name="test_user" href="testurl.local/api/admin/user/f1034770-14cc-4547-b1f2-6f29ef19411f"/>
+            </Owner>
+            <Children>
+                <Vm goldMaster="true" name="Test_vm1" id="urn:vcloud:vm:dbe6d81d-13c4-4e9d-855e-da0c19c9f6aa" type="application/vnd.vmware.vcloud.vm+xml" href="testurl.local/api/vAppTemplate/vm-dbe6d81d-13c4-4e9d-855e-da0c19c9f6aa">
+                    <Link rel="up" type="application/vnd.vmware.vcloud.vAppTemplate+xml" href="testurl.local/api/vAppTemplate/vappTemplate-89e33fd7-04a7-4b5f-830b-2423c41089e3"/>
+                    <Link rel="storageProfile" type="application/vnd.vmware.vcloud.vdcStorageProfile+xml" href="testurl.local/api/vdcStorageProfile/d070c1ed-4246-4b1c-8a90-7659a1037cb9"/>
+                    <Link rel="down" type="application/vnd.vmware.vcloud.metadata+xml" href="testurl.local/api/vAppTemplate/vm-dbe6d81d-13c4-4e9d-855e-da0c19c9f6aa/metadata"/>
+                    <Link rel="down" type="application/vnd.vmware.vcloud.productSections+xml" href="testurl.local/api/vAppTemplate/vm-dbe6d81d-13c4-4e9d-855e-da0c19c9f6aa/productSections/"/>
+                    <Description/>
+                    <NetworkConnectionSection type="application/vnd.vmware.vcloud.networkConnectionSection+xml" href="testurl.local/api/vAppTemplate/vm-dbe6d81d-13c4-4e9d-855e-da0c19c9f6aa/networkConnectionSection/" ovf:required="false">
+                        <ovf:Info>Specifies the available VM network connections</ovf:Info>
+                    </NetworkConnectionSection>
+                    <GuestCustomizationSection type="application/vnd.vmware.vcloud.guestCustomizationSection+xml" href="testurl.local/api/vAppTemplate/vm-dbe6d81d-13c4-4e9d-855e-da0c19c9f6aa/guestCustomizationSection/" ovf:required="false">
+                        <ovf:Info>Specifies Guest OS Customization Settings</ovf:Info>
+                        <Enabled>true</Enabled>
+                        <ChangeSid>false</ChangeSid>
+                        <VirtualMachineId>dbe6d81d-13c4-4e9d-855e-da0c19c9f6aa</VirtualMachineId>
+                        <JoinDomainEnabled>false</JoinDomainEnabled>
+                        <UseOrgSettings>false</UseOrgSettings>
+                        <AdminPasswordEnabled>false</AdminPasswordEnabled>
+                        <AdminPasswordAuto>false</AdminPasswordAuto>
+                        <AdminPassword>example_password</AdminPassword>
+                        <ResetPasswordRequired>false</ResetPasswordRequired>
+                        <ComputerName>Test_vm1</ComputerName>
+                    </GuestCustomizationSection>
+                    <VAppScopedLocalId>d576d11b-c628-445d-8953-d7d88b5b4b3b</VAppScopedLocalId>
+                    <DateCreated>2013-07-25T16:09:01.147+02:00</DateCreated>
+                </Vm>
+            </Children>
+            <ovf:NetworkSection xmlns:ns12="http://www.vmware.com/vcloud/v1.5" ns12:href="testurl.local/api/vAppTemplate/vappTemplate-89e33fd7-04a7-4b5f-830b-2423c41089e3/networkSection/" ns12:type="application/vnd.vmware.vcloud.networkSection+xml">
+                <ovf:Info>The list of logical networks</ovf:Info>
+                <ovf:Network ovf:name="Test_network_1">
+                    <ovf:Description/>
+                </ovf:Network>
+            </ovf:NetworkSection>
+            <NetworkConfigSection type="application/vnd.vmware.vcloud.networkConfigSection+xml" href="testurl.local/api/vAppTemplate/vappTemplate-89e33fd7-04a7-4b5f-830b-2423c41089e3/networkConfigSection/" ovf:required="false">
+                <ovf:Info>The configuration parameters for logical networks</ovf:Info>
+                <NetworkConfig networkName="Test_network_1">
+                    <Description/>
+                    <Configuration>
+                        <IpScopes>
+                            <IpScope>
+                                <IsInherited>true</IsInherited>
+                                <Gateway>10.202.4.1</Gateway>
+                                <Netmask>255.255.254.0</Netmask>
+                                <Dns1>10.101.0.10</Dns1>
+                                <Dns2>10.101.0.105</Dns2>
+                                <DnsSuffix>example.dns.local</DnsSuffix>
+                                <IsEnabled>true</IsEnabled>
+                                <IpRanges>
+                                    <IpRange>
+                                        <StartAddress>10.202.4.2</StartAddress>
+                                        <EndAddress>10.202.4.65</EndAddress>
+                                    </IpRange>
+                                </IpRanges>
+                            </IpScope>
+                        </IpScopes>
+                        <ParentNetwork name="Test_network_1" href=""/>
+                        <FenceMode>bridged</FenceMode>
+                        <RetainNetInfoAcrossDeployments>false</RetainNetInfoAcrossDeployments>
+                    </Configuration>
+                    <IsDeployed>false</IsDeployed>
+                </NetworkConfig>
+            </NetworkConfigSection>
+            <LeaseSettingsSection type="application/vnd.vmware.vcloud.leaseSettingsSection+xml" href="testurl.local/api/vAppTemplate/vappTemplate-89e33fd7-04a7-4b5f-830b-2423c41089e3/leaseSettingsSection/" ovf:required="false">
+                <ovf:Info>Lease settings section</ovf:Info>
+                <Link rel="edit" type="application/vnd.vmware.vcloud.leaseSettingsSection+xml" href="testurl.local/api/vAppTemplate/vappTemplate-89e33fd7-04a7-4b5f-830b-2423c41089e3/leaseSettingsSection/"/>
+                <StorageLeaseInSeconds>0</StorageLeaseInSeconds>
+            </LeaseSettingsSection>
+            <CustomizationSection type="application/vnd.vmware.vcloud.customizationSection+xml" href="testurl.local/api/vAppTemplate/vappTemplate-89e33fd7-04a7-4b5f-830b-2423c41089e3/customizationSection/" goldMaster="true" ovf:required="false">
+                <ovf:Info>VApp template customization section</ovf:Info>
+                <CustomizeOnInstantiate>true</CustomizeOnInstantiate>
+            </CustomizationSection>
+            <DateCreated>2013-07-25T16:09:01.147+02:00</DateCreated>
+        </VAppTemplate>
+    http_version:
+  recorded_at: Mon, 19 May 2014 13:39:22 GMT
+recorded_with: VCR 2.9.0
