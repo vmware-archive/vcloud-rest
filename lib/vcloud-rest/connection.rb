@@ -131,20 +131,21 @@ module VCloudClient
       # Sends a synchronous request to the vCloud API and returns the response as parsed XML + headers.
       def send_request(params, payload=nil, content_type=nil)
         headers = {:accept => "application/*+xml;version=#{@api_version}"}
+        invocation_params = {:method => params['method'],
+                             :headers => headers,
+                             :url => "#{@api_url}#{params['command']}",
+                             :payload => payload}
+
         if @auth_key
           headers.merge!({:x_vcloud_authorization => @auth_key})
+        else
+          invocation_params.merge!({:user => "#{@username}@#{@org_name}",
+                                    :password => @password })
         end
 
-        if content_type
-          headers.merge!({:content_type => content_type})
-        end
+        headers.merge!({:content_type => content_type}) if content_type
 
-        request = RestClient::Request.new(:method => params['method'],
-                                         :user => "#{@username}@#{@org_name}",
-                                         :password => @password,
-                                         :headers => headers,
-                                         :url => "#{@api_url}#{params['command']}",
-                                         :payload => payload)
+        request = RestClient::Request.new(invocation_params)
 
         begin
           response = request.execute
