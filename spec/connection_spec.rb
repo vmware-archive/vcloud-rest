@@ -1,4 +1,4 @@
-require_relative 'support/test_helper'
+require_relative 'support/spec_helper'
 
 describe VCloudClient::Connection do
   let(:vcloud_params) {
@@ -17,40 +17,40 @@ describe VCloudClient::Connection do
 
   describe "correct initialization" do
     it "cannot be created with no arguments" do
-      lambda {
+      expect {
         VCloudClient::Connection.new
-      }.must_raise ArgumentError
+      }.to raise_error ArgumentError
     end
 
     it "must be created with at least 4 arguments" do
-      VCloudClient::Connection.new(vcloud_params[:host],
+      expect(VCloudClient::Connection.new(vcloud_params[:host],
                                    vcloud_params[:username],
                                    vcloud_params[:password],
                                    vcloud_params[:org],
                                    vcloud_params[:api_version])
-            .must_be_instance_of VCloudClient::Connection
+            ).to be_instance_of VCloudClient::Connection
     end
 
     it "must construct the correct api url" do
-      connection.api_url.must_equal "https://testhost.local/api"
+      expect(connection.api_url).to eq "https://testhost.local/api"
     end
   end
 
   describe "supported APIs" do
     [:send_request, :convert_vapp_status].each do |method|
       it "must not respond to #{method}" do
-        connection.wont_respond_to method
+        expect(connection).not_to respond_to method
       end
     end
   end
 
   describe "check status" do
     it "should return correct status for existing codes" do
-      connection.send(:convert_vapp_status, 8).must_equal "stopped"
+      expect(connection.send(:convert_vapp_status, 8)).to eq "stopped"
     end
 
     it "should return a default for unexisting codes" do
-      connection.send(:convert_vapp_status, 999).must_equal "Unknown 999"
+      expect(connection.send(:convert_vapp_status, 999)).to eq "Unknown 999"
     end
   end
 
@@ -79,25 +79,25 @@ describe VCloudClient::Connection do
         to_return(:status => 200, :body => "", :headers => {:x_vcloud_authorization => "test_auth_code"})
 
       connection.login
-      connection.auth_key.wont_be_nil
+      expect(connection.auth_key).not_to be_nil
     end
 
     it "should handle correctly a success response with empty headers" do
       stub_request(:post, @url).
         to_return(:status => 200, :body => "", :headers => {})
 
-      lambda {
+      expect {
         connection.login
-      }.must_raise RuntimeError
+      }.to raise_error RuntimeError
     end
 
     it "should raise an exception for unauthorized access" do
       stub_request(:post, @url).
         to_return(:status => 401, :body => "", :headers => {})
 
-      lambda {
+      expect {
         connection.login
-      }.must_raise VCloudClient::UnauthorizedAccess
+      }.to raise_error VCloudClient::UnauthorizedAccess
     end
   end
 
@@ -110,7 +110,7 @@ describe VCloudClient::Connection do
          :body => "",
          :headers => {})
 
-      connection.get_organizations.count.must_equal 0
+      expect(connection.get_organizations.count).to eq 0
     end
 
     it "should return the correct no. of organizations - 1" do
@@ -120,9 +120,9 @@ describe VCloudClient::Connection do
          :headers => {})
 
       orgs = connection.get_organizations
-      orgs.count.must_equal 1
-      orgs.must_be_kind_of Hash
-      orgs.first.must_equal ['test-org', 'test-org-url']
+      expect(orgs.count).to eq 1
+      expect(orgs).to be_kind_of Hash
+      expect(orgs.first).to eq ['test-org', 'test-org-url']
     end
 
 
@@ -133,7 +133,7 @@ describe VCloudClient::Connection do
                     :headers => {})
 
       orgs = connection.get_organizations
-      orgs.values.first.must_match(/^(\w+-)+\w+$/)
+      expect(orgs.values.first).to match /^(\w+-)+\w+$/
     end
   end
 
@@ -147,8 +147,8 @@ describe VCloudClient::Connection do
          :headers => {})
 
       catalog_get = connection.get_organization("test-org")
-      catalog_get[:catalogs].count.must_equal 1
-      catalog_get[:catalogs].first.must_equal ["catalog_1", "catalog_1-url"]
+      expect(catalog_get[:catalogs].count).to eq 1
+      expect(catalog_get[:catalogs].first).to eq ["catalog_1", "catalog_1-url"]
     end
 
     it "should return the correct no. of vdcs - 1" do
@@ -158,8 +158,8 @@ describe VCloudClient::Connection do
          :headers => {})
 
       vdcs_get = connection.get_organization("test-org")
-      vdcs_get[:vdcs].count.must_equal 1
-      vdcs_get[:vdcs].first.must_equal ["vdc_1", "vdc_1-url"]
+      expect(vdcs_get[:vdcs].count).to eq 1
+      expect(vdcs_get[:vdcs].first).to eq ["vdc_1", "vdc_1-url"]
     end
 
     it "should return the correct no. of networks - 1" do
@@ -169,8 +169,8 @@ describe VCloudClient::Connection do
          :headers => {})
 
       networks_get = connection.get_organization("test-org")
-      networks_get[:networks].count.must_equal 1
-      networks_get[:networks].first.must_equal ["network_1", "network_1-url"]
+      expect(networks_get[:networks].count).to eq 1
+      expect(networks_get[:networks].first).to eq ["network_1", "network_1-url"]
     end
   end
 
@@ -184,7 +184,7 @@ describe VCloudClient::Connection do
          :headers => {})
 
       catalog_get = connection.get_catalog("test-catalog")
-      catalog_get[:items].count.must_equal 0
+      expect(catalog_get[:items].count).to eq 0
     end
 
     it "should return the correct no. of catalog items - 1" do
@@ -194,7 +194,7 @@ describe VCloudClient::Connection do
          :headers => {})
 
       catalog_get = connection.get_catalog("test-catalog")
-      catalog_get[:items].first.must_equal ["catalog_item_1", "catalog_item_1-url"]
+      expect(catalog_get[:items].first).to eq ["catalog_item_1", "catalog_item_1-url"]
     end
   end
 
@@ -213,7 +213,7 @@ describe VCloudClient::Connection do
          :headers => {})
 
       vdc_get = connection.get_vdc("test-vdc")
-      vdc_get[:vapps].first.must_equal ["vapp_1", "vapp_1-url"]
+      expect(vdc_get[:vapps].first).to eq ["vapp_1", "vapp_1-url"]
     end
   end
 
@@ -231,8 +231,8 @@ describe VCloudClient::Connection do
           to_return(:status => 200, :body => "", :headers => {})
 
       catalog_item_get = connection.get_catalog_item("test-cat-item")
-      catalog_item_get[:items].first[:id].must_equal "vapp_templ_1-url"
-      catalog_item_get[:items].first[:name].must_equal "vapp_templ_1"
+      expect(catalog_item_get[:items].first[:id]).to eq "vapp_templ_1-url"
+      expect(catalog_item_get[:items].first[:name]).to eq "vapp_templ_1"
     end
   end
 
@@ -246,7 +246,7 @@ describe VCloudClient::Connection do
          :headers => {})
 
       vapp_get = connection.get_vapp("test-vapp")
-      vapp_get[:name].must_equal "test-vapp"
+      expect(vapp_get[:name]).to eq "test-vapp"
     end
 
     it "should return the correct status" do
@@ -256,7 +256,7 @@ describe VCloudClient::Connection do
          :headers => {})
 
       vapp_get = connection.get_vapp("test-vapp")
-      vapp_get[:status].must_equal "running"
+      expect(vapp_get[:status]).to eq "running"
     end
 
     it "should return the correct IP" do
@@ -266,7 +266,7 @@ describe VCloudClient::Connection do
          :headers => {})
 
       vapp_get = connection.get_vapp("test-vapp")
-      vapp_get[:ip].must_equal "127.0.0.1"
+      expect(vapp_get[:ip]).to eq "127.0.0.1"
     end
 
     it "should return the correct no. of VMs - 1" do
@@ -276,8 +276,8 @@ describe VCloudClient::Connection do
          :headers => {})
 
       vapp_get = connection.get_vapp("test-vapp")
-      vapp_get[:vms_hash].count.must_equal 1
-      vapp_get[:vms_hash].first.must_equal ["vm_1", {:addresses=>["127.0.0.1"], :status=>"running", :id=>"vm_1", :vapp_scoped_local_id => ""}]
+      expect(vapp_get[:vms_hash].count).to eq 1
+      expect(vapp_get[:vms_hash].first).to eq ["vm_1", {:addresses=>["127.0.0.1"], :status=>"running", :id=>"vm_1", :vapp_scoped_local_id => ""}]
     end
 
     it "should return the correct no. of VMs - 2" do
@@ -287,8 +287,8 @@ describe VCloudClient::Connection do
          :headers => {})
 
       vapp_get = connection.get_vapp("test-vapp")
-      vapp_get[:vms_hash].count.must_equal 1
-      vapp_get[:vms_hash].first.must_equal ["vm_1", {:addresses=>["127.0.0.1"], :status=>"running", :id=>"vm_1", :vapp_scoped_local_id => ""}]
+      expect(vapp_get[:vms_hash].count).to eq 1
+      expect(vapp_get[:vms_hash].first).to eq ["vm_1", {:addresses=>["127.0.0.1"], :status=>"running", :id=>"vm_1", :vapp_scoped_local_id => ""}]
     end
   end
 
@@ -301,7 +301,7 @@ describe VCloudClient::Connection do
             :headers => {:location => "#{connection.api_url}/task/test-deletion_task"})
 
       task_id = connection.delete_vapp("test-vapp")
-      task_id.must_equal "test-deletion_task"
+      expect(task_id).to eq "test-deletion_task"
     end
   end
 
@@ -316,7 +316,7 @@ describe VCloudClient::Connection do
              :headers => {:location => "#{connection.api_url}/task/test-poweroff_task"})
 
       task_id = connection.poweroff_vapp("test-vapp")
-      task_id.must_equal "test-poweroff_task"
+      expect(task_id).to eq "test-poweroff_task"
     end
   end
 
@@ -329,7 +329,7 @@ describe VCloudClient::Connection do
             :headers => {:location => "#{connection.api_url}/task/test-startup_task"})
 
       task_id = connection.poweron_vapp("test-vapp")
-      task_id.must_equal "test-startup_task"
+      expect(task_id).to eq "test-startup_task"
     end
   end
 
@@ -345,8 +345,8 @@ describe VCloudClient::Connection do
           :body => "<VApp><Task operationName=\"vdcInstantiateVapp\" href=\"#{connection.api_url}/task/test-task_id\"></VApp>")
 
       vapp_created = connection.create_vapp_from_template("vdc_id", "vapp_name", "vapp_desc", "templ_id")
-      vapp_created[:vapp_id].must_equal "vapp_created"
-      vapp_created[:task_id].must_equal "test-task_id"
+      expect(vapp_created[:vapp_id]).to eq "vapp_created"
+      expect(vapp_created[:task_id]).to eq "test-task_id"
     end
   end
 
@@ -364,8 +364,8 @@ describe VCloudClient::Connection do
 
       ## vapp_created = connection.compose_vapp_from_vm("vdc_id",   "vapp_name", "vapp_desc", "templ_id")
       vapp_created = connection.compose_vapp_from_vm("vdc_id", "vapp_name", "vapp_desc", { "vm_name" => "vm_id" }, { :name => "vapp_net", :gateway => "10.250.254.253", :netmask => "255.255.255.0", :start_address => "10.250.254.1", :end_address => "10.250.254.100", :fence_mode => "natRouted", :ip_allocation_mode => "POOL", :parent_network =>  "guid", :enable_firewall => "false" })
-      vapp_created[:vapp_id].must_equal "vapp_created"
-      vapp_created[:task_id].must_equal "test-task_id"
+      expect(vapp_created[:vapp_id]).to eq "vapp_created"
+      expect(vapp_created[:task_id]).to eq "test-task_id"
     end
   end
 
@@ -380,7 +380,7 @@ describe VCloudClient::Connection do
           :body => "<VApp><Task operationName=\"vdcRecomposeVapp\" href=\"#{connection.api_url}/task/test-task_id\"></VApp>")
 
       task_id = connection.add_vm_to_vapp({ :id => "vapp_id", :name => "vapp_name" }, { :template_id => "template_id", :vm_name => "vm_name" }, { :name => "vm_net", :ip_allocation_mode => "POOL" })
-      task_id.must_equal "test-task_id"
+      expect(task_id).to eq "test-task_id"
     end
   end
 
@@ -401,7 +401,7 @@ describe VCloudClient::Connection do
       task_id = connection.set_vapp_network_config("test-vapp",
                                           {:name => "test-network", :id => 'tst-id'},
                                           { :parent_network => {:name => "guid", :id => 'tst-par'} })
-      task_id.must_equal "test-vapp_network_task"
+      expect(task_id).to eq "test-vapp_network_task"
     end
 
     it "add_org_network_to_vapp should send the correct content-type and payload" do
@@ -501,7 +501,7 @@ describe VCloudClient::Connection do
                                           {:name => "test-network", :id => 'tst-id'},
                                           {:parent_network => {:name => "test-network", :id => 'tst-id'},
                                            :fence_mode => 'bridged' })
-      task_id.must_equal "test-vapp_network_task"
+      expect(task_id).to eq "test-vapp_network_task"
     end
 
     it "add_internal_network_to_vapp should send the correct content-type and payload" do
@@ -582,7 +582,7 @@ describe VCloudClient::Connection do
                                            :dns_suffix => 'testdns.example.local',
                                            :start_address => '192.168.0.2',
                                            :end_address => '192.168.0.200'})
-      task_id.must_equal "test-vapp_network_task"
+      expect(task_id).to eq "test-vapp_network_task"
     end
 
     describe "VApp Edge" do
@@ -605,7 +605,7 @@ describe VCloudClient::Connection do
            :headers => {})
 
         edge_id = connection.get_vapp_edge_public_ip("test-vapp")
-        edge_id.must_equal "10.0.0.1"
+        expect(edge_id).to eq "10.0.0.1"
       end
 
       it "should raise an exception if not natRouted" do
@@ -626,9 +626,9 @@ describe VCloudClient::Connection do
             </Configuration></NetworkConfig></NetworkConfigSection></VApp>",
            :headers => {})
 
-        lambda {
+        expect {
           edge_id = connection.get_vapp_edge_public_ip("test-vapp")
-        }.must_raise VCloudClient::InvalidStateError
+        }.to raise_error VCloudClient::InvalidStateError
       end
 
       it "should raise an exception if NatType is not portForwarding" do
@@ -649,9 +649,9 @@ describe VCloudClient::Connection do
             </Configuration></NetworkConfig></NetworkConfigSection></VApp>",
            :headers => {})
 
-        lambda {
+        expect {
           edge_id = connection.get_vapp_edge_public_ip("test-vapp")
-        }.must_raise VCloudClient::InvalidStateError
+        }.to raise_error VCloudClient::InvalidStateError
       end
     end
 
@@ -683,8 +683,8 @@ describe VCloudClient::Connection do
            :headers => {})
 
         natrules = connection.get_vapp_port_forwarding_rules("test-vapp")
-        natrules.count.must_equal 1
-        natrules.first.must_equal ["1", {:ExternalIpAddress=>"10.0.0.1", :ExternalPort=>"80", :VAppScopedVmId=>"11111111-1111-1111-1111-111111111111", :VmNicId=>"0", :InternalPort=>"80", :Protocol=>"TCP"}]
+        expect(natrules.count).to eq 1
+        expect(natrules.first).to eq ["1", {:ExternalIpAddress=>"10.0.0.1", :ExternalPort=>"80", :VAppScopedVmId=>"11111111-1111-1111-1111-111111111111", :VmNicId=>"0", :InternalPort=>"80", :Protocol=>"TCP"}]
       end
     end
   end
@@ -700,7 +700,7 @@ describe VCloudClient::Connection do
              :headers => {:location => "#{connection.api_url}/task/test-vm_guest_task"})
 
       task_id = connection.set_vm_guest_customization("test-vm", "test-name")
-      task_id.must_equal "test-vm_guest_task"
+      expect(task_id).to eq "test-vm_guest_task"
     end
   end
 
@@ -730,8 +730,8 @@ describe VCloudClient::Connection do
                 ")
 
       vm_get = connection.get_vm("test-vm")
-      vm_get[:os_desc].must_equal "Test OS"
-      vm_get[:guest_customizations].wont_be_nil
+      expect(vm_get[:os_desc]).to eq "Test OS"
+      expect(vm_get[:guest_customizations]).not_to be_nil
     end
   end
 
@@ -776,8 +776,8 @@ describe VCloudClient::Connection do
                 </VApp>")
       vm_get = connection.get_vm_info("test-vm")
 
-      vm_get["cpu"][:name].must_equal "1 virtual CPU(s)"
-      vm_get["memory"][:name].must_equal "2048 MB of memory"
+      expect(vm_get["cpu"][:name]).to eq "1 virtual CPU(s)"
+      expect(vm_get["memory"][:name]).to eq "2048 MB of memory"
     end
   end
 
@@ -790,7 +790,7 @@ describe VCloudClient::Connection do
             :headers => {:location => "#{connection.api_url}/task/test-startup_task"})
 
       task_id = connection.poweron_vm("test-vm")
-      task_id.must_equal "test-startup_task"
+      expect(task_id).to eq "test-startup_task"
     end
   end
 
@@ -804,7 +804,7 @@ describe VCloudClient::Connection do
             :headers => {:location => "#{connection.api_url}/task/test-vapp-snapshot_task"})
 
       task_id = connection.create_vapp_snapshot("test-vapp", :vm)
-      task_id.must_equal "test-vapp-snapshot_task"
+      expect(task_id).to eq "test-vapp-snapshot_task"
     end
   end
 
@@ -818,7 +818,7 @@ describe VCloudClient::Connection do
             :headers => {:location => "#{connection.api_url}/task/test-vapp-snapshot_deprecated_task"})
 
       task_id = connection.create_snapshot("test-vapp")
-      task_id.must_equal "test-vapp-snapshot_deprecated_task"
+      expect(task_id).to eq "test-vapp-snapshot_deprecated_task"
     end
   end
 

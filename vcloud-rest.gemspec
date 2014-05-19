@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency "ruby-progressbar", "~> 1.5", ">= 1.5.1"
 
   s.add_development_dependency "rake", '~> 10.1'
-  s.add_development_dependency "minitest", '~> 5.0', ">= 5.0.8"
+  s.add_development_dependency "rspec"
   s.add_development_dependency "webmock", '~> 1.13'
 
   s.require_path = 'lib'

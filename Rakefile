@@ -1,8 +1,7 @@
-require 'rake/testtask'
-Rake::TestTask.new(:minitest) do |test|
-  test.test_files = FileList["spec/**/*.rb"]
+require 'rspec/core/rake_task'
+
+RSpec::Core::RakeTask.new(:spec) do |test|
   test.verbose = false
-  test.warning = false
 end
 
-task :default => [:minitest]
+task :default => [:spec]
