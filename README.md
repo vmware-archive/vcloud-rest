@@ -49,10 +49,12 @@ TODO
 
 PREREQUISITES
 --
-- nokogiri ~> 1.6.0
-- rest-client ~> 1.6.7
-- httpclient ~> 2.3.3
-- ruby-progressbar ~> 1.1.1
+- nokogiri
+- rest-client
+- httpclient
+- ruby-progressbar
+
+(see *vcloud_rest.gemspec* for details)
 
 For testing purpose:
 - minitest (included in ruby 1.9)
