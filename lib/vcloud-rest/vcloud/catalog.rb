@@ -66,31 +66,41 @@ module VCloudClient
       description = description.text unless description.nil?
 
       items = []
-      response.css("Entity[type='application/vnd.vmware.vcloud.vAppTemplate+xml']").each do |item|
-        itemId = item['href'].gsub(/.*\/vAppTemplate\/vappTemplate\-/, "")
+      # manage two different types of catalog items: vAppTemplate and media
+      if response.css("Entity[type='application/vnd.vmware.vcloud.vAppTemplate+xml']").size > 0
+        response.css("Entity[type='application/vnd.vmware.vcloud.vAppTemplate+xml']").each do |item|
+          itemId = item['href'].gsub(/.*\/vAppTemplate\/vappTemplate\-/, "")
 
-        # Fetch the catalogItemId information
-        params = {
-          'method' => :get,
-          'command' => "/vAppTemplate/vappTemplate-#{itemId}"
-        }
-        response, headers = send_request(params)
+          # Fetch the catalogItemId information
+          params = {
+            'method' => :get,
+            'command' => "/vAppTemplate/vappTemplate-#{itemId}"
+          }
+          response, headers = send_request(params)
 
-        # VMs Hash for all the vApp VM entities
-        vms_hash = {}
-        response.css("/VAppTemplate/Children/Vm").each do |vmElem|
-          vmName = vmElem["name"]
-          vmId = vmElem["href"].gsub(/.*\/vAppTemplate\/vm\-/, "")
+          # VMs Hash for all the vApp VM entities
+          vms_hash = {}
+          response.css("/VAppTemplate/Children/Vm").each do |vmElem|
+            vmName = vmElem["name"]
+            vmId = vmElem["href"].gsub(/.*\/vAppTemplate\/vm\-/, "")
 
-          # Add the VM name/id to the VMs Hash
-          vms_hash[vmName] = { :id => vmId }
+            # Add the VM name/id to the VMs Hash
+            vms_hash[vmName] = { :id => vmId }
+          end
+
+          items << { :id => itemId,
+                     :name => item['name'],
+                     :vms_hash => vms_hash }
         end
 
-        items << { :id => itemId,
-                   :name => item['name'],
-                   :vms_hash => vms_hash }
+        { :id => catalogItemId, :description => description, :items => items, :type => 'vAppTemplate' }
+      elsif response.css("Entity[type='application/vnd.vmware.vcloud.media+xml']").size > 0
+        name = response.css("Entity[type='application/vnd.vmware.vcloud.media+xml']").first['name']
+        { :id => catalogItemId, :description => description, :name => name, :type => 'media' }
+      else
+        @logger.warn 'WARNING: either this catalog item is empty or contains something not managed by vcloud-rest'
+        { :id => catalogItemId, :description => description, :type => 'unknown' }
       end
-      { :id => catalogItemId, :description => description, :items => items }
     end
 
     ##
