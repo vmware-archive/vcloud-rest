@@ -349,7 +349,11 @@ module VCloudClient
         external_ip = network.css('ExternalIpAddress').first
         external_ip = external_ip.text if external_ip
 
-        networks[network['network']] = {
+        # Append NetworkConnectionIndex to network name to generate a unique hash key,
+        # otherwise different interfaces on the same network would use the same hash key
+        key = "#{network['network']}_#{network.css('NetworkConnectionIndex').first.text}"
+        
+        networks[key] = {
           :index => network.css('NetworkConnectionIndex').first.text,
           :ip => ip,
           :external_ip => external_ip,
