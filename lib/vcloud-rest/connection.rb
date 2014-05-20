@@ -238,6 +238,18 @@ module VCloudClient
     end
 
     ##
+    # Discard suspended state of a vApp/VM
+    def discard_suspended_state_action(id, type=:vapp)
+      params = {
+          "method" => :post,
+          "command" => "/vApp/#{type}-#{id}/action/discardSuspendedState"
+      }
+      response, headers = send_request(params)
+      task_id = headers[:location].gsub(/.*\/task\//, "")
+      task_id
+    end
+
+    ##
     # Create a new vapp/vm snapshot (overwrites any existing)
     def create_snapshot_action(id, description="New Snapshot", type=:vapp)
       params = {
