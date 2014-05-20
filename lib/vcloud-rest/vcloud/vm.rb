@@ -186,8 +186,9 @@ module VCloudClient
       # For some reasons these elements must be removed
       netconfig_response.css("Link").each {|n| n.remove}
 
-      # Delete placeholder network
-      netconfig_response.css('NetworkConnection').find{|n| n.attribute('network').text == 'none'}.remove
+      # Delete placeholder network if present (since vcloud 5.5 has been removed)
+      none_network = netconfig_response.css('NetworkConnection').find{|n| n.attribute('network').text == 'none'}
+      none_network.remove if none_network
 
       networks_count = netconfig_response.css('NetworkConnection').count
 
