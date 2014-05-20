@@ -164,6 +164,12 @@ module VCloudClient
     end
 
     ##
+    # Discard suspended state of a given vapp
+    def discard_suspend_state_vapp(vAppId)
+      discard_suspended_state_action(vAppId, :vapp)
+    end
+
+    ##
     # reboot a given vapp
     # This will basically initial a guest OS reboot, and will only work if
     # VMware-tools are installed on the underlying VMs.
