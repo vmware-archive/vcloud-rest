@@ -186,8 +186,9 @@ module VCloudClient
       # For some reasons these elements must be removed
       netconfig_response.css("Link").each {|n| n.remove}
 
-      # Delete placeholder network
-      netconfig_response.css('NetworkConnection').find{|n| n.attribute('network').text == 'none'}.remove
+      # Delete placeholder network if present (since vcloud 5.5 has been removed)
+      none_network = netconfig_response.css('NetworkConnection').find{|n| n.attribute('network').text == 'none'}
+      none_network.remove if none_network
 
       networks_count = netconfig_response.css('NetworkConnection').count
 
@@ -420,6 +421,12 @@ module VCloudClient
     # Suspend a given vm
     def suspend_vm(vmId)
       power_action(vmId, 'suspend', :vm)
+    end
+
+    ##
+    # Discard suspended state of a given vm
+    def discard_suspend_state_vm(vmId)
+      discard_suspended_state_action(vmId, :vm)
     end
 
     ##
