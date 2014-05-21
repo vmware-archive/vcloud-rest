@@ -1,5 +1,19 @@
 Changes
 ==
+Next release (x.x.x)
+
+FEATURES:
+
+* Add "media" item type management to `get_catalog_item`
+* Add `discard_suspend_state_[vapp|vm]` to discard suspended state of a vApp or VM
+
+FIXES:
+
+* Fix add network to VM for API v.5.5
+* Fix VM IP address retrieval with different interfaces on same network
+
+Note that now `get_vm` appends NetworkConnectionIndex to network name to generate a unique hash key.
+
 2014-02-06 (1.2.0)
 
 FEATURES:
