@@ -6,6 +6,7 @@ FEATURES:
 
 * Add "media" item type management to `get_catalog_item`
 * Add `discard_suspend_state_[vapp|vm]` to discard suspended state of a vApp or VM
+* Add independent disk capabilities
 
 FIXES:
 
