@@ -469,7 +469,20 @@ module VCloudClient
 
     private
       def add_disk(source_xml, disk_info)
+
         disks_count = source_xml.css("Item").css("rasd|HostResource").count
+
+        disk_parent_ids = Set.new
+
+        source_xml.css("Item").each do |entry|
+          parent_id = entry.css('rasd|Parent').first.text unless entry.css('rasd|Parent').empty?
+          resource_type = entry.css('rasd|ResourceType').first.text unless entry.css('rasd|ResourceType').empty?
+          disk_parent_ids << parent_id if resource_type == '17'
+        end
+
+        raise InvalidStateError, "Could not handle this request because multiple nodes with ResourceType 17 and different rasd:Parent exist" if disk_parent_ids.size > 1
+
+        raise InvalidStateError, "Could not handle this request because I could not find a node with ResourceType 17" if disk_parent_ids.size == 0
 
         # FIXME: This is a hack, but dealing with nokogiri APIs can be quite
         # frustrating sometimes...
@@ -489,7 +502,7 @@ module VCloudClient
                   ns12:busSubType=\"lsilogic\"
                   ns12:busType=\"6\"/>
             <rasd:InstanceID>200#{disks_count}</rasd:InstanceID>
-            <rasd:Parent>1</rasd:Parent>
+            <rasd:Parent>#{disk_parent_ids.first}</rasd:Parent>
             <rasd:ResourceType>17</rasd:ResourceType>
           </Item>""")
       end
