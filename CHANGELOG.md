@@ -13,6 +13,7 @@ FIXES:
 
 * Fix add network to VM for API v.5.5
 * Fix VM IP address retrieval with different interfaces on same network
+* Don't use hardcoded rasd:Parent in `add_disk`
 
 Note that now `get_vm` appends NetworkConnectionIndex to network name to generate a unique hash key.
 
