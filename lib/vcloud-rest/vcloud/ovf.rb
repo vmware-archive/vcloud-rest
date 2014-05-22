@@ -10,6 +10,7 @@ module VCloudClient
     # - uploadOptions {}
     def upload_ovf(vdcId, vappName, vappDescription, ovfFile, catalogId, uploadOptions={})
       raise ::IOError, "OVF #{ovfFile} is missing." unless File.exists?(ovfFile)
+      raise ::IOError, "Only .ovf files are supported" unless File.extname(ovfFile) =~ /\.ovf/ 
 
       # if send_manifest is not set, setting it true
       if uploadOptions[:send_manifest].nil? || uploadOptions[:send_manifest]
