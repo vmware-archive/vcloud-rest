@@ -831,6 +831,37 @@ describe VCloudClient::Connection do
         end
       end
     end
+
+    context "#get_vm_disk_info" do
+      it "should retrieve disks information for a given VM" do
+        VCR.use_cassette('vms/get_vm_disk_info') do
+          connection.login
+          result = connection.get_vm_disk_info(
+                        "1781ed02-7bb5-4e5d-b502-ca8ff110b6f3")
+
+          expect(result).to eq([{:name=>"Hard disk 1", :capacity=>"16384 MB"},
+                                {:name=>"Hard disk 2", :capacity=>"2048 MB"}])
+        end
+      end
+    end
+
+    context "#set_vm_disk_info" do
+      it "should add a disk for a given VM" do
+        VCR.use_cassette('vms/set_vm_disk_info') do
+          disk_info={ :add => true,
+                      :delete => false,
+                      :disk_size => '1000',
+                      :disk_name => 'test_disk01'
+                    }
+          connection.login
+          task_id = connection.set_vm_disk_info(
+                        "1781ed02-7bb5-4e5d-b502-ca8ff110b6f3",
+                        disk_info)
+
+          expect(task_id).to eq("04283c37-d3af-424f-86e4-724835a8758b")
+        end
+      end
+    end
   end
 
   describe "Disk management" do
