@@ -11,6 +11,9 @@ end
 require 'simplecov'
 SimpleCov.start
 
+require 'coveralls'
+Coveralls.wear!
+
 require 'webmock/rspec'
 require 'vcr'
 require 'uri'
