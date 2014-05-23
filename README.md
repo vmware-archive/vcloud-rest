@@ -17,7 +17,7 @@ This plugin is distributed as a Ruby Gem. To install it, run:
 
 Depending on your system's configuration, you may need to run this command with root privileges.
 
-vcloud-rest is tested against ruby 2.1.0, 2.0.0, 1.9.x and 1.8.7+.
+vcloud-rest is tested against ruby 2.1.2, 2.0.0, 1.9.3 and ruby-head.
 
 FEATURES
 --
