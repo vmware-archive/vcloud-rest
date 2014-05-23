@@ -8,6 +8,7 @@ FEATURES:
 * Add `discard_suspend_state_[vapp|vm]` to discard suspended state of a vApp or VM
 * Add independent disk capabilities
 * `get_vapp` returns also network IDs
+* Add `discard_[vm|vapp]_snapshot` to discard snapshots
 
 FIXES:
 

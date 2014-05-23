@@ -396,6 +396,12 @@ module VCloudClient
     end
 
     ##
+    # Discard all existing snapshots
+    def discard_vapp_snapshot(vmId)
+      discard_snapshot_action(vmId, :vapp)
+    end
+
+    ##
     # Clone a vapp in a given VDC to a new Vapp
     def clone_vapp(vdc_id, source_vapp_id, name, deploy="true", poweron="false", linked="false", delete_source="false")
       params = {

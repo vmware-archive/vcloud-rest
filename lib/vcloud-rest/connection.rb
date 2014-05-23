@@ -282,6 +282,18 @@ module VCloudClient
     end
 
     ##
+    # Discard all existing snapshots (vapp/vm)
+    def discard_snapshot_action(id, type=:vapp)
+      params = {
+          "method" => :post,
+          "command" => "/vApp/#{type}-#{id}/action/removeAllSnapshots"
+      }
+      response, headers = send_request(params)
+      task_id = headers[:location].gsub(/.*\/task\//, "")
+      task_id
+    end
+
+    ##
     # Upload a large file in configurable chunks, output an optional progressbar
     def upload_file(uploadURL, uploadFile, progressUrl, config={})
       raise ::IOError, "#{uploadFile} not found." unless File.exists?(uploadFile)

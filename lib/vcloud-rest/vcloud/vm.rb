@@ -466,6 +466,11 @@ module VCloudClient
       revert_snapshot_action(vmId, :vm)
     end
 
+    ##
+    # Discard all existing snapshots
+    def discard_vm_snapshot(vmId)
+      discard_snapshot_action(vmId, :vm)
+    end
 
     private
       def add_disk(source_xml, disk_info)
