@@ -472,6 +472,29 @@ module VCloudClient
       discard_snapshot_action(vmId, :vm)
     end
 
+    ##
+    # Retrieve a screen ticket that you can use with the VMRC browser plug-in
+    # to gain access to the console of a running VM.
+    def acquire_ticket_vm(vmId)
+
+      params = {
+        'method' => :post,
+        'command' => "/vApp/vm-#{vmId}/screen/action/acquireTicket"
+      }
+
+      response, headers = send_request(params)
+
+      screen_ticket = response.css("ScreenTicket").text
+
+      result = {}
+
+      if screen_ticket =~ /mks:\/\/([^\/]*)\/([^\?]*)\?ticket=(.*)/
+        result = { host: $1, moid: $2, token: $3 }
+        result[:token] = URI.unescape result[:token]
+      end
+      result
+    end
+
     private
       def add_disk(source_xml, disk_info)
 

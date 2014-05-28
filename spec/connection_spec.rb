@@ -862,6 +862,20 @@ describe VCloudClient::Connection do
         end
       end
     end
+
+    context "#acquire_ticket_vm" do
+      it "should retrieve the screen ticket for a given VM" do
+        VCR.use_cassette('vms/acquire_ticket_vm') do
+          connection.login
+          result = connection.acquire_ticket_vm(
+                        "1781ed02-7bb5-4e5d-b502-ca8ff110b6f3")
+
+          expect(result).to eq({:host=>"testurlvmrc.local",
+                                :moid=>"vm-302",
+                                :token=>"cst-SPMtdoiMV116/8d6WxvRVItG/XdO2N+aKvztP+ixBwFQpzIQjUshSOS7QAsUwCOlcnWvC9NL3EKk1fvRi0fAKc/r7LFgXIAVAttYHUe8GMp1W7yYGhE2+rB9NzDV/R9mVbmJlpqC9kzRtBzDbReApMJzLBxyeOGhgqW3Cg+41bpw7RVIbf+aVm/reHkB4BAWHuKsPCoK37qnHee5H5cAzPH8RDOueng0iyH+DMe9X6wjTYgGsJi09syoBsqDzNHginYaQw/HWKPtcmfCFm7Uty6QuMghSKnNd0UJS/cHAgHW4/Nw/iNZixQEE3ecJjaGfE7QU0A3CGRTdkW5SIUTDKS/c44emaxUUsmZYWTXU5fM54PwILTmFNh7hdyPAQ53-F6jtmgpvJ/GsbGPiUyaJj1WIkuN07yzcPVWeBQ==--tp-1D:87:78:67:7B:D3:C7:E2:87:54:15:4D:B6:AE:CA:30:09:25:0B:20--"})
+        end
+      end
+    end
   end
 
   describe "Disk management" do

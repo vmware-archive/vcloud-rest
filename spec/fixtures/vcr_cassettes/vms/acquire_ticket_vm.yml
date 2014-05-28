@@ -1,0 +1,85 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://testuser%40testorg:testpass@testurl.local/api/sessions
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 28 May 2014 13:42:04 GMT
+      - Wed, 28 May 2014 13:42:04 GMT
+      Vary:
+      - Accept-Encoding
+      X-Vcloud-Authorization:
+      - +CkQukdx7rXge9RZAMOLwAVPXAg61MHkwXclVOKTz+A=
+      Set-Cookie:
+      - vcloud-token=+CkQukdx7rXge9RZAMOLwAVPXAg61MHkwXclVOKTz+A=; Secure; Path=/
+      Content-Type:
+      - application/vnd.vmware.vcloud.session+xml;version=5.1
+      Content-Length:
+      - '1254'
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Session xmlns="http://www.vmware.com/vcloud/v1.5" user="testuser" org="testorg" type="application/vnd.vmware.vcloud.session+xml" href="https://testurl.local/api/session/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="down" type="application/vnd.vmware.vcloud.orgList+xml" href="https://testurl.local/api/org/"/>
+            <Link rel="remove" href="https://testurl.local/api/session/"/>
+            <Link rel="down" type="application/vnd.vmware.admin.vcloud+xml" href="https://testurl.local/api/admin/"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.org+xml" name="testorg" href="https://testurl.local/api/org/8fcb3145-cb64-4034-a71a-0fd73f5453b7"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.query.queryList+xml" href="https://testurl.local/api/query"/>
+            <Link rel="entityResolver" type="application/vnd.vmware.vcloud.entity+xml" href="https://testurl.local/api/entity/"/>
+            <Link rel="down:extensibility" type="application/vnd.vmware.vcloud.apiextensibility+xml" href="https://testurl.local/api/extensibility"/>
+        </Session>
+    http_version: 
+  recorded_at: Wed, 28 May 2014 13:42:03 GMT
+- request:
+    method: post
+    uri: https://testurl.local/api/vApp/vm-1781ed02-7bb5-4e5d-b502-ca8ff110b6f3/screen/action/acquireTicket
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      X-Vcloud-Authorization:
+      - +CkQukdx7rXge9RZAMOLwAVPXAg61MHkwXclVOKTz+A=
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 28 May 2014 13:42:04 GMT
+      - Wed, 28 May 2014 13:42:05 GMT
+      Vary:
+      - Accept-Encoding
+      Content-Type:
+      - application/vnd.vmware.vcloud.screenticket+xml;version=5.1
+      Content-Length:
+      - '889'
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <ScreenTicket xmlns="http://www.vmware.com/vcloud/v1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">mks://testurlvmrc.local/vm-302?ticket=cst-SPMtdoiMV116%2F8d6WxvRVItG%2FXdO2N%2BaKvztP%2BixBwFQpzIQjUshSOS7QAsUwCOlcnWvC9NL3EKk1fvRi0fAKc%2Fr7LFgXIAVAttYHUe8GMp1W7yYGhE2%2BrB9NzDV%2FR9mVbmJlpqC9kzRtBzDbReApMJzLBxyeOGhgqW3Cg%2B41bpw7RVIbf%2BaVm%2FreHkB4BAWHuKsPCoK37qnHee5H5cAzPH8RDOueng0iyH%2BDMe9X6wjTYgGsJi09syoBsqDzNHginYaQw%2FHWKPtcmfCFm7Uty6QuMghSKnNd0UJS%2FcHAgHW4%2FNw%2FiNZixQEE3ecJjaGfE7QU0A3CGRTdkW5SIUTDKS%2Fc44emaxUUsmZYWTXU5fM54PwILTmFNh7hdyPAQ53-F6jtmgpvJ%2FGsbGPiUyaJj1WIkuN07yzcPVWeBQ%3D%3D--tp-1D%3A87%3A78%3A67%3A7B%3AD3%3AC7%3AE2%3A87%3A54%3A15%3A4D%3AB6%3AAE%3ACA%3A30%3A09%3A25%3A0B%3A20--</ScreenTicket>
+    http_version: 
+  recorded_at: Wed, 28 May 2014 13:42:04 GMT
+recorded_with: VCR 2.9.0
