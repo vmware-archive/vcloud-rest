@@ -1,0 +1,107 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://testuser%40testorg:testpass@testurl.local/api/sessions
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 22 May 2014 14:57:15 GMT
+      - Thu, 22 May 2014 14:57:15 GMT
+      X-Vcloud-Authorization:
+      - UoL/VtDYyKptBU+nBnUBou4zVlHqPSDEG50Mjbhj4gs=
+      Set-Cookie:
+      - vcloud-token=UoL/VtDYyKptBU+nBnUBou4zVlHqPSDEG50Mjbhj4gs=; Secure; Path=/
+      Content-Type:
+      - application/vnd.vmware.vcloud.session+xml;version=5.1
+      Content-Length:
+      - '1149'
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Session xmlns="http://www.vmware.com/vcloud/v1.5" user="testuser" org="Test" type="application/vnd.vmware.vcloud.session+xml" href="https://testurl.local/api/session/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="down" type="application/vnd.vmware.vcloud.orgList+xml" href="https://testurl.local/api/org/"/>
+            <Link rel="down" type="application/vnd.vmware.admin.vcloud+xml" href="https://testurl.local/api/admin/"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.query.queryList+xml" href="https://testurl.local/api/query"/>
+            <Link rel="entityResolver" type="application/vnd.vmware.vcloud.entity+xml" href="https://testurl.local/api/entity/"/>
+            <Link rel="down:extensibility" type="application/vnd.vmware.vcloud.apiextensibility+xml" href="https://testurl.local/api/extensibility"/>
+        </Session>
+    http_version:
+  recorded_at: Thu, 22 May 2014 14:57:17 GMT
+- request:
+    method: get
+    uri: https://testurl.local/api/network/3782a2eb-e408-4764-8986-1ae5fc033363
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      X-Vcloud-Authorization:
+      - UoL/VtDYyKptBU+nBnUBou4zVlHqPSDEG50Mjbhj4gs=
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 22 May 2014 14:57:15 GMT
+      - Thu, 22 May 2014 14:57:15 GMT
+      Content-Type:
+      - application/vnd.vmware.vcloud.orgVdcNetwork+xml;version=5.1
+      Content-Length:
+      - '1906'
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <OrgVdcNetwork xmlns="http://www.vmware.com/vcloud/v1.5" status="1" name="Test_network1" id="urn:vcloud:network:3782a2eb-e408-4764-8986-1ae5fc033363" type="application/vnd.vmware.vcloud.orgVdcNetwork+xml" href="https://testurl.local/api/network/3782a2eb-e408-4764-8986-1ae5fc033363" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="up" type="application/vnd.vmware.vcloud.vdc+xml" href="https://testurl.local/api/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.metadata+xml" href="https://testurl.local/api/network/3782a2eb-e408-4764-8986-1ae5fc033363/metadata"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.allocatedNetworkAddress+xml" href="https://testurl.local/api/network/3782a2eb-e408-4764-8986-1ae5fc033363/allocatedAddresses/"/>
+            <Description>Example Test Network</Description>
+            <Configuration>
+                <IpScopes>
+                    <IpScope>
+                        <IsInherited>true</IsInherited>
+                        <Gateway>10.202.4.1</Gateway>
+                        <Netmask>255.255.254.0</Netmask>
+                        <Dns1>10.101.0.10</Dns1>
+                        <Dns2>10.101.0.105</Dns2>
+                        <DnsSuffix>example.dns.local</DnsSuffix>
+                        <IsEnabled>true</IsEnabled>
+                        <IpRanges>
+                            <IpRange>
+                                <StartAddress>10.202.4.2</StartAddress>
+                                <EndAddress>10.202.4.65</EndAddress>
+                            </IpRange>
+                        </IpRanges>
+                    </IpScope>
+                </IpScopes>
+                <FenceMode>bridged</FenceMode>
+                <RetainNetInfoAcrossDeployments>false</RetainNetInfoAcrossDeployments>
+            </Configuration>
+            <IsShared>false</IsShared>
+        </OrgVdcNetwork>
+    http_version:
+  recorded_at: Thu, 22 May 2014 14:57:17 GMT
+recorded_with: VCR 2.9.0

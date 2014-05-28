@@ -1,0 +1,144 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://testuser%40testorg:testpass@testurl.local/api/sessions
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 19 May 2014 13:20:03 GMT
+      - Mon, 19 May 2014 13:20:04 GMT
+      X-Vcloud-Authorization:
+      - 24mAPeCsLUbfVXgm3OLhlO2xW4grNcwwOuSWZ/DUvic=
+      Set-Cookie:
+      - vcloud-token=24mAPeCsLUbfVXgm3OLhlO2xW4grNcwwOuSWZ/DUvic=; Secure; Path=/
+      Content-Type:
+      - application/vnd.vmware.vcloud.session+xml;version=5.1
+      Content-Length:
+      - '1149'
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Session xmlns="http://www.vmware.com/vcloud/v1.5" user="testuser" org="Test" type="application/vnd.vmware.vcloud.session+xml" href="testurl.local/api/session/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="down" type="application/vnd.vmware.vcloud.orgList+xml" href="testurl.local/api/org/"/>
+            <Link rel="down" type="application/vnd.vmware.admin.vcloud+xml" href="testurl.local/api/admin/"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.org+xml" name="Test" href="testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.query.queryList+xml" href="testurl.local/api/query"/>
+            <Link rel="entityResolver" type="application/vnd.vmware.vcloud.entity+xml" href="testurl.local/api/entity/"/>
+            <Link rel="down:extensibility" type="application/vnd.vmware.vcloud.apiextensibility+xml" href="testurl.local/api/extensibility"/>
+        </Session>
+    http_version:
+  recorded_at: Mon, 19 May 2014 13:20:05 GMT
+- request:
+    method: get
+    uri: https://testurl.local/api/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      X-Vcloud-Authorization:
+      - 24mAPeCsLUbfVXgm3OLhlO2xW4grNcwwOuSWZ/DUvic=
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 19 May 2014 13:20:04 GMT
+      - Mon, 19 May 2014 13:20:04 GMT
+      Content-Type:
+      - application/vnd.vmware.vcloud.vdc+xml;version=5.1
+      Content-Length:
+      - '8082'
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Vdc xmlns="http://www.vmware.com/vcloud/v1.5" status="1" name="Test_vdc" id="urn:vcloud:vdc:69aaefa5-b18b-40d3-ac0b-7a536707a2a1" type="application/vnd.vmware.vcloud.vdc+xml" href="testurl.local/api/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="up" type="application/vnd.vmware.vcloud.org+xml" href="testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.metadata+xml" href="testurl.local/api/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1/metadata"/>
+            <Link rel="add" type="application/vnd.vmware.vcloud.uploadVAppTemplateParams+xml" href="testurl.local/api/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1/action/uploadVAppTemplate"/>
+            <Link rel="add" type="application/vnd.vmware.vcloud.media+xml" href="testurl.local/api/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1/media"/>
+            <Link rel="add" type="application/vnd.vmware.vcloud.instantiateVAppTemplateParams+xml" href="testurl.local/api/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1/action/instantiateVAppTemplate"/>
+            <Link rel="add" type="application/vnd.vmware.vcloud.cloneVAppParams+xml" href="testurl.local/api/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1/action/cloneVApp"/>
+            <Link rel="add" type="application/vnd.vmware.vcloud.cloneVAppTemplateParams+xml" href="testurl.local/api/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1/action/cloneVAppTemplate"/>
+            <Link rel="add" type="application/vnd.vmware.vcloud.cloneMediaParams+xml" href="testurl.local/api/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1/action/cloneMedia"/>
+            <Link rel="add" type="application/vnd.vmware.vcloud.captureVAppParams+xml" href="testurl.local/api/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1/action/captureVApp"/>
+            <Link rel="add" type="application/vnd.vmware.vcloud.composeVAppParams+xml" href="testurl.local/api/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1/action/composeVApp"/>
+            <Link rel="add" type="application/vnd.vmware.vcloud.diskCreateParams+xml" href="testurl.local/api/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1/disk"/>
+            <Link rel="edgeGateways" type="application/vnd.vmware.vcloud.query.records+xml" href="testurl.local/api/admin/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1/edgeGateways"/>
+            <Link rel="add" type="application/vnd.vmware.vcloud.orgVdcNetwork+xml" href="testurl.local/api/admin/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1/networks"/>
+            <Link rel="orgVdcNetworks" type="application/vnd.vmware.vcloud.query.records+xml" href="testurl.local/api/admin/vdc/69aaefa5-b18b-40d3-ac0b-7a536707a2a1/networks"/>
+            <Description>VDC 1</Description>
+            <AllocationModel>AllocationVApp</AllocationModel>
+            <ComputeCapacity>
+                <Cpu>
+                    <Units>MHz</Units>
+                    <Allocated>0</Allocated>
+                    <Limit>0</Limit>
+                    <Reserved>0</Reserved>
+                    <Used>10680</Used>
+                    <Overhead>0</Overhead>
+                </Cpu>
+                <Memory>
+                    <Units>MB</Units>
+                    <Allocated>0</Allocated>
+                    <Limit>20480</Limit>
+                    <Reserved>0</Reserved>
+                    <Used>5120</Used>
+                    <Overhead>103</Overhead>
+                </Memory>
+            </ComputeCapacity>
+            <ResourceEntities>
+                <ResourceEntity type="application/vnd.vmware.vcloud.vApp+xml" name="Test_vapp1" href="testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b"/>
+                <ResourceEntity type="application/vnd.vmware.vcloud.vApp+xml" name="Test_vapp2" href="testurl.local/api/vApp/vapp-d73600c2-955c-472e-b95f-8981844b37e0"/>
+                <ResourceEntity type="application/vnd.vmware.vcloud.vAppTemplate+xml" name="Test_vapp_template1" href="testurl.local/api/vAppTemplate/vappTemplate-89e33fd7-04a7-4b5f-830b-2423c41089e3"/>
+                <ResourceEntity type="application/vnd.vmware.vcloud.vAppTemplate+xml" name="Test_vapp_template2" href="testurl.local/api/vAppTemplate/vappTemplate-fa134a0d-cfbe-4ed5-aa99-f6e384e77e7b"/>
+                <ResourceEntity type="application/vnd.vmware.vcloud.media+xml" name="Test_media1" href="testurl.local/api/media/9692be3e-125e-4542-ab8a-95768ce0f2d4"/>
+                <ResourceEntity type="application/vnd.vmware.vcloud.media+xml" name="Test_media2" href="testurl.local/api/media/9f2304ca-96d4-492d-ab6f-07bd294a6f2b"/>
+            </ResourceEntities>
+            <AvailableNetworks>
+                <Network type="application/vnd.vmware.vcloud.network+xml" name="Test_network1" href="testurl.local/api/network/163b1865-6176-4498-9048-be056aaa6e5e"/>
+                <Network type="application/vnd.vmware.vcloud.network+xml" name="Test_network2" href="testurl.local/api/network/3782a2eb-e408-4764-8986-1ae5fc033363"/>
+                <Network type="application/vnd.vmware.vcloud.network+xml" name="Test_network3" href="testurl.local/api/network/6e9ced1c-ee39-4a39-aed8-c619c8693029"/>
+            </AvailableNetworks>
+            <Capabilities>
+                <SupportedHardwareVersions>
+                    <SupportedHardwareVersion>vmx-04</SupportedHardwareVersion>
+                    <SupportedHardwareVersion>vmx-07</SupportedHardwareVersion>
+                    <SupportedHardwareVersion>vmx-08</SupportedHardwareVersion>
+                    <SupportedHardwareVersion>vmx-09</SupportedHardwareVersion>
+                </SupportedHardwareVersions>
+            </Capabilities>
+            <NicQuota>0</NicQuota>
+            <NetworkQuota>2</NetworkQuota>
+            <UsedNetworkCount>0</UsedNetworkCount>
+            <VmQuota>20</VmQuota>
+            <IsEnabled>true</IsEnabled>
+            <VdcStorageProfiles>
+                <VdcStorageProfile type="application/vnd.vmware.vcloud.vdcStorageProfile+xml" name="Silver" href="testurl.local/api/vdcStorageProfile/d070c1ed-4246-4b1c-8a90-7659a1037cb9"/>
+            </VdcStorageProfiles>
+        </Vdc>
+    http_version:
+  recorded_at: Mon, 19 May 2014 13:20:05 GMT
+recorded_with: VCR 2.9.0

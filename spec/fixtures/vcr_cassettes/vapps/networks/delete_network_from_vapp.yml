@@ -1,0 +1,165 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://testuser%40testorg:testpass@testurl.local/api/sessions
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 23 May 2014 10:03:27 GMT
+      - Fri, 23 May 2014 10:03:28 GMT
+      X-Vcloud-Authorization:
+      - OoTp8oOgS/uSoesEoW7OLwrN2oAVDyWn0iKxoUu7tyM=
+      Set-Cookie:
+      - vcloud-token=OoTp8oOgS/uSoesEoW7OLwrN2oAVDyWn0iKxoUu7tyM=; Secure; Path=/
+      Content-Type:
+      - application/vnd.vmware.vcloud.session+xml;version=5.1
+      Content-Length:
+      - '1149'
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Session xmlns="http://www.vmware.com/vcloud/v1.5" user="testuser" org="Test" type="application/vnd.vmware.vcloud.session+xml" href="https://testurl.local/api/session/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="down" type="application/vnd.vmware.vcloud.orgList+xml" href="https://testurl.local/api/org/"/>
+            <Link rel="down" type="application/vnd.vmware.admin.vcloud+xml" href="https://testurl.local/api/admin/"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.query.queryList+xml" href="https://testurl.local/api/query"/>
+            <Link rel="entityResolver" type="application/vnd.vmware.vcloud.entity+xml" href="https://testurl.local/api/entity/"/>
+            <Link rel="down:extensibility" type="application/vnd.vmware.vcloud.apiextensibility+xml" href="https://testurl.local/api/extensibility"/>
+        </Session>
+    http_version:
+  recorded_at: Fri, 23 May 2014 10:03:27 GMT
+- request:
+    method: get
+    uri: https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b/networkConfigSection
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      X-Vcloud-Authorization:
+      - OoTp8oOgS/uSoesEoW7OLwrN2oAVDyWn0iKxoUu7tyM=
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 23 May 2014 10:03:28 GMT
+      - Fri, 23 May 2014 10:03:28 GMT
+      Content-Type:
+      - application/vnd.vmware.vcloud.networkconfigsection+xml;version=5.1
+      Content-Length:
+      - '2218'
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <NetworkConfigSection xmlns="http://www.vmware.com/vcloud/v1.5" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" type="application/vnd.vmware.vcloud.networkConfigSection+xml" href="https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b/networkConfigSection/" ovf:required="false" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 http://schemas.dmtf.org/ovf/envelope/1/dsp8023_1.1.0.xsd http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <ovf:Info>The configuration parameters for logical networks</ovf:Info>
+            <Link rel="edit" type="application/vnd.vmware.vcloud.networkConfigSection+xml" href="https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b/networkConfigSection/"/>
+            <NetworkConfig networkName="Test_network1">
+                <Link rel="repair" href="https://testurl.local/api/admin/network/a968f3ef-6ebf-4b4f-9456-b909d9d3806f/action/reset"/>
+                <Description/>
+                <Configuration>
+                    <IpScopes>
+                        <IpScope>
+                            <IsInherited>true</IsInherited>
+                            <Gateway>10.202.3.129</Gateway>
+                            <Netmask>255.255.255.128</Netmask>
+                            <Dns1>10.101.0.10</Dns1>
+                            <Dns2>10.101.0.105</Dns2>
+                            <DnsSuffix>example.dns.local</DnsSuffix>
+                            <IsEnabled>true</IsEnabled>
+                            <IpRanges>
+                                <IpRange>
+                                    <StartAddress>10.202.3.251</StartAddress>
+                                    <EndAddress>10.202.3.254</EndAddress>
+                                </IpRange>
+                            </IpRanges>
+                        </IpScope>
+                    </IpScopes>
+                    <ParentNetwork name="Test_network1" id="163b1865-6176-4498-9048-be056aaa6e5e" href="https://testurl.local/api/admin/network/163b1865-6176-4498-9048-be056aaa6e5e"/>
+                    <FenceMode>bridged</FenceMode>
+                    <RetainNetInfoAcrossDeployments>false</RetainNetInfoAcrossDeployments>
+                </Configuration>
+                <IsDeployed>false</IsDeployed>
+            </NetworkConfig>
+        </NetworkConfigSection>
+    http_version:
+  recorded_at: Fri, 23 May 2014 10:03:27 GMT
+- request:
+    method: put
+    uri: https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b/networkConfigSection
+    body:
+      encoding: UTF-8
+      string: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<NetworkConfigSection xmlns=\"http://www.vmware.com/vcloud/v1.5\"
+        xmlns:ovf=\"http://schemas.dmtf.org/ovf/envelope/1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
+        type=\"application/vnd.vmware.vcloud.networkConfigSection+xml\" href=\"https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b/networkConfigSection/\"
+        ovf:required=\"false\" xsi:schemaLocation=\"http://schemas.dmtf.org/ovf/envelope/1
+        http://schemas.dmtf.org/ovf/envelope/1/dsp8023_1.1.0.xsd http://www.vmware.com/vcloud/v1.5
+        http://testurl.local/api/v1.5/schema/master.xsd\">\n    <ovf:Info>The configuration
+        parameters for logical networks</ovf:Info>\n    <Link rel=\"edit\" type=\"application/vnd.vmware.vcloud.networkConfigSection+xml\"
+        href=\"https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b/networkConfigSection/\"/>\n
+        \   \n</NetworkConfigSection>\n"
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      X-Vcloud-Authorization:
+      - OoTp8oOgS/uSoesEoW7OLwrN2oAVDyWn0iKxoUu7tyM=
+      Content-Type:
+      - application/vnd.vmware.vcloud.networkConfigSection+xml
+      Content-Length:
+      - '890'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 202
+      message: Accepted
+    headers:
+      Date:
+      - Fri, 23 May 2014 10:03:29 GMT
+      - Fri, 23 May 2014 10:03:29 GMT
+      Location:
+      - https://testurl.local/api/task/b8c267b0-4cda-47d8-af98-362ffc06cb16
+      Content-Type:
+      - application/vnd.vmware.vcloud.task+xml;version=5.1
+      Content-Length:
+      - '1379'
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Task xmlns="http://www.vmware.com/vcloud/v1.5" status="running" startTime="2014-05-23T12:03:29.187+02:00" serviceNamespace="com.vmware.vcloud" operationName="vdcUpdateVappNetworkSection" operation="Updating Virtual Application Test_vapp1(65b4dbc9-b0b1-46e4-a420-8f8147369f8b)" expiryTime="2014-08-21T12:03:29.187+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:b8c267b0-4cda-47d8-af98-362ffc06cb16" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/b8c267b0-4cda-47d8-af98-362ffc06cb16" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="task:cancel" href="https://testurl.local/api/task/b8c267b0-4cda-47d8-af98-362ffc06cb16/action/cancel"/>
+            <Owner type="application/vnd.vmware.vcloud.vApp+xml" name="Test_vapp1" href="https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b"/>
+            <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+            <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+            <Progress>0</Progress>
+            <Details/>
+        </Task>
+    http_version:
+  recorded_at: Fri, 23 May 2014 10:03:27 GMT
+recorded_with: VCR 2.9.0

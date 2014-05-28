@@ -1,7 +1,7 @@
 module VCloudClient
   class Connection
     ##
-    # Fetch details about a given network
+    # Fetch details about a given Org VDC network
     def get_network(networkId)
       response = get_base_network(networkId)
 

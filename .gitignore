@@ -19,3 +19,5 @@ Gemfile.lock
 .yardoc
 _yardoc
 doc/
+
+**/test_credentials.yml

@@ -17,7 +17,7 @@ This plugin is distributed as a Ruby Gem. To install it, run:
 
 Depending on your system's configuration, you may need to run this command with root privileges.
 
-vcloud-rest is tested against ruby 2.1.0, 2.0.0, 1.9.x and 1.8.7+.
+vcloud-rest is tested against ruby 2.1.2, 2.0.0, 1.9.3 and ruby-head.
 
 FEATURES
 --
@@ -90,14 +90,55 @@ Or:
 
     ruby spec/connection_spec.rb
 
-Note: in order to run tests with ruby 1.8.7+ you need to export RUBYOPT="rubygems"
+Note: in order to run tests with ruby 1.8.x you need to export RUBYOPT="rubygems"
+
+### Write new tests
+
+Tests are now managed using VCR and thus real interactions are recorded and replayed.
+
+In order to write new tests the following steps are required:
+
+1. create a file *test_credentials.yml*
+1. create a new test entry specifying a new VCR cassette *my_test_case.yml*
+1. review and anonymize data if necessary under *spec/fixtures/vcr_cassettes/my_test_case.yml*
+
+**Note:** values in *test_credentials.yml* are automatically anonymized.
+
+Examples:
+
+    => test_credentials.yml
+    :host: https://vcloud_instance_url
+    :username: test_username
+    :password: test_password
+    :org: test_organization
+
+
+    => Test entry in connection_spec.rb
+      it "should power off a given vapp" do
+        VCR.use_cassette('vapps/poweroff_vapp') do
+          connection.login
+          task_id = connection.poweroff_vapp("65b4dbc9-b0b1-46e4-a420-8f8147369f8b")
+          expect(task_id).to eq "ae791b59-4c9f-4fe2-9916-703f1fc3cbd5"
+        end
+      end
+
+    => Recorded fixture (credentials auto-anonymized)
+    ---
+    http_interactions:
+    - request:
+        method: post
+        uri: https://testuser%40testorg:testpass@testurl.local/api/sessions
+        body:
+          encoding: UTF-8
+    ...
+
 
 LICENSE
 --
 
 Author:: Stefano Tortarolo <stefano.tortarolo@gmail.com>
 
-Copyright:: Copyright (c) 2012-2013
+Copyright:: Copyright (c) 2012-2014
 License:: Apache License, Version 2.0
 
 Licensed under the Apache License, Version 2.0 (the "License");

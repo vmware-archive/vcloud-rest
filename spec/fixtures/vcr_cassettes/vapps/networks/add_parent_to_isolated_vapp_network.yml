@@ -1,0 +1,232 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://testuser%40testorg:testpass@testurl.local/api/sessions
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 22 May 2014 10:27:28 GMT
+      - Thu, 22 May 2014 10:27:28 GMT
+      X-Vcloud-Authorization:
+      - lEQ+5yyLG1apWBJqeZGWEy2zUNRbd0vrY7L9Jvmitmk=
+      Set-Cookie:
+      - vcloud-token=lEQ+5yyLG1apWBJqeZGWEy2zUNRbd0vrY7L9Jvmitmk=; Secure; Path=/
+      Content-Type:
+      - application/vnd.vmware.vcloud.session+xml;version=5.1
+      Content-Length:
+      - '1149'
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Session xmlns="http://www.vmware.com/vcloud/v1.5" user="testuser" org="Test" type="application/vnd.vmware.vcloud.session+xml" href="https://testurl.local/api/session/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="down" type="application/vnd.vmware.vcloud.orgList+xml" href="https://testurl.local/api/org/"/>
+            <Link rel="down" type="application/vnd.vmware.admin.vcloud+xml" href="https://testurl.local/api/admin/"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.query.queryList+xml" href="https://testurl.local/api/query"/>
+            <Link rel="entityResolver" type="application/vnd.vmware.vcloud.entity+xml" href="https://testurl.local/api/entity/"/>
+            <Link rel="down:extensibility" type="application/vnd.vmware.vcloud.apiextensibility+xml" href="https://testurl.local/api/extensibility"/>
+        </Session>
+    http_version:
+  recorded_at: Thu, 22 May 2014 10:27:37 GMT
+- request:
+    method: get
+    uri: https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b/networkConfigSection
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      X-Vcloud-Authorization:
+      - lEQ+5yyLG1apWBJqeZGWEy2zUNRbd0vrY7L9Jvmitmk=
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 22 May 2014 10:27:29 GMT
+      - Thu, 22 May 2014 10:27:30 GMT
+      Content-Type:
+      - application/vnd.vmware.vcloud.networkconfigsection+xml;version=5.1
+      Content-Length:
+      - '3371'
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <NetworkConfigSection xmlns="http://www.vmware.com/vcloud/v1.5" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" type="application/vnd.vmware.vcloud.networkConfigSection+xml" href="https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b/networkConfigSection/" ovf:required="false" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 http://schemas.dmtf.org/ovf/envelope/1/dsp8023_1.1.0.xsd http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <ovf:Info>The configuration parameters for logical networks</ovf:Info>
+            <Link rel="edit" type="application/vnd.vmware.vcloud.networkConfigSection+xml" href="https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b/networkConfigSection/"/>
+            <NetworkConfig networkName="Test_network1">
+                <Link rel="repair" href="https://testurl.local/api/admin/network/fdfcd4d4-9d3d-43bb-86fd-867d6a89259c/action/reset"/>
+                <Description/>
+                <Configuration>
+                    <IpScopes>
+                        <IpScope>
+                            <IsInherited>true</IsInherited>
+                            <Gateway>10.202.4.1</Gateway>
+                            <Netmask>255.255.254.0</Netmask>
+                            <Dns1>10.101.0.10</Dns1>
+                            <Dns2>10.101.0.105</Dns2>
+                            <DnsSuffix>example.dns.local</DnsSuffix>
+                            <IsEnabled>true</IsEnabled>
+                            <IpRanges>
+                                <IpRange>
+                                    <StartAddress>10.202.4.2</StartAddress>
+                                    <EndAddress>10.202.4.65</EndAddress>
+                                </IpRange>
+                            </IpRanges>
+                        </IpScope>
+                    </IpScopes>
+                    <ParentNetwork name="Test_network1" id="3782a2eb-e408-4764-8986-1ae5fc033363" href="https://testurl.local/api/admin/network/3782a2eb-e408-4764-8986-1ae5fc033363"/>
+                    <FenceMode>bridged</FenceMode>
+                    <RetainNetInfoAcrossDeployments>false</RetainNetInfoAcrossDeployments>
+                </Configuration>
+                <IsDeployed>false</IsDeployed>
+            </NetworkConfig>
+            <NetworkConfig networkName="test-network">
+                <Link rel="repair" href="https://testurl.local/api/admin/network/c7fe25c4-b15c-4939-a670-82edf57f87e5/action/reset"/>
+                <Description/>
+                <Configuration>
+                    <IpScopes>
+                        <IpScope>
+                            <IsInherited>false</IsInherited>
+                            <Gateway>192.168.0.1</Gateway>
+                            <Netmask>255.255.255.0</Netmask>
+                            <Dns1>10.101.0.10</Dns1>
+                            <Dns2>10.101.0.105</Dns2>
+                            <DnsSuffix>testdns.example.local</DnsSuffix>
+                            <IsEnabled>true</IsEnabled>
+                            <IpRanges>
+                                <IpRange>
+                                    <StartAddress>192.168.0.2</StartAddress>
+                                    <EndAddress>192.168.0.200</EndAddress>
+                                </IpRange>
+                            </IpRanges>
+                        </IpScope>
+                    </IpScopes>
+                    <FenceMode>isolated</FenceMode>
+                    <RetainNetInfoAcrossDeployments>false</RetainNetInfoAcrossDeployments>
+                </Configuration>
+                <IsDeployed>false</IsDeployed>
+            </NetworkConfig>
+        </NetworkConfigSection>
+    http_version:
+  recorded_at: Thu, 22 May 2014 10:27:40 GMT
+- request:
+    method: put
+    uri: https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b/networkConfigSection
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <NetworkConfigSection xmlns="http://www.vmware.com/vcloud/v1.5" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="application/vnd.vmware.vcloud.networkConfigSection+xml" href="https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b/networkConfigSection/" ovf:required="false" xsi:schemaLocation="http://schemas.dmtf.org/ovf/envelope/1 http://schemas.dmtf.org/ovf/envelope/1/dsp8023_1.1.0.xsd http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <ovf:Info>The configuration parameters for logical networks</ovf:Info>
+            <Link rel="edit" type="application/vnd.vmware.vcloud.networkConfigSection+xml" href="https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b/networkConfigSection/"/>
+            <NetworkConfig networkName="Test_network1">
+                <Link rel="repair" href="https://testurl.local/api/admin/network/fdfcd4d4-9d3d-43bb-86fd-867d6a89259c/action/reset"/>
+                <Description/>
+                <Configuration>
+                    <IpScopes>
+                        <IpScope>
+                            <IsInherited>true</IsInherited>
+                            <Gateway>10.202.4.1</Gateway>
+                            <Netmask>255.255.254.0</Netmask>
+                            <Dns1>10.101.0.10</Dns1>
+                            <Dns2>10.101.0.105</Dns2>
+                            <DnsSuffix>example.dns.local</DnsSuffix>
+                            <IsEnabled>true</IsEnabled>
+                            <IpRanges>
+                                <IpRange>
+                                    <StartAddress>10.202.4.2</StartAddress>
+                                    <EndAddress>10.202.4.65</EndAddress>
+                                </IpRange>
+                            </IpRanges>
+                        </IpScope>
+                    </IpScopes>
+                    <ParentNetwork name="Test_network1" id="3782a2eb-e408-4764-8986-1ae5fc033363" href="https://testurl.local/api/admin/network/3782a2eb-e408-4764-8986-1ae5fc033363"/>
+                    <FenceMode>bridged</FenceMode>
+                    <RetainNetInfoAcrossDeployments>false</RetainNetInfoAcrossDeployments>
+                </Configuration>
+                <IsDeployed>false</IsDeployed>
+            </NetworkConfig>
+            <NetworkConfig networkName="test-network">
+                <Link rel="repair" href="https://testurl.local/api/admin/network/c7fe25c4-b15c-4939-a670-82edf57f87e5/action/reset"/>
+                <Description/>
+                <Configuration>
+                    <IpScopes>
+                        <IpScope>
+                            <IsInherited>true</IsInherited>
+                            <Gateway>192.168.0.1</Gateway>
+                            <Netmask>255.255.255.0</Netmask>
+                            <Dns1>10.101.0.10</Dns1>
+                            <Dns2>10.101.0.105</Dns2>
+                            <DnsSuffix>testdns.example.local</DnsSuffix>
+                            <IsEnabled>true</IsEnabled>
+                            <IpRanges>
+                                <IpRange>
+                                    <StartAddress>192.168.0.2</StartAddress>
+                                    <EndAddress>192.168.0.200</EndAddress>
+                                </IpRange>
+                            </IpRanges>
+                        </IpScope>
+                    </IpScopes><ParentNetwork name="Test_network1" id="fdfcd4d4-9d3d-43bb-86fd-867d6a89259c" href="https://testurl.local/api/admin/network/fdfcd4d4-9d3d-43bb-86fd-867d6a89259c"/>
+                    <FenceMode>isolated</FenceMode>
+                    <RetainNetInfoAcrossDeployments>false</RetainNetInfoAcrossDeployments>
+                </Configuration>
+                <IsDeployed>false</IsDeployed>
+            </NetworkConfig>
+        </NetworkConfigSection>
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      X-Vcloud-Authorization:
+      - lEQ+5yyLG1apWBJqeZGWEy2zUNRbd0vrY7L9Jvmitmk=
+      Content-Type:
+      - application/vnd.vmware.vcloud.networkConfigSection+xml
+      Content-Length:
+      - '3533'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 400
+      message: Bad Request
+    headers:
+      Date:
+      - Thu, 22 May 2014 10:27:30 GMT
+      - Thu, 22 May 2014 10:27:31 GMT
+      Content-Type:
+      - application/vnd.vmware.vcloud.error+xml;version=5.1
+      Content-Length:
+      - '392'
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Error xmlns="http://www.vmware.com/vcloud/v1.5" minorErrorCode="BAD_REQUEST" message="Network with fenced mode &quot;isolated&quot; cannot have a parent network." majorErrorCode="400" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd"></Error>
+    http_version:
+  recorded_at: Thu, 22 May 2014 10:27:41 GMT
+recorded_with: VCR 2.9.0

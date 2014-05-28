@@ -1,0 +1,97 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://testuser%40testorg:testpass@testurl.local/api/sessions
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 21 May 2014 10:40:40 GMT
+      - Wed, 21 May 2014 10:40:40 GMT
+      X-Vcloud-Authorization:
+      - rT6vqsUJCjFtrcUJ808G8+n+tlDEeber80DA6OrpYDs=
+      Set-Cookie:
+      - vcloud-token=rT6vqsUJCjFtrcUJ808G8+n+tlDEeber80DA6OrpYDs=; Secure; Path=/
+      Content-Type:
+      - application/vnd.vmware.vcloud.session+xml;version=5.1
+      Content-Length:
+      - '1149'
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Session xmlns="http://www.vmware.com/vcloud/v1.5" user="testuser" org="Test" type="application/vnd.vmware.vcloud.session+xml" href="https://testurl.local/api/session/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="down" type="application/vnd.vmware.vcloud.orgList+xml" href="https://testurl.local/api/org/"/>
+            <Link rel="down" type="application/vnd.vmware.admin.vcloud+xml" href="https://testurl.local/api/admin/"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.query.queryList+xml" href="https://testurl.local/api/query"/>
+            <Link rel="entityResolver" type="application/vnd.vmware.vcloud.entity+xml" href="https://testurl.local/api/entity/"/>
+            <Link rel="down:extensibility" type="application/vnd.vmware.vcloud.apiextensibility+xml" href="https://testurl.local/api/extensibility"/>
+        </Session>
+    http_version:
+  recorded_at: Wed, 21 May 2014 10:40:49 GMT
+- request:
+    method: post
+    uri: https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b/action/undeploy
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0"?>
+        <UndeployVAppParams xmlns="http://www.vmware.com/vcloud/v1.5">
+          <UndeployPowerAction>powerOff</UndeployPowerAction>
+        </UndeployVAppParams>
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      X-Vcloud-Authorization:
+      - rT6vqsUJCjFtrcUJ808G8+n+tlDEeber80DA6OrpYDs=
+      Content-Type:
+      - application/vnd.vmware.vcloud.undeployVAppParams+xml
+      Content-Length:
+      - '161'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 202
+      message: Accepted
+    headers:
+      Date:
+      - Wed, 21 May 2014 10:40:40 GMT
+      - Wed, 21 May 2014 10:40:40 GMT
+      Location:
+      - https://testurl.local/api/task/ae791b59-4c9f-4fe2-9916-703f1fc3cbd5
+      Content-Type:
+      - application/vnd.vmware.vcloud.task+xml;version=5.1
+      Content-Length:
+      - '1372'
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Task xmlns="http://www.vmware.com/vcloud/v1.5" status="running" startTime="2014-05-21T12:40:40.465+02:00" serviceNamespace="com.vmware.vcloud" operationName="vappUndeployPowerOff" operation="Stopping Virtual Application Test_vapp1(65b4dbc9-b0b1-46e4-a420-8f8147369f8b)" expiryTime="2014-08-19T12:40:40.465+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:ae791b59-4c9f-4fe2-9916-703f1fc3cbd5" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/ae791b59-4c9f-4fe2-9916-703f1fc3cbd5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="task:cancel" href="https://testurl.local/api/task/ae791b59-4c9f-4fe2-9916-703f1fc3cbd5/action/cancel"/>
+            <Owner type="application/vnd.vmware.vcloud.vApp+xml" name="Test_vapp1" href="https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b"/>
+            <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+            <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+            <Progress>0</Progress>
+            <Details/>
+        </Task>
+    http_version:
+  recorded_at: Wed, 21 May 2014 10:40:49 GMT
+recorded_with: VCR 2.9.0

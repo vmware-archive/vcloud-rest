@@ -1,0 +1,311 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://testuser%40testorg:testpass@testurl.local/api/sessions
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 23 May 2014 07:49:00 GMT
+      - Fri, 23 May 2014 07:49:00 GMT
+      X-Vcloud-Authorization:
+      - cdFC9JbN34cIGLslmtGJ8vE4tSBZ1X7yzd8q31HaEsw=
+      Set-Cookie:
+      - vcloud-token=cdFC9JbN34cIGLslmtGJ8vE4tSBZ1X7yzd8q31HaEsw=; Secure; Path=/
+      Content-Type:
+      - application/vnd.vmware.vcloud.session+xml;version=5.1
+      Content-Length:
+      - '1149'
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Session xmlns="http://www.vmware.com/vcloud/v1.5" user="testuser" org="Test" type="application/vnd.vmware.vcloud.session+xml" href="https://testurl.local/api/session/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="down" type="application/vnd.vmware.vcloud.orgList+xml" href="https://testurl.local/api/org/"/>
+            <Link rel="down" type="application/vnd.vmware.admin.vcloud+xml" href="https://testurl.local/api/admin/"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.query.queryList+xml" href="https://testurl.local/api/query"/>
+            <Link rel="entityResolver" type="application/vnd.vmware.vcloud.entity+xml" href="https://testurl.local/api/entity/"/>
+            <Link rel="down:extensibility" type="application/vnd.vmware.vcloud.apiextensibility+xml" href="https://testurl.local/api/extensibility"/>
+        </Session>
+    http_version:
+  recorded_at: Fri, 23 May 2014 07:48:59 GMT
+- request:
+    method: get
+    uri: https://testurl.local/api/tasksList/562f56be-fa9f-48bd-a5fe-a0f9b0acceae
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      X-Vcloud-Authorization:
+      - cdFC9JbN34cIGLslmtGJ8vE4tSBZ1X7yzd8q31HaEsw=
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Fri, 23 May 2014 07:49:00 GMT
+      - Fri, 23 May 2014 07:49:00 GMT
+      Content-Type:
+      - application/vnd.vmware.vcloud.taskslist+xml;version=5.1
+      Content-Length:
+      - '75651'
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <TasksList xmlns="http://www.vmware.com/vcloud/v1.5" name="Tasks Lists" type="application/vnd.vmware.vcloud.tasksList+xml" href="https://testurl.local/api/tasksList/562f56be-fa9f-48bd-a5fe-a0f9b0acceae" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Task status="success" startTime="2014-05-22T16:06:49.457+02:00" serviceNamespace="com.vmware.vcloud" operationName="jobUndeploy" operation="Stopped Virtual Machine test-computer(a3b48267-b641-4792-b7db-91a1cd01632e)" expiryTime="2014-08-20T16:06:49.457+02:00" endTime="2014-05-22T16:06:49.687+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:0357f2d7-5e1d-4ccb-810f-de90dc1599cc" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/0357f2d7-5e1d-4ccb-810f-de90dc1599cc">
+                <Owner type="application/vnd.vmware.vcloud.vm+xml" name="test-computer" href="https://testurl.local/api/vApp/vm-a3b48267-b641-4792-b7db-91a1cd01632e"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T16:07:04.377+02:00" serviceNamespace="com.vmware.vcloud" operationName="jobUndeploy" operation="Stopped Virtual Machine test-computer(85c3675a-01c4-4cf2-b991-252e6651d4d8)" expiryTime="2014-08-20T16:07:04.377+02:00" endTime="2014-05-22T16:07:04.857+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:0532a151-4e26-4a91-8c11-66c5abacd046" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/0532a151-4e26-4a91-8c11-66c5abacd046">
+                <Owner type="application/vnd.vmware.vcloud.vm+xml" name="test-computer" href="https://testurl.local/api/vApp/vm-85c3675a-01c4-4cf2-b991-252e6651d4d8"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T16:05:41.627+02:00" serviceNamespace="com.vmware.vcloud" operationName="jobUndeploy" operation="Stopped Virtual Machine test-computer(13c0dda3-16d5-4b53-abc9-ac2da8e07a5e)" expiryTime="2014-08-20T16:05:41.627+02:00" endTime="2014-05-22T16:05:42.490+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:07619d8e-c68c-4781-9b57-e34608842abb" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/07619d8e-c68c-4781-9b57-e34608842abb">
+                <Owner type="application/vnd.vmware.vcloud.vm+xml" name="test-computer" href="https://testurl.local/api/vApp/vm-13c0dda3-16d5-4b53-abc9-ac2da8e07a5e"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T16:35:56.830+02:00" serviceNamespace="com.vmware.vcloud" operationName="vappReset" operation="Reset Virtual Application Test_vapp1(65b4dbc9-b0b1-46e4-a420-8f8147369f8b)" expiryTime="2014-08-20T16:35:56.830+02:00" endTime="2014-05-22T16:35:58.447+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:10bf4eec-8d39-4dc0-9c55-61072197f35e" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/10bf4eec-8d39-4dc0-9c55-61072197f35e">
+                <Owner type="application/vnd.vmware.vcloud.vApp+xml" name="Test_vapp1" href="https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T11:48:37.333+02:00" serviceNamespace="com.vmware.vcloud" operationName="vdcUpdateVappNetworkSection" operation="Updated Virtual Application Test_vapp1(65b4dbc9-b0b1-46e4-a420-8f8147369f8b)" expiryTime="2014-08-20T11:48:37.333+02:00" endTime="2014-05-22T11:48:42.443+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:1218cd52-e1ae-4d95-8dd8-b7bb7107b261" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/1218cd52-e1ae-4d95-8dd8-b7bb7107b261">
+                <Owner type="application/vnd.vmware.vcloud.vApp+xml" name="Test_vapp1" href="https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T10:39:15.597+02:00" serviceNamespace="com.vmware.vcloud" operationName="jobUndeploy" operation="Stopped Virtual Machine Test_vm1(9bb33684-8642-4279-8af2-24eed5f129a6)" expiryTime="2014-08-20T10:39:15.597+02:00" endTime="2014-05-22T10:39:26.853+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:16727037-bb60-420b-9d01-3df4aa693e7e" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/16727037-bb60-420b-9d01-3df4aa693e7e">
+                <Owner type="application/vnd.vmware.vcloud.vm+xml" name="Test_vm1" href="https://testurl.local/api/vApp/vm-9bb33684-8642-4279-8af2-24eed5f129a6"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-23T09:23:52.133+02:00" serviceNamespace="com.vmware.vcloud" operationName="vappUpdateVm" operation="Updated Virtual Machine (9bb33684-8642-4279-8af2-24eed5f129a6)" expiryTime="2014-08-21T09:23:52.133+02:00" endTime="2014-05-23T09:24:09.833+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:1a5d5766-b3e0-4707-9658-89d7a26f9a84" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/1a5d5766-b3e0-4707-9658-89d7a26f9a84">
+                <Owner type="application/vnd.vmware.vcloud.vm+xml" name="" href="https://testurl.local/api/vApp/vm-9bb33684-8642-4279-8af2-24eed5f129a6"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T16:39:26.913+02:00" serviceNamespace="com.vmware.vcloud" operationName="vdcCopyVapp" operation="Copied Virtual Application Test_vapp1(891add70-b262-4b81-a9ac-186d6fd33e50)" expiryTime="2014-08-20T16:39:26.913+02:00" endTime="2014-05-22T16:40:03.333+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:1a66be3e-030a-473a-a33c-5a4e005e53b6" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/1a66be3e-030a-473a-a33c-5a4e005e53b6">
+                <Owner type="application/vnd.vmware.vcloud.vApp+xml" name="Test_vapp1" href="https://testurl.local/api/vApp/vapp-891add70-b262-4b81-a9ac-186d6fd33e50"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>100</Progress>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-23T09:20:24.690+02:00" serviceNamespace="com.vmware.vcloud" operationName="jobUndeploy" operation="Stopped Virtual Machine Test_vm1(9bb33684-8642-4279-8af2-24eed5f129a6)" expiryTime="2014-08-21T09:20:24.690+02:00" endTime="2014-05-23T09:20:37.227+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:1d550c75-1145-4520-8b2f-be4ee9a59f85" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/1d550c75-1145-4520-8b2f-be4ee9a59f85">
+                <Owner type="application/vnd.vmware.vcloud.vm+xml" name="Test_vm1" href="https://testurl.local/api/vApp/vm-9bb33684-8642-4279-8af2-24eed5f129a6"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T11:05:28.280+02:00" serviceNamespace="com.vmware.vcloud" operationName="vappDeploy" operation="Running Virtual Machine Test_vm1(9bb33684-8642-4279-8af2-24eed5f129a6)" expiryTime="2014-08-20T11:05:28.280+02:00" endTime="2014-05-22T11:05:36.507+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:274cf62a-5d2a-495d-8fdc-56ddb93a9e8b" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/274cf62a-5d2a-495d-8fdc-56ddb93a9e8b">
+                <Owner type="application/vnd.vmware.vcloud.vm+xml" name="Test_vm1" href="https://testurl.local/api/vApp/vm-9bb33684-8642-4279-8af2-24eed5f129a6"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-23T09:46:08.983+02:00" serviceNamespace="com.vmware.vcloud" operationName="jobPowerOn" operation="Powered On Virtual Machine Test_vm1(9bb33684-8642-4279-8af2-24eed5f129a6)" expiryTime="2014-08-21T09:46:08.983+02:00" endTime="2014-05-23T09:46:13.383+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:29febf30-71f4-495c-8808-cc011f3b8724" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/29febf30-71f4-495c-8808-cc011f3b8724">
+                <Owner type="application/vnd.vmware.vcloud.vm+xml" name="Test_vm1" href="https://testurl.local/api/vApp/vm-9bb33684-8642-4279-8af2-24eed5f129a6"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-23T09:36:35.633+02:00" serviceNamespace="com.vmware.vcloud" operationName="vappDeploy" operation="Running Virtual Machine Test_vm1(9bb33684-8642-4279-8af2-24eed5f129a6)" expiryTime="2014-08-21T09:36:35.633+02:00" endTime="2014-05-23T09:36:39.697+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:3968bd47-1acf-4a37-a833-90db706439e8" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/3968bd47-1acf-4a37-a833-90db706439e8">
+                <Owner type="application/vnd.vmware.vcloud.vm+xml" name="Test_vm1" href="https://testurl.local/api/vApp/vm-9bb33684-8642-4279-8af2-24eed5f129a6"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details/>
+            </Task>
+            <Task status="error" startTime="2014-05-22T17:53:13.387+02:00" serviceNamespace="com.vmware.vcloud" operationName="vappUpdateVm" operation="Updated Virtual Machine Test_vm1(9bb33684-8642-4279-8af2-24eed5f129a6)" expiryTime="2014-08-20T17:53:13.387+02:00" endTime="2014-05-22T17:53:15.943+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:4b08475f-079e-49a5-b43c-624de966b97b" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/4b08475f-079e-49a5-b43c-624de966b97b">
+                <Owner type="application/vnd.vmware.vcloud.vm+xml" name="Test_vm1" href="https://testurl.local/api/vApp/vm-9bb33684-8642-4279-8af2-24eed5f129a6"/>
+                <Error minorErrorCode="BAD_REQUEST" message="The VCD entity network &quot;Test_network1&quot; does not exist." majorErrorCode="400"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details>  The VCD entity network "Test_network1" does not exist.</Details>
+            </Task>
+            <Task status="success" startTime="2014-05-22T15:58:00.207+02:00" serviceNamespace="com.vmware.vcloud" operationName="vappDiscardSuspendedState" operation="Discarded State of Virtual Application Test_vapp1(65b4dbc9-b0b1-46e4-a420-8f8147369f8b)" expiryTime="2014-08-20T15:58:00.207+02:00" endTime="2014-05-22T15:58:05.523+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:68de94c8-9e2e-42f8-90d4-f5a4f625bd2a" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/68de94c8-9e2e-42f8-90d4-f5a4f625bd2a">
+                <Owner type="application/vnd.vmware.vcloud.vApp+xml" name="Test_vapp1" href="https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T11:06:03.070+02:00" serviceNamespace="com.vmware.vcloud" operationName="vdcUpdateVappNetworkSection" operation="Updated Virtual Application Test_vapp1(65b4dbc9-b0b1-46e4-a420-8f8147369f8b)" expiryTime="2014-08-20T11:06:03.070+02:00" endTime="2014-05-22T11:06:04.990+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:6963f995-060b-41a9-bf31-63470c673755" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/6963f995-060b-41a9-bf31-63470c673755">
+                <Owner type="application/vnd.vmware.vcloud.vApp+xml" name="Test_vapp1" href="https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T16:06:09.197+02:00" serviceNamespace="com.vmware.vcloud" operationName="vdcDeleteVapp" operation="Deleted Virtual Application (48bd96b5-7fa9-4823-bdb0-491b419799ee)" expiryTime="2014-08-20T16:06:09.197+02:00" endTime="2014-05-22T16:06:09.473+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:6f04ee60-daf1-4a02-84a9-212630450dc9" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/6f04ee60-daf1-4a02-84a9-212630450dc9">
+                <Owner type="application/vnd.vmware.vcloud.vApp+xml" name="" href="https://testurl.local/api/vApp/vapp-48bd96b5-7fa9-4823-bdb0-491b419799ee"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-23T09:36:47.667+02:00" serviceNamespace="com.vmware.vcloud" operationName="vappReset" operation="Reset Virtual Machine Test_vm1(9bb33684-8642-4279-8af2-24eed5f129a6)" expiryTime="2014-08-21T09:36:47.667+02:00" endTime="2014-05-23T09:36:49.487+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:761ffeb0-cfdb-4628-94ff-fcd7f9350728" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/761ffeb0-cfdb-4628-94ff-fcd7f9350728">
+                <Owner type="application/vnd.vmware.vcloud.vm+xml" name="Test_vm1" href="https://testurl.local/api/vApp/vm-9bb33684-8642-4279-8af2-24eed5f129a6"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-23T09:31:04.197+02:00" serviceNamespace="com.vmware.vcloud" operationName="vappDeploy" operation="Running Virtual Machine Test_vm1(9bb33684-8642-4279-8af2-24eed5f129a6)" expiryTime="2014-08-21T09:31:04.197+02:00" endTime="2014-05-23T09:31:16.553+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:7815f98e-98dd-425e-a4d5-9d45bde0692e" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/7815f98e-98dd-425e-a4d5-9d45bde0692e">
+                <Owner type="application/vnd.vmware.vcloud.vm+xml" name="Test_vm1" href="https://testurl.local/api/vApp/vm-9bb33684-8642-4279-8af2-24eed5f129a6"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T10:39:14.653+02:00" serviceNamespace="com.vmware.vcloud" operationName="vappUndeployPowerOff" operation="Stopped Virtual Application Test_vapp1(65b4dbc9-b0b1-46e4-a420-8f8147369f8b)" expiryTime="2014-08-20T10:39:14.653+02:00" endTime="2014-05-22T10:39:28.050+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:7825d477-775b-4c2f-b911-687e84747ab1" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/7825d477-775b-4c2f-b911-687e84747ab1">
+                <Owner type="application/vnd.vmware.vcloud.vApp+xml" name="Test_vapp1" href="https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T11:47:05.107+02:00" serviceNamespace="com.vmware.vcloud" operationName="vdcUpdateVappNetworkSection" operation="Updated Virtual Application Test_vapp1(65b4dbc9-b0b1-46e4-a420-8f8147369f8b)" expiryTime="2014-08-20T11:47:05.107+02:00" endTime="2014-05-22T11:47:10.553+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:7d57c0bf-de34-4c54-8d3b-276c3cab5e6b" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/7d57c0bf-de34-4c54-8d3b-276c3cab5e6b">
+                <Owner type="application/vnd.vmware.vcloud.vApp+xml" name="Test_vapp1" href="https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T16:05:52.057+02:00" serviceNamespace="com.vmware.vcloud" operationName="vdcDeleteVapp" operation="Deleted Virtual Application (a1e67d35-6275-42af-b81e-9dc3832cff74)" expiryTime="2014-08-20T16:05:52.057+02:00" endTime="2014-05-22T16:05:53.047+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:7fdd95f2-a4b4-4889-ae96-557737369e5c" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/7fdd95f2-a4b4-4889-ae96-557737369e5c">
+                <Owner type="application/vnd.vmware.vcloud.vApp+xml" name="" href="https://testurl.local/api/vApp/vapp-a1e67d35-6275-42af-b81e-9dc3832cff74"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T11:46:11.627+02:00" serviceNamespace="com.vmware.vcloud" operationName="vdcUpdateVappNetworkSection" operation="Updated Virtual Application Test_vapp1(65b4dbc9-b0b1-46e4-a420-8f8147369f8b)" expiryTime="2014-08-20T11:46:11.627+02:00" endTime="2014-05-22T11:46:12.683+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:80b258d5-6b0d-4b33-ba75-b3be31204424" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/80b258d5-6b0d-4b33-ba75-b3be31204424">
+                <Owner type="application/vnd.vmware.vcloud.vApp+xml" name="Test_vapp1" href="https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details/>
+            </Task>
+            <Task status="error" startTime="2014-05-22T10:39:37.307+02:00" serviceNamespace="com.vmware.vcloud" operationName="vdcUpdateVappNetworkSection" operation="Updated Virtual Application Test_vapp1(65b4dbc9-b0b1-46e4-a420-8f8147369f8b)" expiryTime="2014-08-20T10:39:37.307+02:00" endTime="2014-05-22T10:39:37.763+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:aecc4cf4-5a2b-49fc-95e9-11a588ddfe58" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/aecc4cf4-5a2b-49fc-95e9-11a588ddfe58">
+                <Owner type="application/vnd.vmware.vcloud.vApp+xml" name="Test_vapp1" href="https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b"/>
+                <Error minorErrorCode="INTERNAL_SERVER_ERROR" message="Unable to perform this action. Contact your cloud administrator." majorErrorCode="500"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details>  Unable to perform this action. Contact your cloud administrator.</Details>
+            </Task>
+            <Task status="success" startTime="2014-05-22T16:07:22.470+02:00" serviceNamespace="com.vmware.vcloud" operationName="jobUndeploy" operation="Stopped Virtual Machine test-computer(3323bba8-ce7b-4669-8117-f54573f65527)" expiryTime="2014-08-20T16:07:22.470+02:00" endTime="2014-05-22T16:07:23.003+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:bee400ab-5440-4949-8986-94266b8035bf" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/bee400ab-5440-4949-8986-94266b8035bf">
+                <Owner type="application/vnd.vmware.vcloud.vm+xml" name="test-computer" href="https://testurl.local/api/vApp/vm-3323bba8-ce7b-4669-8117-f54573f65527"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T16:07:10.033+02:00" serviceNamespace="com.vmware.vcloud" operationName="vdcDeleteVapp" operation="Deleted Virtual Application (07eff5b6-98ca-469c-926b-893b0070d92e)" expiryTime="2014-08-20T16:07:10.033+02:00" endTime="2014-05-22T16:07:10.703+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:c1f40c3a-3004-484f-a13c-344675e5c9a2" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/c1f40c3a-3004-484f-a13c-344675e5c9a2">
+                <Owner type="application/vnd.vmware.vcloud.vApp+xml" name="" href="https://testurl.local/api/vApp/vapp-07eff5b6-98ca-469c-926b-893b0070d92e"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-23T09:31:11.100+02:00" serviceNamespace="com.vmware.vcloud" operationName="jobPowerOn" operation="Powered On Virtual Machine Test_vm1(9bb33684-8642-4279-8af2-24eed5f129a6)" expiryTime="2014-08-21T09:31:11.100+02:00" endTime="2014-05-23T09:31:16.130+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:c236a9fb-8f19-4846-b626-306223595a2c" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/c236a9fb-8f19-4846-b626-306223595a2c">
+                <Owner type="application/vnd.vmware.vcloud.vm+xml" name="Test_vm1" href="https://testurl.local/api/vApp/vm-9bb33684-8642-4279-8af2-24eed5f129a6"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T11:58:24.387+02:00" serviceNamespace="com.vmware.vcloud" operationName="vdcUpdateVappNetworkSection" operation="Updated Virtual Application Test_vapp1(65b4dbc9-b0b1-46e4-a420-8f8147369f8b)" expiryTime="2014-08-20T11:58:24.387+02:00" endTime="2014-05-22T11:58:27.267+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:c81090cd-1291-4781-a54f-81ca31ae6bec" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/c81090cd-1291-4781-a54f-81ca31ae6bec">
+                <Owner type="application/vnd.vmware.vcloud.vApp+xml" name="Test_vapp1" href="https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T10:43:12.273+02:00" serviceNamespace="com.vmware.vcloud" operationName="jobPowerOn" operation="Powered On Virtual Machine Test_vm1(9bb33684-8642-4279-8af2-24eed5f129a6)" expiryTime="2014-08-20T10:43:12.273+02:00" endTime="2014-05-22T10:43:15.113+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:cae0da5f-db5f-48c1-b14b-51f14063b049" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/cae0da5f-db5f-48c1-b14b-51f14063b049">
+                <Owner type="application/vnd.vmware.vcloud.vm+xml" name="Test_vm1" href="https://testurl.local/api/vApp/vm-9bb33684-8642-4279-8af2-24eed5f129a6"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T16:07:28.997+02:00" serviceNamespace="com.vmware.vcloud" operationName="vdcDeleteVapp" operation="Deleted Virtual Application (8d8a23dc-f9c2-464c-acf4-eaf69bfe73ea)" expiryTime="2014-08-20T16:07:28.997+02:00" endTime="2014-05-22T16:07:29.243+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:ce0fa7ca-aabb-4513-ada1-6360121abc84" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/ce0fa7ca-aabb-4513-ada1-6360121abc84">
+                <Owner type="application/vnd.vmware.vcloud.vApp+xml" name="" href="https://testurl.local/api/vApp/vapp-8d8a23dc-f9c2-464c-acf4-eaf69bfe73ea"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details/>
+            </Task>
+            <Task status="error" startTime="2014-05-22T10:38:51.613+02:00" serviceNamespace="com.vmware.vcloud" operationName="vdcUpdateVappNetworkSection" operation="Updated Virtual Application Test_vapp1(65b4dbc9-b0b1-46e4-a420-8f8147369f8b)" expiryTime="2014-08-20T10:38:51.613+02:00" endTime="2014-05-22T10:38:52.520+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:d59bb24b-f413-477d-8409-61dd95b9afda" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/d59bb24b-f413-477d-8409-61dd95b9afda">
+                <Owner type="application/vnd.vmware.vcloud.vApp+xml" name="Test_vapp1" href="https://testurl.local/api/vApp/vapp-65b4dbc9-b0b1-46e4-a420-8f8147369f8b"/>
+                <Error minorErrorCode="INTERNAL_SERVER_ERROR" message="Unable to perform this action. Contact your cloud administrator." majorErrorCode="500"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details>  Unable to perform this action. Contact your cloud administrator.</Details>
+            </Task>
+            <Task status="success" startTime="2014-05-23T09:37:44.660+02:00" serviceNamespace="com.vmware.vcloud" operationName="vappCreateSnapshot" operation="Finished Creating Snapshot Virtual Machine (9bb33684-8642-4279-8af2-24eed5f129a6)" expiryTime="2014-08-21T09:37:44.660+02:00" endTime="2014-05-23T09:39:43.360+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:e139c0fd-3e89-4bac-a5f6-1c624b83ad63" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/e139c0fd-3e89-4bac-a5f6-1c624b83ad63">
+                <Owner type="application/vnd.vmware.vcloud.vm+xml" name="" href="https://testurl.local/api/vApp/vm-9bb33684-8642-4279-8af2-24eed5f129a6"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T11:05:34.237+02:00" serviceNamespace="com.vmware.vcloud" operationName="jobPowerOn" operation="Powered On Virtual Machine Test_vm1(9bb33684-8642-4279-8af2-24eed5f129a6)" expiryTime="2014-08-20T11:05:34.237+02:00" endTime="2014-05-22T11:05:35.973+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:ea80c8ce-7ee0-4d8e-91b8-28e96e378e0b" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/ea80c8ce-7ee0-4d8e-91b8-28e96e378e0b">
+                <Owner type="application/vnd.vmware.vcloud.vm+xml" name="Test_vm1" href="https://testurl.local/api/vApp/vm-9bb33684-8642-4279-8af2-24eed5f129a6"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T11:05:22.250+02:00" serviceNamespace="com.vmware.vcloud" operationName="vappUpdateVm" operation="Updated Virtual Machine Test_vm1(9bb33684-8642-4279-8af2-24eed5f129a6)" expiryTime="2014-08-20T11:05:22.250+02:00" endTime="2014-05-22T11:05:28.073+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:f6cd286e-100a-4381-b1f2-a242947cb351" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/f6cd286e-100a-4381-b1f2-a242947cb351">
+                <Owner type="application/vnd.vmware.vcloud.vm+xml" name="Test_vm1" href="https://testurl.local/api/vApp/vm-9bb33684-8642-4279-8af2-24eed5f129a6"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Progress>0</Progress>
+                <Details/>
+            </Task>
+            <Task status="success" startTime="2014-05-22T17:51:13.473+02:00" serviceNamespace="com.vmware.vcloud" operationName="jobUndeploy" operation="Stopped Virtual Machine Test_vm1(9bb33684-8642-4279-8af2-24eed5f129a6)" expiryTime="2014-08-20T17:51:13.473+02:00" endTime="2014-05-22T17:51:15.630+02:00" cancelRequested="false" name="task" id="urn:vcloud:task:fa3ff15e-49b2-422e-b72a-b294a457051d" type="application/vnd.vmware.vcloud.task+xml" href="https://testurl.local/api/task/fa3ff15e-49b2-422e-b72a-b294a457051d">
+                <Owner type="application/vnd.vmware.vcloud.vm+xml" name="Test_vm1" href="https://testurl.local/api/vApp/vm-9bb33684-8642-4279-8af2-24eed5f129a6"/>
+                <User type="application/vnd.vmware.admin.user+xml" name="testuser" href="https://testurl.local/api/admin/user/5b0af047-3e74-42ac-8b6f-005fad80256f"/>
+                <Organization type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+                <Details/>
+            </Task>
+        </TasksList>
+    http_version:
+  recorded_at: Fri, 23 May 2014 07:48:59 GMT
+recorded_with: VCR 2.9.0
