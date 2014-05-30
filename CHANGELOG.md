@@ -2,6 +2,8 @@ Changes
 ==
 Next release (x.x.x)
 
+Note that starting from this release Ruby 1.8.7+ and 1.9.2 are not explicitly tested against anymore.
+
 FEATURES:
 
 * Add "media" item type management to `get_catalog_item`
@@ -9,6 +11,7 @@ FEATURES:
 * Add independent disk capabilities
 * `get_vapp` returns also network IDs
 * Add `discard_[vm|vapp]_snapshot` to discard snapshots
+* Add `acquire_ticket_vm` that retrieves a screen ticket (VMRC) for a given VM
 
 FIXES:
 
