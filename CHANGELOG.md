@@ -1,6 +1,6 @@
 Changes
 ==
-Next release (x.x.x)
+2014-06-03 (1.3.0)
 
 Note that starting from this release Ruby 1.8.7+ and 1.9.2 are not explicitly tested against anymore.
 
