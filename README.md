@@ -66,7 +66,7 @@ USAGE
     require 'vcloud-rest/connection'
     conn = VCloudClient::Connection.new(HOST, USER, PASSWORD, ORG_NAME)
     conn.login
-    conn.list_organizations
+    conn.get_organizations
 
 EXAMPLE
 --
