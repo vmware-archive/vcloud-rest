@@ -79,4 +79,8 @@ VCR.configure do |c|
 
   c.default_cassette_options = { :decode_compressed_response => true,
                        :match_requests_on => [:method, :host, :path, :auth_header, :payload] }
+
+  # Decomment this line to enable VCR debug logging
+  # Helpful to identify why a vcr log failed to match the generated query.
+  #c.debug_logger = File.open("vcr.log", 'w')
 end
