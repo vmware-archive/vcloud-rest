@@ -1,6 +1,11 @@
 require_relative 'support/spec_helper'
 
 describe VCloudClient::Connection do
+
+  before do
+    RestClient.log = Logger.new(STDOUT) if ENV['VCLOUD_REST_DEBUG_LEVEL'] == "DEBUG"
+  end
+
   let(:vcloud_params) { credentials }
 
   let(:auth_string) {
@@ -29,6 +34,62 @@ describe VCloudClient::Connection do
 
     it "must construct the correct api url" do
       expect(connection.api_url).to eq "#{vcloud_params[:host]}/api"
+    end
+  end
+
+  describe "#errors" do
+    it "http status 400 Bad Request" do
+      VCR.use_cassette('errors/status_400') do
+        expect {
+          connection.login
+        }.to raise_error
+      end
+    end
+
+    it "http status 401 Unauthorized Access" do
+      VCR.use_cassette('errors/status_401') do
+        expect {
+          connection.login
+        }.to raise_error
+      end
+    end
+
+    it "http status 403 forbidden" do
+      VCR.use_cassette('errors/status_403') do
+        expect {
+          connection.login
+        }.to raise_error VCloudClient::UnauthorizedAccess
+      end
+    end
+
+    it "http status 405 interna server error" do
+      VCR.use_cassette('errors/status_405') do
+        expect {
+          connection.login
+        }.to raise_error VCloudClient::MethodNotAllowed
+      end
+    end
+
+    it "http status 500 internal server error" do
+      VCR.use_cassette('errors/status_500') do
+        expect {
+          connection.login
+        }.to raise_error VCloudClient::InternalServerError
+      end
+    end
+
+    it "returns a socket error" do
+      mock_request = double(RestClient::Request)
+      mock_request.stub(:execute).and_raise(SocketError)
+
+      RestClient::Request.stub(:new).and_return(mock_request)
+
+      VCR.use_cassette('login/login_5.1') do
+        expect {
+          connection.login
+        }.to raise_error SocketError
+      end
+
     end
   end
 
