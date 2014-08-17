@@ -161,8 +161,7 @@ module VCloudClient
             @logger.warn "Warning: unattended code #{response.code}"
           end
 
-          # TODO parse using Nokogiri::XML to improve parse performnace.
-          parsed_response = Nokogiri.parse(response)
+          parsed_response = Nokogiri::XML(response)
           @logger.debug "Send request result: #{parsed_response}"
 
           [parsed_response, response.headers]
