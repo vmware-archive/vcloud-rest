@@ -32,6 +32,7 @@ require 'vcloud-rest/vcloud/ovf'
 require 'vcloud-rest/vcloud/media'
 require 'vcloud-rest/vcloud/network'
 require 'vcloud-rest/vcloud/disk'
+require 'vcloud-rest/vcloud/extensibility'
 
 module VCloudClient
   class UnauthorizedAccess < StandardError; end
@@ -46,6 +47,7 @@ module VCloudClient
   # Main class to access vCloud rest APIs
   class Connection
     attr_reader :api_url, :auth_key
+    attr_reader :extensibility
 
     def initialize(host, username, password, org_name, api_version)
       @host = host
@@ -72,6 +74,9 @@ module VCloudClient
       if !headers.has_key?(:x_vcloud_authorization)
         raise "Unable to authenticate: missing x_vcloud_authorization header"
       end
+
+      extensibility_link = response.css("Link[rel='down:extensibility']")
+      @extensibility = extensibility_link.first['href'] unless extensibility_link.empty?
 
       @auth_key = headers[:x_vcloud_authorization]
     end
