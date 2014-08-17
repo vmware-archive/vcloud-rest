@@ -161,11 +161,10 @@ module VCloudClient
             @logger.warn "Warning: unattended code #{response.code}"
           end
 
-          # TODO eliminate double parse of response.
-          @logger.debug "Send request result: #{Nokogiri.parse(response)}"
+          parsed_response = Nokogiri::XML(response)
+          @logger.debug "Send request result: #{parsed_response}"
 
-          # TODO parse using Nokogiri::XML to improve parse performnace.
-          [Nokogiri.parse(response), response.headers]
+          [parsed_response, response.headers]
         rescue RestClient::Unauthorized => e
           raise UnauthorizedAccess, "Client not authorized. Please check your credentials."
         rescue RestClient::BadRequest => e
