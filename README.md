@@ -78,7 +78,7 @@ DEBUGGING
 --
 Debug can be enabled setting the following environment variables:
 
-* *VCLOUD_REST_DEBUG_LEVEL*: to specify the log level (e.g., INFO)
+* *VCLOUD_REST_DEBUG_LEVEL*: to specify the log level (e.g., INFO, DEBUG)
 * *VCLOUD_REST_LOG_FILE*: to specify the output file (defaults to STDOUT)
 
 TESTING
