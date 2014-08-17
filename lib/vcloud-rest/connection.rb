@@ -168,6 +168,7 @@ module VCloudClient
         rescue RestClient::Unauthorized => e
           raise UnauthorizedAccess, "Client not authorized. Please check your credentials."
         rescue RestClient::BadRequest => e
+          @logger.debug "Send request result: #{e.http_body}"
           body = Nokogiri.parse(e.http_body)
           message = body.css("Error").first["message"]
           humanize_badrequest(message)
