@@ -58,6 +58,22 @@ describe VCloudClient::Connection do
         }.to raise_error VCloudClient::UnauthorizedAccess
       end
     end
+
+    it "captures the extension url from the login response" do
+      VCR.use_cassette('login/login_5.1') do
+        connection.login
+
+        expect(connection.extensibility).to eq("https://testurl.local/api/extensibility")
+      end
+    end
+    
+    it "captures nil if there is not extentisibility in respponse" do
+      VCR.use_cassette('login/login_no_extensibility') do
+        connection.login
+
+        expect(connection.extensibility).to be_nil
+      end
+    end
   end
 
   describe "#logout" do
