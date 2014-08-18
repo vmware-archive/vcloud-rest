@@ -1,0 +1,39 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://testuser%40testorg:testpass@testurl.local/api/sessions
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 400
+      message: Forbidden
+    headers:
+      Date:
+      - Mon, 19 May 2014 15:28:33 GMT
+      - Mon, 19 May 2014 15:28:33 GMT
+      X-Vcloud-Authorization:
+      - C6Deg4vrUbTSL4dneiuiYpB4dqehpIDJvzNRvZsLNjM=
+      Set-Cookie:
+      - vcloud-token=C6Deg4vrUbTSL4dneiuiYpB4dqehpIDJvzNRvZsLNjM=; Secure; Path=/
+      Content-Type:
+      - application/vnd.vmware.vcloud.session+xml;version=5.1
+      Content-Length:
+      - '1149'
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Error xmlns="http://www.vmware.com/vcloud/v1.5" minorErrorCode="400" message="Status 400" majorErrorCode="403" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd"></Error>
+    http_version:
+  recorded_at: Mon, 19 May 2014 15:28:37 GMT
+recorded_with: VCR 2.9.0

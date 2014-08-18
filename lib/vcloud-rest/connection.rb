@@ -172,21 +172,20 @@ module VCloudClient
           body = Nokogiri.parse(e.http_body)
           message = body.css("Error").first["message"]
           humanize_badrequest(message)
-          # TODO add debug response logging
         rescue RestClient::Forbidden => e
+          @logger.debug "Send request result: #{e.http_body}"
           body = Nokogiri.parse(e.http_body)
           message = body.css("Error").first["message"]
-          # TODO add debug response logging
           raise UnauthorizedAccess, "Operation not permitted: #{message}."
         rescue RestClient::InternalServerError => e
+          @logger.debug "Send request result: #{e.http_body}"
           body = Nokogiri.parse(e.http_body)
           message = body.css("Error").first["message"]
-          # TODO add debug response logging
           raise InternalServerError, "Internal Server Error: #{message}."
         rescue RestClient::MethodNotAllowed => e
+          @logger.debug "Send request result: #{e.http_body}"
           body = Nokogiri.parse(e.http_body)
           message = body.css("Error").first["message"]
-          # TODO add debug response logging
           raise MethodNotAllowed, "#{params['method']} to #{params['command']} not allowed: #{message}."
         # TODO add socket error exception handling
         end
