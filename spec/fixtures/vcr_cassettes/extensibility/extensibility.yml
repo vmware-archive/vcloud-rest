@@ -1,0 +1,81 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://testuser%40testorg:testpass@testurl.local/api/sessions
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 22 May 2014 13:39:28 GMT
+      - Thu, 22 May 2014 13:39:28 GMT
+      X-Vcloud-Authorization:
+      - u40hpf6InzizbY966N1xde+XhzlB5zf5sp+lz4SVyr0=
+      Set-Cookie:
+      - vcloud-token=u40hpf6InzizbY966N1xde+XhzlB5zf5sp+lz4SVyr0=; Secure; Path=/
+      Content-Type:
+      - application/vnd.vmware.vcloud.session+xml;version=5.1
+      Content-Length:
+      - '1149'
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Session xmlns="http://www.vmware.com/vcloud/v1.5" user="testuser" org="Test" type="application/vnd.vmware.vcloud.session+xml" href="https://testurl.local/api/session/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="down" type="application/vnd.vmware.vcloud.orgList+xml" href="https://testurl.local/api/org/"/>
+            <Link rel="down" type="application/vnd.vmware.admin.vcloud+xml" href="https://testurl.local/api/admin/"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.org+xml" name="Test" href="https://testurl.local/api/org/562f56be-fa9f-48bd-a5fe-a0f9b0acceae"/>
+            <Link rel="down" type="application/vnd.vmware.vcloud.query.queryList+xml" href="https://testurl.local/api/query"/>
+            <Link rel="entityResolver" type="application/vnd.vmware.vcloud.entity+xml" href="https://testurl.local/api/entity/"/>
+            <Link rel="down:extensibility" type="application/vnd.vmware.vcloud.apiextensibility+xml" href="https://testurl.local/api/extensibility"/>
+        </Session>
+    http_version:
+  recorded_at: Thu, 22 May 2014 13:39:31 GMT
+- request:
+    method: get
+    uri: https://testurl.local/api/extensibility
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      X-Vcloud-Authorization:
+      - u40hpf6InzizbY966N1xde+XhzlB5zf5sp+lz4SVyr0=
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 204
+      message: No Content
+    headers:
+      Date:
+      - Thu, 22 May 2014 13:39:28 GMT
+      - Thu, 22 May 2014 13:39:28 GMT
+      Content-Type:
+      - application/*+xml;version=5.1
+    body:
+      encoding: UTF-8
+      string: |
+        <ApiExtensibility xmlns="http://www.vmware.com/vcloud/v1.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" type="application/vnd.vmware.vcloud.apiextensibility+xml" href="https://cloud.ipcoop.com/api/extensibility" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://10.21.22.127/api/v1.5/schema/master.xsd">
+        <Link rel="down:service" type="application/vnd.vmware.vcloud.query.records+xml" href="https://cloud.ipcoop.com/api/service"/>
+        <Link rel="down:apidefinitions" type="application/vnd.vmware.vcloud.query.records+xml" href="https://cloud.ipcoop.com/api/apidefinitions"/>
+        <Link rel="down:files" type="application/vnd.vmware.vcloud.query.records+xml" href="https://cloud.ipcoop.com/api/files"/>
+        </ApiExtensibility>
+    http_version:
+  recorded_at: Thu, 22 May 2014 13:39:31 GMT
+recorded_with: VCR 2.9.0

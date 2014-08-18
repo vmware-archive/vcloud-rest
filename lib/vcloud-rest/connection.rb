@@ -32,6 +32,7 @@ require 'vcloud-rest/vcloud/ovf'
 require 'vcloud-rest/vcloud/media'
 require 'vcloud-rest/vcloud/network'
 require 'vcloud-rest/vcloud/disk'
+require 'vcloud-rest/vcloud/extensibility'
 
 module VCloudClient
   class UnauthorizedAccess < StandardError; end
@@ -46,6 +47,7 @@ module VCloudClient
   # Main class to access vCloud rest APIs
   class Connection
     attr_reader :api_url, :auth_key
+    attr_reader :extensibility
 
     def initialize(host, username, password, org_name, api_version)
       @host = host
@@ -72,6 +74,9 @@ module VCloudClient
       if !headers.has_key?(:x_vcloud_authorization)
         raise "Unable to authenticate: missing x_vcloud_authorization header"
       end
+
+      extensibility_link = response.css("Link[rel='down:extensibility']")
+      @extensibility = extensibility_link.first['href'] unless extensibility_link.empty?
 
       @auth_key = headers[:x_vcloud_authorization]
     end
@@ -156,27 +161,36 @@ module VCloudClient
             @logger.warn "Warning: unattended code #{response.code}"
           end
 
-          @logger.debug "Send request result: #{Nokogiri.parse(response)}"
+          parsed_response = Nokogiri::XML(response)
+          @logger.debug "Send request result: #{parsed_response}"
 
-          [Nokogiri.parse(response), response.headers]
+          [parsed_response, response.headers]
         rescue RestClient::Unauthorized => e
+          @logger.debug "Send request result: #{e.http_body}"
           raise UnauthorizedAccess, "Client not authorized. Please check your credentials."
         rescue RestClient::BadRequest => e
+          @logger.debug "Send request result: #{e.http_body}"
           body = Nokogiri.parse(e.http_body)
           message = body.css("Error").first["message"]
           humanize_badrequest(message)
         rescue RestClient::Forbidden => e
+          @logger.debug "Send request result: #{e.http_body}"
           body = Nokogiri.parse(e.http_body)
           message = body.css("Error").first["message"]
           raise UnauthorizedAccess, "Operation not permitted: #{message}."
         rescue RestClient::InternalServerError => e
+          @logger.debug "Send request result: #{e.http_body}"
           body = Nokogiri.parse(e.http_body)
           message = body.css("Error").first["message"]
           raise InternalServerError, "Internal Server Error: #{message}."
         rescue RestClient::MethodNotAllowed => e
+          @logger.debug "Send request result: #{e.http_body}"
           body = Nokogiri.parse(e.http_body)
           message = body.css("Error").first["message"]
           raise MethodNotAllowed, "#{params['method']} to #{params['command']} not allowed: #{message}."
+        rescue SocketError => e
+          @logger.error "Failed to connet to #{invocation_params[:url]}: #{e}"
+          raise
         end
       end
 
