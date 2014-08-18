@@ -166,6 +166,7 @@ module VCloudClient
 
           [parsed_response, response.headers]
         rescue RestClient::Unauthorized => e
+          @logger.debug "Send request result: #{e.http_body}"
           raise UnauthorizedAccess, "Client not authorized. Please check your credentials."
         rescue RestClient::BadRequest => e
           @logger.debug "Send request result: #{e.http_body}"
@@ -187,7 +188,9 @@ module VCloudClient
           body = Nokogiri.parse(e.http_body)
           message = body.css("Error").first["message"]
           raise MethodNotAllowed, "#{params['method']} to #{params['command']} not allowed: #{message}."
-        # TODO add socket error exception handling
+        rescue SocketError => e
+          @logger.error "Failed to connet to #{invocation_params[:url]}: #{e}"
+          raise
         end
       end
 

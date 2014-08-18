@@ -15,7 +15,7 @@ http_interactions:
       - Ruby
   response:
     status:
-      code: 400
+      code: 401
       message: Forbidden
     headers:
       Date:
@@ -33,7 +33,7 @@ http_interactions:
       encoding: UTF-8
       string: |
         <?xml version="1.0" encoding="UTF-8"?>
-        <Error xmlns="http://www.vmware.com/vcloud/v1.5" minorErrorCode="400" message="Status 400" majorErrorCode="400" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd"></Error>
+        <Error xmlns="http://www.vmware.com/vcloud/v1.5" minorErrorCode="401" message="Status 401" majorErrorCode="401" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd"></Error>
     http_version:
   recorded_at: Mon, 19 May 2014 15:28:37 GMT
 recorded_with: VCR 2.9.0
