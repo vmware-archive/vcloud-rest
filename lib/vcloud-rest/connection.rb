@@ -138,24 +138,11 @@ module VCloudClient
       ##
       # Sends a synchronous request to the vCloud API and returns the response as parsed XML + headers.
       def send_request(params, payload=nil, content_type=nil)
-        headers = {:accept => "application/*+xml;version=#{@api_version}"}
-        invocation_params = {:method => params['method'],
-                             :headers => headers,
-                             :url => "#{@api_url}#{params['command']}",
-                             :payload => payload}
+        req_params = setup_request(params, payload, content_type)
 
-        if @auth_key
-          headers.merge!({:x_vcloud_authorization => @auth_key})
-        else
-          invocation_params.merge!({:user => "#{@username}@#{@org_name}",
-                                    :password => @password })
-        end
+        handled_request(req_params) do
+          request = RestClient::Request.new(req_params)
 
-        headers.merge!({:content_type => content_type}) if content_type
-
-        request = RestClient::Request.new(invocation_params)
-
-        begin
           response = request.execute
           if ![200, 201, 202, 204].include?(response.code)
             @logger.warn "Warning: unattended code #{response.code}"
@@ -165,33 +152,30 @@ module VCloudClient
           @logger.debug "Send request result: #{parsed_response}"
 
           [parsed_response, response.headers]
-        rescue RestClient::Unauthorized => e
-          @logger.debug "Send request error: #{e.http_body}"
-          raise UnauthorizedAccess, "Client not authorized. Please check your credentials."
-        rescue RestClient::BadRequest => e
-          @logger.debug "Send request error: #{e.http_body}"
-          body = Nokogiri.parse(e.http_body)
-          message = body.css("Error").first["message"]
-          humanize_badrequest(message)
-        rescue RestClient::Forbidden => e
-          @logger.debug "Send request error: #{e.http_body}"
-          body = Nokogiri.parse(e.http_body)
-          message = body.css("Error").first["message"]
-          raise UnauthorizedAccess, "Operation not permitted: #{message}."
-        rescue RestClient::InternalServerError => e
-          @logger.debug "Send request error: #{e.http_body}"
-          body = Nokogiri.parse(e.http_body)
-          message = body.css("Error").first["message"]
-          raise InternalServerError, "Internal Server Error: #{message}."
-        rescue RestClient::MethodNotAllowed => e
-          @logger.debug "Send request error: #{e.http_body}"
-          body = Nokogiri.parse(e.http_body)
-          message = body.css("Error").first["message"]
-          raise MethodNotAllowed, "#{params['method']} to #{params['command']} not allowed: #{message}."
-        rescue SocketError => e
-          @logger.error "Failed to connect to #{invocation_params[:url]}: #{e}"
-          raise
         end
+      end
+
+      def parse_error_body(error)
+        body = Nokogiri.parse(error.http_body)
+        body.css("Error").first["message"]
+      end
+
+      def setup_request(params, payload=nil, content_type=nil)
+        req_params = {:method => params['method'],
+                      :headers => {:accept => "application/*+xml;version=#{@api_version}"},
+                      :url => "#{@api_url}#{params['command']}",
+                      :payload => payload}
+
+        req_params[:headers].merge!({:content_type => content_type}) if content_type
+
+        if @auth_key
+          req_params[:headers].merge!({:x_vcloud_authorization => @auth_key})
+        else
+          req_params.merge!({:user => "#{@username}@#{@org_name}",
+                             :password => @password })
+        end
+
+        req_params
       end
 
       ##
@@ -238,168 +222,197 @@ module VCloudClient
         end
       end
 
-    ##
-    # Generic method to send power actions to vApp/VM
-    #
-    # i.e., 'suspend', 'powerOn'
-    def power_action(id, action, type=:vapp)
-      target = "#{type}-#{id}"
+      def handled_request(params, &block)
+        fail InternalServerError, 'A block is required' unless block_given?
 
-      params = {
-        'method' => :post,
-        'command' => "/vApp/#{target}/power/action/#{action}"
-      }
+        block.call(params)
+      rescue RestClient::Unauthorized => e
+        @logger.debug "Send request error: #{e.http_body}"
+        raise UnauthorizedAccess, "Client not authorized. Please check your credentials."
+      rescue RestClient::BadRequest => e
+        @logger.debug "Send request error: #{e.http_body}"
+        humanize_badrequest(parse_error_body(e))
+      rescue RestClient::Forbidden => e
+        @logger.debug "Send request error: #{e.http_body}"
+        raise UnauthorizedAccess, "Operation not permitted: #{parse_error_body(e)}."
+      rescue RestClient::InternalServerError => e
+        @logger.debug "Send request error: #{e.http_body}"
+        raise InternalServerError, "Internal Server Error: #{parse_error_body(e)}."
+      rescue RestClient::MethodNotAllowed => e
+        @logger.debug "Send request error: #{e.http_body}"
+        raise MethodNotAllowed,
+          "#{params['method']} to #{params['command']} not allowed: #{parse_error_body(e)}."
+      rescue SocketError => e
+        @logger.error "Failed to connect to #{params[:url]}: #{e}"
+        raise
+      end
 
-      response, headers = send_request(params)
-      task_id = headers[:location].gsub(/.*\/task\//, "")
-      task_id
-    end
+      def parse_error_body(error)
+        body = Nokogiri.parse(error.http_body)
+        body.css("Error").first["message"]
+      end
 
-    ##
-    # Discard suspended state of a vApp/VM
-    def discard_suspended_state_action(id, type=:vapp)
-      params = {
-          "method" => :post,
-          "command" => "/vApp/#{type}-#{id}/action/discardSuspendedState"
-      }
-      response, headers = send_request(params)
-      task_id = headers[:location].gsub(/.*\/task\//, "")
-      task_id
-    end
+      ##
+      # Generic method to send power actions to vApp/VM
+      #
+      # i.e., 'suspend', 'powerOn'
+      def power_action(id, action, type=:vapp)
+        target = "#{type}-#{id}"
 
-    ##
-    # Create a new vapp/vm snapshot (overwrites any existing)
-    def create_snapshot_action(id, description="New Snapshot", type=:vapp)
-      params = {
-          "method" => :post,
-          "command" => "/vApp/#{type}-#{id}/action/createSnapshot"
-      }
-      builder = Nokogiri::XML::Builder.new do |xml|
-        xml.CreateSnapshotParams(
-            "xmlns" => "http://www.vmware.com/vcloud/v1.5") {
-          xml.Description description
+        params = {
+          'method' => :post,
+          'command' => "/vApp/#{target}/power/action/#{action}"
         }
+
+        response, headers = send_request(params)
+        task_id = headers[:location].gsub(/.*\/task\//, "")
+        task_id
       end
-      response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.createSnapshotParams+xml")
-      task_id = headers[:location].gsub(/.*\/task\//, "")
-      task_id
-    end
 
-    ##
-    # Revert to an existing snapshot (vapp/vm)
-    def revert_snapshot_action(id, type=:vapp)
-      params = {
-          "method" => :post,
-          "command" => "/vApp/#{type}-#{id}/action/revertToCurrentSnapshot"
-      }
-      response, headers = send_request(params)
-      task_id = headers[:location].gsub(/.*\/task\//, "")
-      task_id
-    end
-
-    ##
-    # Discard all existing snapshots (vapp/vm)
-    def discard_snapshot_action(id, type=:vapp)
-      params = {
-          "method" => :post,
-          "command" => "/vApp/#{type}-#{id}/action/removeAllSnapshots"
-      }
-      response, headers = send_request(params)
-      task_id = headers[:location].gsub(/.*\/task\//, "")
-      task_id
-    end
-
-    ##
-    # Upload a large file in configurable chunks, output an optional progressbar
-    def upload_file(uploadURL, uploadFile, progressUrl, config={})
-      raise ::IOError, "#{uploadFile} not found." unless File.exists?(uploadFile)
-
-      # Set chunksize to 10M if not specified otherwise
-      chunkSize = (config[:chunksize] || 10485760)
-
-      # Set progress bar to default format if not specified otherwise
-      progressBarFormat = (config[:progressbar_format] || "%e <%B> %p%% %t")
-
-      # Set progress bar length to 120 if not specified otherwise
-      progressBarLength = (config[:progressbar_length] || 120)
-
-      # Open our file for upload
-      uploadFileHandle = File.new(uploadFile, "rb" )
-      fileName = File.basename(uploadFileHandle)
-
-      progressBarTitle = "Uploading: " + uploadFile.to_s
-
-      # Create a progressbar object if progress bar is enabled
-      if config[:progressbar_enable] == true && uploadFileHandle.size.to_i > chunkSize
-        progressbar = ProgressBar.create(
-          :title => progressBarTitle,
-          :starting_at => 0,
-          :total => uploadFileHandle.size.to_i,
-          :length => progressBarLength,
-          :format => progressBarFormat
-        )
-      else
-        @logger.info progressBarTitle
+      ##
+      # Discard suspended state of a vApp/VM
+      def discard_suspended_state_action(id, type=:vapp)
+        params = {
+            "method" => :post,
+            "command" => "/vApp/#{type}-#{id}/action/discardSuspendedState"
+        }
+        response, headers = send_request(params)
+        task_id = headers[:location].gsub(/.*\/task\//, "")
+        task_id
       end
-      # Create a new HTTP client
-      clnt = HTTPClient.new
 
-      # Disable SSL cert verification
-      clnt.ssl_config.verify_mode=(OpenSSL::SSL::VERIFY_NONE)
+      ##
+      # Create a new vapp/vm snapshot (overwrites any existing)
+      def create_snapshot_action(id, description="New Snapshot", type=:vapp)
+        params = {
+            "method" => :post,
+            "command" => "/vApp/#{type}-#{id}/action/createSnapshot"
+        }
+        builder = Nokogiri::XML::Builder.new do |xml|
+          xml.CreateSnapshotParams(
+              "xmlns" => "http://www.vmware.com/vcloud/v1.5") {
+            xml.Description description
+          }
+        end
+        response, headers = send_request(params, builder.to_xml, "application/vnd.vmware.vcloud.createSnapshotParams+xml")
+        task_id = headers[:location].gsub(/.*\/task\//, "")
+        task_id
+      end
 
-      # Suppress SSL depth message
-      clnt.ssl_config.verify_callback=proc{ |ok, ctx|; true };
+      ##
+      # Revert to an existing snapshot (vapp/vm)
+      def revert_snapshot_action(id, type=:vapp)
+        params = {
+            "method" => :post,
+            "command" => "/vApp/#{type}-#{id}/action/revertToCurrentSnapshot"
+        }
+        response, headers = send_request(params)
+        task_id = headers[:location].gsub(/.*\/task\//, "")
+        task_id
+      end
 
-      # Perform ranged upload until the file reaches its end
-      until uploadFileHandle.eof?
+      ##
+      # Discard all existing snapshots (vapp/vm)
+      def discard_snapshot_action(id, type=:vapp)
+        params = {
+            "method" => :post,
+            "command" => "/vApp/#{type}-#{id}/action/removeAllSnapshots"
+        }
+        response, headers = send_request(params)
+        task_id = headers[:location].gsub(/.*\/task\//, "")
+        task_id
+      end
 
-        # Create ranges for this chunk upload
-        rangeStart = uploadFileHandle.pos
-        rangeStop = uploadFileHandle.pos.to_i + chunkSize
+      ##
+      # Upload a large file in configurable chunks, output an optional progressbar
+      def upload_file(uploadURL, uploadFile, progressUrl, config={})
+        raise ::IOError, "#{uploadFile} not found." unless File.exists?(uploadFile)
 
-        # Read current chunk
-        fileContent = uploadFileHandle.read(chunkSize)
+        # Set chunksize to 10M if not specified otherwise
+        chunkSize = (config[:chunksize] || 10485760)
 
-        # If statement to handle last chunk transfer if is > than filesize
-        if rangeStop.to_i > uploadFileHandle.size.to_i
-          contentRange = "bytes #{rangeStart.to_s}-#{uploadFileHandle.size.to_s}/#{uploadFileHandle.size.to_s}"
-          rangeLen = uploadFileHandle.size.to_i - rangeStart.to_i
+        # Set progress bar to default format if not specified otherwise
+        progressBarFormat = (config[:progressbar_format] || "%e <%B> %p%% %t")
+
+        # Set progress bar length to 120 if not specified otherwise
+        progressBarLength = (config[:progressbar_length] || 120)
+
+        # Open our file for upload
+        uploadFileHandle = File.new(uploadFile, "rb" )
+        fileName = File.basename(uploadFileHandle)
+
+        progressBarTitle = "Uploading: " + uploadFile.to_s
+
+        # Create a progressbar object if progress bar is enabled
+        if config[:progressbar_enable] == true && uploadFileHandle.size.to_i > chunkSize
+          progressbar = ProgressBar.create(
+            :title => progressBarTitle,
+            :starting_at => 0,
+            :total => uploadFileHandle.size.to_i,
+            :length => progressBarLength,
+            :format => progressBarFormat
+          )
         else
-          contentRange = "bytes #{rangeStart.to_s}-#{rangeStop.to_s}/#{uploadFileHandle.size.to_s}"
-          rangeLen = rangeStop.to_i - rangeStart.to_i
+          @logger.info progressBarTitle
         end
+        # Create a new HTTP client
+        clnt = HTTPClient.new
 
-        # Build headers
-        extheader = {
-          'x-vcloud-authorization' => @auth_key,
-          'Content-Range' => contentRange,
-          'Content-Length' => rangeLen.to_s
-        }
+        # Disable SSL cert verification
+        clnt.ssl_config.verify_mode=(OpenSSL::SSL::VERIFY_NONE)
 
-        begin
-          uploadRequest = "#{@host_url}#{uploadURL}"
-          connection = clnt.request('PUT', uploadRequest, nil, fileContent, extheader)
+        # Suppress SSL depth message
+        clnt.ssl_config.verify_callback=proc{ |ok, ctx|; true };
 
-          if config[:progressbar_enable] == true && uploadFileHandle.size.to_i > chunkSize
-            params = {
-              'method' => :get,
-              'command' => progressUrl
-            }
-            response, headers = send_request(params)
+        # Perform ranged upload until the file reaches its end
+        until uploadFileHandle.eof?
 
-            response.css("Files File [name='#{fileName}']").each do |file|
-              progressbar.progress=file[:bytesTransferred].to_i
-            end
+          # Create ranges for this chunk upload
+          rangeStart = uploadFileHandle.pos
+          rangeStop = uploadFileHandle.pos.to_i + chunkSize
+
+          # Read current chunk
+          fileContent = uploadFileHandle.read(chunkSize)
+
+          # If statement to handle last chunk transfer if is > than filesize
+          if rangeStop.to_i > uploadFileHandle.size.to_i
+            contentRange = "bytes #{rangeStart.to_s}-#{uploadFileHandle.size.to_s}/#{uploadFileHandle.size.to_s}"
+            rangeLen = uploadFileHandle.size.to_i - rangeStart.to_i
+          else
+            contentRange = "bytes #{rangeStart.to_s}-#{rangeStop.to_s}/#{uploadFileHandle.size.to_s}"
+            rangeLen = rangeStop.to_i - rangeStart.to_i
           end
-        rescue
-          retryTime = (config[:retry_time] || 5)
-          @logger.warn "Range #{contentRange} failed to upload, retrying the chunk in #{retryTime.to_s} seconds, to stop the action press CTRL+C."
-          sleep retryTime.to_i
-          retry
-        end
-      end
-      uploadFileHandle.close
-    end
 
+          # Build headers
+          extheader = {
+            'x-vcloud-authorization' => @auth_key,
+            'Content-Range' => contentRange,
+            'Content-Length' => rangeLen.to_s
+          }
+
+          begin
+            uploadRequest = "#{@host_url}#{uploadURL}"
+            connection = clnt.request('PUT', uploadRequest, nil, fileContent, extheader)
+
+            if config[:progressbar_enable] == true && uploadFileHandle.size.to_i > chunkSize
+              params = {
+                'method' => :get,
+                'command' => progressUrl
+              }
+              response, headers = send_request(params)
+
+              response.css("Files File [name='#{fileName}']").each do |file|
+                progressbar.progress=file[:bytesTransferred].to_i
+              end
+            end
+          rescue
+            retryTime = (config[:retry_time] || 5)
+            @logger.warn "Range #{contentRange} failed to upload, retrying the chunk in #{retryTime.to_s} seconds, to stop the action press CTRL+C."
+            sleep retryTime.to_i
+            retry
+          end
+        end
+        uploadFileHandle.close
+      end
   end # class
 end
