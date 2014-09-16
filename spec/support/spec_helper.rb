@@ -32,6 +32,10 @@ def default_credentials
   }
 end
 
+RSpec.configure do |config|
+  config.raise_errors_for_deprecations!
+end
+
 def credentials
   @credentials ||= begin
     data = default_credentials

@@ -79,10 +79,8 @@ describe VCloudClient::Connection do
     end
 
     it "returns a socket error" do
-      mock_request = double(RestClient::Request)
-      mock_request.stub(:execute).and_raise(SocketError)
-
-      RestClient::Request.stub(:new).and_return(mock_request)
+      allow_any_instance_of(RestClient::Request).to receive(:execute)
+                                                    .and_raise(SocketError)
 
       VCR.use_cassette('login/login_5.1') do
         expect {
