@@ -1,5 +1,9 @@
-vcloud-rest [![Build Status](https://secure.travis-ci.org/astratto/vcloud-rest.png?branch=master)](http://travis-ci.org/astratto/vcloud-rest) [![Dependency Status](https://gemnasium.com/astratto/vcloud-rest.png)](https://gemnasium.com/astratto/vcloud-rest)
+vcloud-rest
 ===========
+
+[![Build Status](https://secure.travis-ci.org/astratto/vcloud-rest.png?branch=master)](http://travis-ci.org/astratto/vcloud-rest)
+[![Dependency Status](https://gemnasium.com/astratto/vcloud-rest.png)](https://gemnasium.com/astratto/vcloud-rest)
+[![Coverage Status](https://coveralls.io/repos/astratto/vcloud-rest/badge.png?branch=master)](https://coveralls.io/r/astratto/vcloud-rest?branch=master)
 
 DESCRIPTION
 --
