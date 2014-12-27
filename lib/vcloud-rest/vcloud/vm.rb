@@ -11,7 +11,7 @@ module VCloudClient
       response, headers = send_request(params)
 
       result = {}
-      response.css("ovf|Item [vcloud|href]").each do |item|
+      response.css("ovf|Item[vcloud|href]").each do |item|
         item_name = item.attribute('href').text.gsub(/.*\/vApp\/vm\-(\w+(-?))+\/virtualHardwareSection\//, "")
         name = item.css("rasd|ElementName")
         name = name.text unless name.nil?
