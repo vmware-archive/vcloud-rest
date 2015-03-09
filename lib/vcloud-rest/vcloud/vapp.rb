@@ -34,7 +34,7 @@ module VCloudClient
 
       networks = response.css('NetworkConfig').reject{|n| n.attribute('networkName').text == 'none'}.
         collect do |network|
-          net_id = network.css('Link[rel=repair]')
+          net_id = network.css('Link[rel="repair"]')
           net_id = net_id.attribute('href').text.gsub(/.*\/network\/(.*)\/action.*/, '\1') unless net_id.empty?
 
           net_name = network.attribute('networkName').text
