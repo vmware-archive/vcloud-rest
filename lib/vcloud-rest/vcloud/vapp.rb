@@ -276,6 +276,13 @@ module VCloudClient
                   xml.FirewallService {
                     xml.IsEnabled(network_config[:enable_firewall] || "false")
                   }
+                  if network_config.has_key? :nat_type
+                    xml.NatService {
+                      xml.IsEnabled "true"
+                      xml.NatType network_config[:nat_type]
+                      xml.Policy(network_config[:nat_policy_type] || "allowTraffic")
+                    }
+                  end
                 }
               }
             }
