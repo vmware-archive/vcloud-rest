@@ -1,10 +1,18 @@
-Changes
-==
-2014-06-03 (1.3.0)
+# Changes
+
+
+### Next version
+
+**Features**
+
+* Add extensibility capabilities
+* Handle *nat_type* in `compose_vapp_from_vm`
+
+### 2014-06-03 (1.3.0)
 
 Note that starting from this release Ruby 1.8.7+ and 1.9.2 are not explicitly tested against anymore.
 
-FEATURES:
+**Features**
 
 * Add "media" item type management to `get_catalog_item`
 * Add `discard_suspend_state_[vapp|vm]` to discard suspended state of a vApp or VM
@@ -13,7 +21,7 @@ FEATURES:
 * Add `discard_[vm|vapp]_snapshot` to discard snapshots
 * Add `acquire_ticket_vm` that retrieves a screen ticket (VMRC) for a given VM
 
-FIXES:
+**Fixes**
 
 * Fix add network to VM for API v.5.5
 * Fix VM IP address retrieval with different interfaces on same network
@@ -21,9 +29,9 @@ FIXES:
 
 Note that now `get_vm` appends NetworkConnectionIndex to network name to generate a unique hash key.
 
-2014-02-06 (1.2.0)
+### 2014-02-06 (1.2.0)
 
-FEATURES:
+**Features**
 
 * vm
     * actions to control vm snapshots just as vApp snapshots
@@ -31,42 +39,40 @@ FEATURES:
         * revert_vm_snapshot
     * network add/edit handle PrimaryNetworkConnectionIndex
 
-DEPRECATIONS:
+**Deprecations**
 
 * `create_snapshot` is deprecated in favour of create_vapp_snapshot
 * `revert_snapshot` is deprecated in favour of revert_vapp_snapshot
 * remove `set_vm_network_config` deprecated in 1.1.0
 
-FIXES:
+**Fixes**
 
 * OVF: fix upload link retrieval (issue #23)
 * Remove network placeholder when adding a network to a VM
 
-2013-12-31 (1.1.1)
---
+### 2013-12-31 (1.1.1)
 
-FIXES:
+**Fixes**
+
 * Unify IP address retrieval (issue #20)
 
-2013-12-13 (1.1.0)
---
+### 2013-12-13 (1.1.0)
 
-FEATURES:
+**Features**
 
 * Add commands `[add|edit|delete]_vm_network` to manage multiple networks
 
-DEPRECATIONS:
+**Deprecations**
 
 * `set_vm_network_config` is now deprecated
 
-2013-11-29 (1.0.0)
---
+### 2013-11-29 (1.0.0)
 
 This is the first release that leaves beta status.
 It's actively used in production by at least one company and thus it's important
 to offer a more stable interface.
 
-FEATURES:
+**Features**
 
 * General
     * Add proper logging
@@ -100,7 +106,7 @@ FEATURES:
 * Tasks
     * Add methods to list/cancel Tasks
 
-CHANGES:
+**Changes**
 
 * vApp clone returns an hash to provide also the new vApp's ID
 * retrieve VM's name directly instead of using the GuestCustomization section
@@ -108,7 +114,7 @@ CHANGES:
 * Relax nokogiri version to >= 1.5.10
 * set_vapp_network_config requires different parameters
 
-FIXES:
+**Fixes**
 
 * Reset auth token when a session is destroyed
 * Fix wait_task_completion
@@ -118,10 +124,9 @@ FIXES:
 * set_vapp_network_config to ensure existing configs are not lost
 * Better error handling for upload OVF
 
-2013-07-25 (0.3.0)
---
+### 2013-07-25 (0.3.0)
 
-FEATURES:
+**Features**
 
 * Add ```compose_vapp_from_vm``` to compose a vapp using VMs in a catalog
 * Add ```get_vapp_template``` to get information on VMs inside a vapp template
@@ -133,40 +138,36 @@ FEATURES:
 * Add ``reboot_vapp/suspend_vapp/reset_vapp``
 * Add ```upload_ovf``` to upload an OVF Package
 
-CHANGES:
+**Changes**
 
 * ```RetainNetInfoAcrossDeployments``` now defaults to false (fenced deployments)
 
-FIXES:
+**Fixes**
 
 * Better handling of 500 errors
 
-REMARKS:
-A big thanks to Fabio Rapposelli and Timo Sugliani for the great work done!
+*Remarks:* A big thanks to Fabio Rapposelli and Timo Sugliani for the great work done!
 
-2013-05-13 (0.2.2)
---
+### 2013-05-13 (0.2.2)
 
-FIXES:
+**Fixes**
 
 * Fix retrieving of 'ipAddress' attribute of VMs inside VAPP
 
-VARIOUS:
+**Various**
 
 * Add license field to gemspec
 * Bump nokogiri dependency to 1.5.9
 
-2012-12-27 (0.2.1)
---
+### 2012-12-27 (0.2.1)
 
-FIXES:
+**Fixes**
 
 * Fix VM's admin password retrieval
 
-2012-12-21 (0.2.0)
---
+### 2012-12-21 (0.2.0)
 
-FEATURES:
+**Features**
 
 * Allow Task tracking for vApp startup & shutdown
 * Improve error message for operations on vApp not running
@@ -177,21 +178,19 @@ FEATURES:
 * Basic VM network configuration
 * Basic Guest Customization configuration
 
-FIXES:
+**Fixes**
 
 * Show catalog item: fix ID parsing
 
-2012-12-19 (0.1.1)
---
+### 2012-12-19 (0.1.1)
 
-FIXES:
+**Fixes**
 
 * Fix gemspec URL
 
-2012-12-19 (0.1.0)
---
+### 2012-12-19 (0.1.0)
 
-FEATURES:
+**Features**
 
 * Add support for main operations:
  * login/logout
@@ -201,7 +200,6 @@ FEATURES:
  * catalog item _show_
  * vapp _create/delete/startup/shutdown_
 
-2012-12-14 (0.0.1)
---
+### 2012-12-14 (0.0.1)
 
 * Initial release
