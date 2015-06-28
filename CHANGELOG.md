@@ -1,7 +1,15 @@
 # Changes
 
+### 2015-06-28 (1.4.0)
 
-### Next version
+Note that I don't have enough time anymore to actively maintain this gem and I'm
+looking for a co-maintainer.
+
+**Fixes**
+
+* Fix add network with manually specified IP
+* Fix css selector in get_vapp
+* Fix nil when deleting vapp
 
 **Features**
 

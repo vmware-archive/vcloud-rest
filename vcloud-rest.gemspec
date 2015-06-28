@@ -13,6 +13,9 @@ Gem::Specification.new do |s|
   s.description = %q{Ruby bindings to create, list and manage vCloud servers}
   s.license     = 'Apache 2.0'
 
+  s.post_install_message = 'NOTICE: vcloud-rest needs a co-maintainer! ' \
+                           'Feel free to ping me at stefano.tortarolo@gmail.com'
+
   s.add_dependency "nokogiri", ">= 1.5.10"
   s.add_dependency "rest-client", '~> 1.6', '>= 1.6.7'
   s.add_dependency "httpclient", '~> 2.3', '>= 2.3.3'
