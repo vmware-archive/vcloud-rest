@@ -207,6 +207,12 @@ module VCloudClient
       idx_node.content = config[:network_index] || networks_count
       new_network.add_child(idx_node)
 
+      if config[:ip]
+        ip_node = Nokogiri::XML::Node.new "IpAddress", new_network
+        ip_node.content = config[:ip]
+        new_network.add_child(ip_node)
+      end
+
       is_connected_node = Nokogiri::XML::Node.new "IsConnected", new_network
       is_connected_node.content = config[:is_connected] || true
       new_network.add_child(is_connected_node)
@@ -214,12 +220,6 @@ module VCloudClient
       allocation_node = Nokogiri::XML::Node.new "IpAddressAllocationMode", new_network
       allocation_node.content = config[:ip_allocation_mode] || "POOL"
       new_network.add_child(allocation_node)
-
-      if config[:ip]
-        ip_node = Nokogiri::XML::Node.new "IpAddress", new_network
-        ip_node.content = config[:ip]
-        new_network.add_child(ip_node)
-      end
 
       parent_section.add_child(new_network)
 
