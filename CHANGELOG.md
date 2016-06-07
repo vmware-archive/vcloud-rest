@@ -1,5 +1,19 @@
 # Changes
 
+### 2016-06-07 (1.4.1)
+
+**Features**
+
+* Added an optional parameter to the Connection#initliaze for the SSL mode.  Useful for testing vCloud Director in a lab environment when a real SSL cert is not available.
+
+Normal connection setup:
+
+    connection = VCloudClient::Connection.new(host, user, pass, org, api)
+    
+Disable SSL certificate check:
+
+    connection = VCloudClient::Connection.new(host, user, pass, org, api, OpenSSL::SSL::VERIFY_NONE)
+    
 ### 2015-06-28 (1.4.0)
 
 Note that I don't have enough time anymore to actively maintain this gem and I'm

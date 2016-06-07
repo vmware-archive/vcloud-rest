@@ -14,6 +14,7 @@ tmp
 Gemfile.lock
 .ruby-version
 .ruby-gemset
+.idea/
 
 # YARD artifacts
 .yardoc
