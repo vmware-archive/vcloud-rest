@@ -33,6 +33,7 @@ require 'vcloud-rest/vcloud/media'
 require 'vcloud-rest/vcloud/network'
 require 'vcloud-rest/vcloud/disk'
 require 'vcloud-rest/vcloud/extensibility'
+require 'vcloud-rest/vcloud/vim'
 
 module VCloudClient
   class UnauthorizedAccess < StandardError; end

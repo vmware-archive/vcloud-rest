@@ -1,0 +1,99 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://testurl.local/api/sessions
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic aWcxX21vbkBzeXN0ZW06amF2VWJ1c0l0dA==
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 15 Jun 2016 17:32:16 GMT
+      X-Vmware-Vcloud-Request-Id:
+      - c49d704b-9f54-41e9-98b1-75265edf546b
+      X-Vcloud-Authorization:
+      - 0c8e50cf960c49f6ae46905f3d95fc9e
+      Set-Cookie:
+      - vcloud-token=0c8e50cf960c49f6ae46905f3d95fc9e; Secure; Path=/
+      X-Vmware-Vcloud-Request-Execution-Time:
+      - '53'
+      Content-Type:
+      - application/vnd.vmware.vcloud.session+xml;version=5.1
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Session xmlns="http://www.vmware.com/vcloud/v1.5" org="System" user="testuser" href="https://testurl.local/api/session" type="application/vnd.vmware.vcloud.session+xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="down" href="https://testurl.local/api/org/" type="application/vnd.vmware.vcloud.orgList+xml"/>
+            <Link rel="remove" href="https://testurl.local/api/session"/>
+            <Link rel="down" href="https://testurl.local/api/admin/" type="application/vnd.vmware.admin.vcloud+xml"/>
+            <Link rel="down" href="https://testurl.local/api/admin/extension" type="application/vnd.vmware.admin.vmwExtension+xml"/>
+            <Link rel="down" href="https://testurl.local/api/org/a93c9db9-7471-3192-8d09-a8f7eeda85f9" name="System" type="application/vnd.vmware.vcloud.org+xml"/>
+            <Link rel="down" href="https://testurl.local/api/query" type="application/vnd.vmware.vcloud.query.queryList+xml"/>
+            <Link rel="entityResolver" href="https://testurl.local/api/entity/" type="application/vnd.vmware.vcloud.entity+xml"/>
+            <Link rel="down:extensibility" href="https://testurl.local/api/extensibility" type="application/vnd.vmware.vcloud.apiextensibility+xml"/>
+        </Session>
+    http_version: 
+  recorded_at: Wed, 15 Jun 2016 17:32:16 GMT
+- request:
+    method: get
+    uri: https://testurl.local/api/admin/extension/vimServerReferences
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      X-Vcloud-Authorization:
+      - 0c8e50cf960c49f6ae46905f3d95fc9e
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 15 Jun 2016 17:32:16 GMT
+      X-Vmware-Vcloud-Request-Id:
+      - 42fbf921-f4d7-4fb3-ab5a-77e461f3b7e2
+      X-Vcloud-Authorization:
+      - 0c8e50cf960c49f6ae46905f3d95fc9e
+      Set-Cookie:
+      - vcloud-token=0c8e50cf960c49f6ae46905f3d95fc9e; Secure; Path=/
+      X-Vmware-Vcloud-Request-Execution-Time:
+      - '7'
+      Content-Type:
+      - application/vnd.vmware.admin.vmwvimserverreferences+xml;version=5.1
+      Vary:
+      - Accept-Encoding, User-Agent
+      Connection:
+      - close
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <vmext:VMWVimServerReferences xmlns:vmext="http://www.vmware.com/vcloud/extension/v1.5" xmlns:vcloud="http://www.vmware.com/vcloud/v1.5" type="application/vnd.vmware.admin.vmwVimServerReferences+xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/extension/v1.5 http://testurl.local/api/v1.5/schema/vmwextensions.xsd http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <vcloud:Link rel="up" href="https://testurl.local/api/admin/extension" type="application/vnd.vmware.admin.vmwExtension+xml"/>
+            <vmext:VimServerReference href="https://testurl.local/api/admin/extension/vimServer/aa293526-5117-46b0-be64-7948bc1c00e2" name="vcenter-test" type="application/vnd.vmware.admin.vmwvirtualcenter+xml"/>
+        </vmext:VMWVimServerReferences>
+    http_version: 
+  recorded_at: Wed, 15 Jun 2016 17:32:16 GMT
+recorded_with: VCR 3.0.3
