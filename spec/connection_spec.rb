@@ -1310,4 +1310,65 @@ describe VCloudClient::Connection do
       expect(connection.send(:convert_vapp_status, 999)).to eq "Unknown 999"
     end
   end
+
+  describe "vim management" do
+    context "#get_vimServers" do
+      it "should list vim servers details" do
+        VCR.use_cassette('vim/get_vimServers') do
+          connection.login
+          vc_hosts = connection.get_vimServers
+          expect(vc_hosts).to be_kind_of Hash
+          expect(vc_hosts).to eq({"vcenter-test" => "aa293526-5117-46b0-be64-7948bc1c00e2"})
+        end
+      end
+    end
+    context "#get_vimHosts" do
+      it "should list all the hosts attached to VC" do
+        VCR.use_cassette('vim/get_vimHosts') do
+          connection.login
+          hosts = connection.get_vimHosts('aa293526-5117-46b0-be64-7948bc1c00e2')
+          expect(hosts).to be_kind_of Hash
+          expect(hosts).to eq({
+            "test-dc3vcloud-05.sadm.example.net" => "0e785d4e-6020-495d-a976-5fcc4a33bf11",
+            "test-dc3vcloud-09.sadm.example.net" => "17bf68bd-19b9-4101-852a-1909485a5c11",
+            "test-dc3vcloud-03.sadm.example.net" => "211e80d0-fc47-499e-b1e1-25894dae6911",
+            "test-dc3vcloud-10.sadm.example.net" => "3312a099-2a96-4524-b683-d78a554a0c11",
+            "test-dc3vcloud-08.sadm.example.net" => "3a4056da-8d0f-49a3-8c68-8a50431a4b11",
+            "test-dc3vcloud-02.sadm.example.net" => "50a24fa9-73d3-4318-89b4-4062e6cfaf11",
+            "test-dc3vcloud-04.sadm.example.net" => "e7e5a859-6334-40bf-82d6-8cc758adf211",
+            "test-dc3vcloud-01.sadm.example.net" => "ead8c74e-8063-4002-9114-c63008985211",
+            "test-dc3vcloud-07.sadm.example.net" => "f2b80056-9728-4dd1-9575-474e8df2b411",
+            "test-dc3vcloud-06.sadm.example.net" => "f7667914-f93f-455f-8d94-e661973ad611"
+            })
+        end
+      end
+    end
+
+    context "#get_HostInfo" do
+      it "should list a host informations" do
+        VCR.use_cassette('vim/get_HostInfo') do
+          connection.login
+          vc_hosts = connection.get_HostInfo('0e785d4e-6020-495d-a976-5fcc4a33bf11')
+          expect(vc_hosts).to be_kind_of Hash
+          expect(vc_hosts).to eq({
+                        "Ready" => "true",
+                    "Available" => "true",
+                      "Enabled" => "true",
+                         "Busy" => "false",
+    "EnableHostForHostSpanning" => "false",
+                      "CpuType" => "Intel(R) Xeon(R) CPU E5-2680 v3 @ 2.50GHz",
+            "NumOfCpusPackages" => "2",
+             "NumOfCpusLogical" => "24",
+                     "CpuTotal" => "2499",
+                      "MemUsed" => "0.0",
+                     "MemTotal" => "327586.0",
+                   "HostOsName" => "VMware ESXi",
+                "HostOsVersion" => "6.0.0",
+                      "VmMoRef" => "host-234"
+            })
+        end
+      end
+    end
+  end
+
 end

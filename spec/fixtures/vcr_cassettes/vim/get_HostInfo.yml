@@ -1,0 +1,114 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://testurl.local/api/sessions
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+      Authorization:
+      - Basic aWcxX21vbkBzeXN0ZW06amF2VWJ1c0l0dA==
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 15 Jun 2016 17:53:37 GMT
+      X-Vmware-Vcloud-Request-Id:
+      - 049522aa-0576-4a1c-8471-85971e07c113
+      X-Vcloud-Authorization:
+      - f4c5226ba4ea478293f056be0aafcf91
+      Set-Cookie:
+      - vcloud-token=f4c5226ba4ea478293f056be0aafcf91; Secure; Path=/
+      X-Vmware-Vcloud-Request-Execution-Time:
+      - '58'
+      Content-Type:
+      - application/vnd.vmware.vcloud.session+xml;version=5.1
+      Connection:
+      - close
+    body:
+      encoding: UTF-8
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <Session xmlns="http://www.vmware.com/vcloud/v1.5" org="System" user="testuser" href="https://testurl.local/api/session" type="application/vnd.vmware.vcloud.session+xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <Link rel="down" href="https://testurl.local/api/org/" type="application/vnd.vmware.vcloud.orgList+xml"/>
+            <Link rel="remove" href="https://testurl.local/api/session"/>
+            <Link rel="down" href="https://testurl.local/api/admin/" type="application/vnd.vmware.admin.vcloud+xml"/>
+            <Link rel="down" href="https://testurl.local/api/admin/extension" type="application/vnd.vmware.admin.vmwExtension+xml"/>
+            <Link rel="down" href="https://testurl.local/api/org/a93c9db9-7471-3192-8d09-a8f7eeda85f9" name="System" type="application/vnd.vmware.vcloud.org+xml"/>
+            <Link rel="down" href="https://testurl.local/api/query" type="application/vnd.vmware.vcloud.query.queryList+xml"/>
+            <Link rel="entityResolver" href="https://testurl.local/api/entity/" type="application/vnd.vmware.vcloud.entity+xml"/>
+            <Link rel="down:extensibility" href="https://testurl.local/api/extensibility" type="application/vnd.vmware.vcloud.apiextensibility+xml"/>
+        </Session>
+    http_version: 
+  recorded_at: Wed, 15 Jun 2016 17:53:37 GMT
+- request:
+    method: get
+    uri: https://testurl.local/api/admin/extension/host/0e785d4e-6020-495d-a976-5fcc4a33bf11
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/*+xml;version=5.1
+      Accept-Encoding:
+      - gzip, deflate
+      X-Vcloud-Authorization:
+      - f4c5226ba4ea478293f056be0aafcf91
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Wed, 15 Jun 2016 17:53:37 GMT
+      X-Vmware-Vcloud-Request-Id:
+      - bda94ae8-0792-4015-992b-07325d926ce0
+      X-Vcloud-Authorization:
+      - f4c5226ba4ea478293f056be0aafcf91
+      Set-Cookie:
+      - vcloud-token=f4c5226ba4ea478293f056be0aafcf91; Secure; Path=/
+      X-Vmware-Vcloud-Request-Execution-Time:
+      - '42'
+      Content-Type:
+      - application/vnd.vmware.admin.host+xml;version=5.1
+      Vary:
+      - Accept-Encoding, User-Agent
+      Connection:
+      - close
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <?xml version="1.0" encoding="UTF-8"?>
+        <vmext:Host xmlns:vmext="http://www.vmware.com/vcloud/extension/v1.5" xmlns:vcloud="http://www.vmware.com/vcloud/v1.5" name="test-dc3vcloud-05.sadm.example.net" id="urn:vcloud:host:0e785d4e-6020-495d-a976-5fcc4a33bf11" href="https://testurl.local/api/admin/extension/host/0e785d4e-6020-495d-a976-5fcc4a33bf11" type="application/vnd.vmware.admin.host+xml" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.vmware.com/vcloud/extension/v1.5 http://testurl.local/api/v1.5/schema/vmwextensions.xsd http://www.vmware.com/vcloud/v1.5 http://testurl.local/api/v1.5/schema/master.xsd">
+            <vcloud:Link rel="up" href="https://testurl.local/api/admin/extension/hostReferences" type="application/vnd.vmware.admin.vmwHostReferences+xml"/>
+            <vcloud:Link rel="disable" href="https://testurl.local/api/admin/extension/host/0e785d4e-6020-495d-a976-5fcc4a33bf11/action/disable"/>
+            <vcloud:Description/>
+            <vmext:Ready>true</vmext:Ready>
+            <vmext:Available>true</vmext:Available>
+            <vmext:Enabled>true</vmext:Enabled>
+            <vmext:Busy>false</vmext:Busy>
+            <vmext:EnableHostForHostSpanning>false</vmext:EnableHostForHostSpanning>
+            <vmext:CpuType>Intel(R) Xeon(R) CPU E5-2680 v3 @ 2.50GHz</vmext:CpuType>
+            <vmext:NumOfCpusPackages>2</vmext:NumOfCpusPackages>
+            <vmext:NumOfCpusLogical>24</vmext:NumOfCpusLogical>
+            <vmext:CpuTotal>2499</vmext:CpuTotal>
+            <vmext:MemUsed>0.0</vmext:MemUsed>
+            <vmext:MemTotal>327586.0</vmext:MemTotal>
+            <vmext:HostOsName>VMware ESXi</vmext:HostOsName>
+            <vmext:HostOsVersion>6.0.0</vmext:HostOsVersion>
+            <vmext:VmMoRef>host-234</vmext:VmMoRef>
+        </vmext:Host>
+    http_version: 
+  recorded_at: Wed, 15 Jun 2016 17:53:37 GMT
+recorded_with: VCR 3.0.3
