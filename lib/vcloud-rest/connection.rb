@@ -142,6 +142,7 @@ module VCloudClient
 
         handled_request(req_params) do
           request = RestClient::Request.new(req_params)
+          @logger.debug "Request #{request.inspect}"
 
           response = request.execute
           if ![200, 201, 202, 204].include?(response.code)
