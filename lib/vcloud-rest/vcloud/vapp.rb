@@ -204,7 +204,7 @@ module VCloudClient
     # - vapp_name: name of the target vapp
     # - vapp_description: description of the target vapp
     # - vapp_templateid: ID of the vapp template
-    def create_vapp_from_template(vdc, vapp_name, vapp_description, vapp_templateid, poweron=false,network_config)
+    def create_vapp_from_template(vdc, vapp_name, vapp_description, vapp_templateid, poweron=false,network_config={})
       builder = Nokogiri::XML::Builder.new do |xml|
       xml.InstantiateVAppTemplateParams(
         "xmlns" => "http://www.vmware.com/vcloud/v1.5",
