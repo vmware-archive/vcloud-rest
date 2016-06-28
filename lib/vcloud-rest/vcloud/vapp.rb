@@ -204,7 +204,7 @@ module VCloudClient
     # - vapp_name: name of the target vapp
     # - vapp_description: description of the target vapp
     # - vapp_templateid: ID of the vapp template
-    def create_vapp_from_template(vdc, vapp_name, vapp_description, vapp_templateid, poweron=false)
+    def create_vapp_from_template(vdc, vapp_name, vapp_description, vapp_templateid, poweron=false,network_config)
       builder = Nokogiri::XML::Builder.new do |xml|
       xml.InstantiateVAppTemplateParams(
         "xmlns" => "http://www.vmware.com/vcloud/v1.5",
@@ -214,6 +214,21 @@ module VCloudClient
         "deploy" => "true",
         "powerOn" => poweron) {
         xml.Description vapp_description
+        if network_config[:name]
+          xml.InstantiationParams do
+              xml.NetworkConfigSection do
+                  xml['ovf'].Info 'Configuration parameters for logical networks'
+                  xml.NetworkConfig('networkName' => network_config[:name]) do
+                    if network_config[:parent_network]
+                      xml.Configuration do
+                          xml.ParentNetwork('href' => "#{@api_url}/network/#{network_config[:parent_network]}")
+                          xml.FenceMode network_config[:fence_mode]
+                      end
+                    end
+                  end
+              end
+          end
+        end
         xml.Source("href" => "#{@api_url}/vAppTemplate/#{vapp_templateid}")
       }
       end
