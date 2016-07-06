@@ -49,7 +49,7 @@ module VCloudClient
     attr_reader :api_url, :auth_key
     attr_reader :extensibility
 
-    def initialize(host, username, password, org_name, api_version)
+    def initialize(host, username, password, org_name, api_version, verify_ssl=true)
       @host = host
       @api_url = "#{host}/api"
       @host_url = "#{host}"
@@ -57,6 +57,7 @@ module VCloudClient
       @password = password
       @org_name = org_name
       @api_version = (api_version || "5.1")
+      @verify_ssl = verify_ssl
 
       init_logger
     end
@@ -161,7 +162,7 @@ module VCloudClient
       end
 
       def setup_request(params, payload=nil, content_type=nil)
-        req_params = {:method => params['method'],
+        req_params = {:method => params['method'], :verify_ssl => @verify_ssl,
                       :headers => {:accept => "application/*+xml;version=#{@api_version}"},
                       :url => "#{@api_url}#{params['command']}",
                       :payload => payload}
