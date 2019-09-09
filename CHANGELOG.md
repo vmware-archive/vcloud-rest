@@ -1,5 +1,11 @@
 # Changes
 
+### 2019-09-09 (1.5.0)
+
+* Added an optional parameter to the Connection#initliaze for the SSL:
+    *  {ssl_ciphers: 'ciphers_list'} in order to connect to servers with old versions of SSL 
+
+
 ### 2015-06-28 (1.4.0)
 
 Note that I don't have enough time anymore to actively maintain this gem and I'm
