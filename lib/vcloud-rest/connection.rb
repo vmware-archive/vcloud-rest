@@ -49,7 +49,7 @@ module VCloudClient
     attr_reader :api_url, :auth_key
     attr_reader :extensibility
 
-    def initialize(host, username, password, org_name, api_version)
+    def initialize(host, username, password, org_name, api_version, opts={})
       @host = host
       @api_url = "#{host}/api"
       @host_url = "#{host}"
@@ -57,6 +57,7 @@ module VCloudClient
       @password = password
       @org_name = org_name
       @api_version = (api_version || "5.1")
+      @opts = opts
 
       init_logger
     end
@@ -173,6 +174,10 @@ module VCloudClient
         else
           req_params.merge!({:user => "#{@username}@#{@org_name}",
                              :password => @password })
+        end
+
+        unless @opts.empty?
+          req_params.merge!({ssl_ciphers: @opts[:ssl_ciphers] }) if @opts[:ssl_ciphers]
         end
 
         req_params
